@@ -14,6 +14,10 @@ void zox_set_key(ecs *world, PhysicalButton *key, byte key_down, SDL_Keycode key
 
 void keyboard_extract_system(iter* it) {
     zox_sys_on_begin();
+    if (zox_keyboard_fake) {    // a test: its keys are its own (src/inputs/set)
+        zox_sys_on_end();
+        return;
+    }
     byte dbg_log = 0;
     const byte* state = sdl_get_keyboard_state();
     zox_sys_world();

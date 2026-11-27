@@ -82,6 +82,9 @@ void zox_tsts_my_module() {
   (`tst quest_dialogue` makes an npc a quest giver).
 - **The fake mouse**: [src/ui/tst/helpers.c](../src/ui/tst/helpers.c), `zox_tst_mouse(position, pressed)`,
   `zox_tst_find_click`, `zox_tst_ui_pointer_position`. Press and release on different frames.
+- **The fake keyboard**: tests read no real keyboard (`zox_keyboard_fake`, on for every `--tst`), so a key a test
+  sets on the player's `Keyboard` stays held until it lets go: `zox_set(keyboard, Keyboard, { .w.is_pressed = 1 })`
+  walks a character like a player (`tst zeland_walk`). Before, SDL overwrote it each frame and tests pushed velocity.
 - **Listening**: tests run silent. A test can turn sounds on (`nosounds = 0`) to check sounds spawn, nothing
   plays. To hear one: `--sounds`, to record one: `SDL_AUDIO_DRIVER=disk` (see [audio.md](../tech/audio.md)).
 - **Files to look at**: write a `.wav` or a screenshot with `zox_tst_path("song.wav")`: it goes in the test's own

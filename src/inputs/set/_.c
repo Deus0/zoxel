@@ -13,6 +13,11 @@ byte zox_mouse_fake_left = 0;
 byte zox_mouse_fake_right = 0;
 int2 zox_mouse_fake_wheel = { 0, 0 };
 
+// Fake keyboard: tests read no real keyboard (they're automated, and a key pressed by whoever is at the machine would
+//  change them): while set the os keyboard isn't read, its Keyboard keeps what a test sets (a held key stays held)
+//  - on for every test (--tst, process_arguments_inputs)
+byte zox_keyboard_fake = 0;
+
 // Fake fingers, for tests (no touchscreen needed, see zox_tst_touch in src/ui/tst/helpers.c)
 //  - while zox_touch_fake is set, the touchscreen reads these instead of sdl's fingers
 //  - x and y are 0 to 1 across the window, top left origin (as sdl's fingers), id is the finger's (0 up)

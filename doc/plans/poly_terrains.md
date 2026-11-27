@@ -75,8 +75,8 @@ How it runs:
 
 Later: movement inputs apart from the move system. Players' devices and npc ai both write one move input
 (a direction, run, jump) on the character, and one system moves every character from it, so players and npcs move
-by the same rules. Tests don't read real devices (SDL's keyboard, mouse, pads): they're automated, so they set the
-move input themselves, and a test like `zeland_walk` holds W through it, not by pushing the velocity. After step 7,
+by the same rules. Tests read no real keyboard now (`zox_keyboard_fake`, 2026-11-27: `zeland_walk` holds W); the
+mouse has its fake already, pads to do. After step 7,
 in a plan of its own: it changes how zoxel feels, so first tests record today's movement (top speeds, how fast it
 gets there, turning, running, jumps), then the new system is tuned until they match, then play tested.
 
