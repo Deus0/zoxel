@@ -23,6 +23,9 @@
 - Fade in terrain chunks
 - Fade between chunk meshes
 - Light up character models like block voxes
+- Glow tilemap (later, details): a block's glow per pixel, the tilemap's alpha (or a second map beside it) a texel's
+  glow, i.e. a glow stone's veins or lava's cracks glowing and the rest plain; now BlockGlow is one strength for the
+  whole face (doc/plans/hdr.md A3.1), and a baked block model's palette glow (ColorGlows) is lost in the tilemap
 - Glowing eyes that animate: eye colours glow (ColorGlows, doc/tech/rendering.md) and pulse or flare (anger, magic,
   night); combine_vox_system merges palettes by colour, it needs to carry their glows (and keep a glowing and a plain
   colour apart)

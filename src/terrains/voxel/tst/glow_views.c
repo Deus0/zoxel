@@ -179,7 +179,7 @@ static inline byte zox_tst_gviews_reads(int* middle, int* beside, int* corner, i
             return 0;
         }
         middle[i] = zox_tst_lids_at(image, size, 0.5f, 0.5f);
-        beside[i] = zox_tst_gviews_area(image, size, 0.15f);
+        beside[i] = zox_tst_gviews_area(image, size, 0.09f);    // just round its glow, the halo not diluted by the room
         corner[i] = zox_tst_lids_at(image, size, 0.03f, 0.03f);
         glass[i] = zox_tst_gviews_lamp_blue(image, size);
         free(image);

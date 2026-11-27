@@ -118,7 +118,7 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
   fallback is gone. Not see through: a slime's shell is its own mesh with an `alpha` uniform.
 - **Shaders**: `GLOW` 3: terrain (textured3D) `(glow > 0 ? 1 : light) * (1 + glow * 3)`, a glowing face lit at
   night too; vox models, instances and bones `colour * (1 + glow * 3)`.
-- **Blocks**: `BlockGlow`, a byte a block (0 none, 255 4x white); glow stones 80 (~1.9x: its pale stone past
+- **Blocks**: `BlockGlow`, a byte a block (0 none, 255 4x white); glow stones 85 (2x: its pale stone past
   white, it blooms, its cracks show): at 255 the whole face clipped to flat white, its stone texture lost. The cpu's
   smooth lights write it into its faces' alpha (`get_block_glows`, a voxel value's table); the gpu's textured draw
   looks its voxel (in the vertex's w) up in a `glows` uniform set from the same table, the compute mesher unchanged.
