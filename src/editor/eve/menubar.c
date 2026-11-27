@@ -116,4 +116,5 @@ static void spawn_editor_menubar(ecs* world, entity canvas) {
     zox_setv(realm, ClickEvent, editor_realm_menu_click);
     spawn_menu_item(world, realm, "Spawn Realm", (ClickEvent) { editor_menu_realm });
     editor_disabled_menu_items(world, realm, (const char*[]) { "Play", "Pause", "Stop" }, 3);
+    zox_add(bar, EditorThemeDirty);
 }

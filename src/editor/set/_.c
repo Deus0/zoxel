@@ -1,13 +1,15 @@
 byte editor_font_thickness = 4;
-color editor_window_fill = (color) { 3, 3, 3, 120 };
-color editor_window_outline = color_gray;
-color editor_header_fill = color_black;
-color editor_header_outline = color_gray;
-color editor_color_font = (color) { 244, 247, 251, 255 };
-color editor_color_fonto = (color) { 122, 133, 144, 255 };
+// GitHub's dark theme: canvas #0d1117, panels #161b22, borders #30363d, text #e6edf3, muted #7d8590, accent #1f6feb
+color editor_window_fill = (color) { 13, 17, 23, 245 };
+color editor_window_outline = (color) { 48, 54, 61, 255 };
+color editor_header_fill = (color) { 22, 27, 34, 255 };
+color editor_header_outline = (color) { 48, 54, 61, 255 };
+color editor_color_font = (color) { 230, 237, 243, 255 };
+color editor_color_fonto = (color) { 125, 133, 144, 255 };
 byte editor_fonto_thickness = 0;
-color editor_button_fill = (color) { 33, 36, 38, 244 };
-color editor_button_outline = (color) { 44, 55, 66, 244 };
+color editor_button_fill = (color) { 33, 38, 45, 255 };
+color editor_button_outline = (color) { 48, 54, 61, 255 };
+color editor_hover_fill = (color) { 31, 111, 235, 255 };
 
 // button_font_thickness_fill
 // button_font_thickness_outline

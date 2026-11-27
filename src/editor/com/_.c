@@ -1,6 +1,7 @@
 zox_tag(HierarchySlot);
 zox_tag(EditorElement);
 zox_tag(EditorMenubarDirty);
+zox_tag(EditorThemeDirty);   // the editor's look on a window or the menubar, once (fun/theme.c)
 zox_tag(EditorWindowMenu);
 zox_tag(InspectorUI);
 zox_tag(InspectorLabel);
@@ -18,6 +19,7 @@ zoxc(DebugLabelData, DebugLabelEvent);
 void zox_components_editor(ecs* world) {
     zoxd_tag(EditorElement);
     zoxd_nf_tag(EditorMenubarDirty);
+    zoxd_nf_tag(EditorThemeDirty);
     zoxd_tag(EditorWindowMenu);
     zoxd_tag(InspectorLabel);
     zoxd_tag(InspectorUI);

@@ -41,3 +41,4 @@ entity canvas_toggle_ui(
 #include "tooltip.c"
 #include "component.c"
 #include "inspector.c"
+#include "theme.c"

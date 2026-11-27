@@ -11,6 +11,14 @@ static void editor_menubar_spawn_event(iter* it) {
     }
 }
 
+static void editor_theme_event(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        editor_theme(world, it->entities[i]);
+        zox_remove(it->entities[i], EditorThemeDirty);
+    }
+}
+
 static void editor_window_menu_hover_event(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
@@ -36,6 +44,7 @@ void editor_settings_observer_callback(iter* it) {
 
 void zox_events_editor(ecs* world) {
     zox_on_add(editor_menubar_spawn_event, [none] layouts.Canvas, [none] editor.EditorMenubarDirty);
+    zox_on_add(editor_theme_event, [none] editor.EditorThemeDirty);
     zox_on_add(editor_window_menu_hover_event, [none] editor.EditorWindowMenu, [none] interactions.TriggerSelect);
     zox_muter(prefab_app, InitializeEvent, event);
     add_to_InitializeEvent(event, app_initialize_editor);

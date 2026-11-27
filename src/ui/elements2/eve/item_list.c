@@ -21,11 +21,15 @@ static void item_list_pointer_event(iter* it) {
     }
 }
 
+#define item_list_disabled_alpha 90
+
 static void item_list_update_item(ecs* world, entity item) {
     const byte disabled = zox_has(item, ItemListDisabled);
     const entity label = zox_get_child_by_id(world, item, zox_id(TextLabel));
     const entity tick = zox_get_child_by_id(world, item, zox_id(ItemListTick));
-    const color fill = disabled ? color_gray : button_font_fill;
+    // its own text colour (a theme's), dimmed while disabled
+    color fill = label && zox_has(label, FontFillColor) ? zox_getv(label, FontFillColor) : button_font_fill;
+    fill.a = disabled ? item_list_disabled_alpha : 255;
     zox_setm(item, ClickDisabled, disabled);
     set_entity_text_fill(world, label, fill);
     if (tick) {

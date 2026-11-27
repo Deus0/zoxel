@@ -46,7 +46,7 @@ static byte zox_tst_menu_ready(ecs* world) {
         "menu items aren't in popup order");
     zox_tst_click(world, dbg_player, menu);
     const entity label = zox_get_child_by_id(world, disabled, zox_id(TextLabel));
-    zox_tst_check(color_equal(zox_getv(label, FontFillColor), color_gray), "disabled item wasn't greyed out");
+    zox_tst_check(zox_getv(label, FontFillColor).a == item_list_disabled_alpha, "disabled item wasn't dimmed");
     zox_tst_menu_click(world, disabled);
     zox_tst_check(!zox_tst_menu_calls && item_list_is_open(world, menu), "disabled click had an effect");
 
