@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-28
+-x Pressing a scrollbar's track jumps its handle under the pointer and drags it from there, scrolling the list
+  (scrollbar_track_press_system). tst scroll_track
 -x Scroll views' horizontal and vertical bars overlapped at the corner: each spanned the whole view. The horizontal
   bar stops at the vertical one, the vertical above the horizontal while it shows (scrollview_fit_vertical_bar);
   scrollview_bar_size never found a horizontal bar (it looked for Scrollbar on it too). tst scroll_corner

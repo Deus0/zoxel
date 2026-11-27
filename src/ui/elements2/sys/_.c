@@ -45,6 +45,14 @@ void zox_systems_elements2(ecs *world) {
         [in] core.Target,
         [none] !core.Disabled,
     );
+    zox_system(
+        scrollbar_track_press_system,
+        zoxp_update,
+        [in] inputs.ZevicePointer,
+        [in] inputs.ZevicePointerPosition,
+        [in] core.Target,
+        [none] !core.Disabled,
+    );
     // make elements visible/invisible within list
     zox_system(
         list_render_dirty_system,

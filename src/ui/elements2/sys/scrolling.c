@@ -153,3 +153,45 @@ void scrollview_wheel_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(scrollview_wheel_system);
+
+// Pressing a scrollbar's track (not its handle) moves the handle under the pointer, then drags it from there
+//  (scrollbar_system scrolls the list to it)
+void scrollbar_track_press_system(iter* it) {
+    zox_sys_on_begin();
+    zox_sys_world();
+    zox_sys_begin();
+    zox_sys_in(ZevicePointer);
+    zox_sys_in(ZevicePointerPosition);
+    zox_sys_in(Target);
+    for (int i = 0; i < it->count; i++) {
+        zox_sys_e();
+        zox_sys_i(ZevicePointer, click);
+        zox_sys_i(ZevicePointerPosition, pointer);
+        zox_sys_i(Target, target);
+        const entity bar = target->value;
+        if (!devices_get_pressed_this_frame(click->value) || !zox_valid(bar) ||
+            !(zox_has(bar, Scrollbar) || zox_has(bar, HorizontalScrollbar)) || !zox_has(bar, Position2)) {
+            continue;
+        }
+        const entity handle = zox_get_child_by_id(world, bar, zox_id(ScrollbarHandle));
+        const entity device = zox_get_parent(world, e);
+        const entity player = zox_valid(device) ? zox_get_parent(world, device) : 0;
+        CanvasViewport viewport;
+        if (!zox_valid(handle) || zox_getv(handle, RenderDisabled) || !zox_valid(player) ||
+            !get_canvas_viewport(world, zox_get_parent_by_id(world, bar, zox_id(Canvas)), &viewport)) {
+            continue;
+        }
+        const int4 bounds = get_element_pointer_bounds(world, &viewport, bar, zox_getv(bar, Position2), zox_getv(bar, LayoutSize));
+        const int4 limits = zox_getv(handle, LayoutConstraints);
+        int2 position = zox_getv(handle, LayoutPosition);
+        if (zox_has(bar, HorizontalScrollbar)) {
+            position.x = int_clamp(pointer->value.x - (bounds.x + bounds.y) / 2, limits.x, limits.y);
+        } else {
+            position.y = int_clamp(pointer->value.y - (bounds.z + bounds.w) / 2, limits.z, limits.w);
+        }
+        zox_setv(handle, LayoutPosition, position);
+        zox_set_link(world, handle, ZeviceLink, e);
+        set_element_dragged(world, player, handle, zox_drag_mode_mouse);
+    }
+    zox_sys_on_end();
+} zoxd_system(scrollbar_track_press_system);
