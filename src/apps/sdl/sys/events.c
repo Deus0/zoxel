@@ -67,6 +67,8 @@ void sdl_events_system(iter* it) {
                 );
             }
             // on_window_rotated(world, e, orientation);
+        } else if (sdl_event_window_hdr_changed(&event)) {
+            // read (zox_hdr_headroom), hdr output's tonemap peak follows
         } else if (sdl_event_window_moved(&event)) {
             sdl_on_window_moved(
                 world,

@@ -89,6 +89,7 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   punch_wind_up, map_pixel, door_save, town_furniture)
 - water_flow (2026-11-27, solo, every run, before the day's glow work too: 37e8e5106^): "the water's mesh draws levels
   [0x0] at their heights, not 1 to 6"; no see through mesh vertex sits at a flowing level's height
+- outline_views on vulkan (2026-11-27, every run, before the day's hdr work too): "few pixels outlined [3747]"; gl passes
 - dig_light on vulkan (2026-11-27, every run, master too): "the hole's faces never showed (0 of 5)"; gl passes
 - bed_sleep (2026-11-27, solo, 1 run in 5): "asleep it isn't still: DisableMovement [0]" on climbing on, then
   "getting off it can already move"; the next 3 runs passed

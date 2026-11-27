@@ -17,6 +17,12 @@ void app_initialize_post_processing(ecs* world, entity app) {
     if (!zox_gpu_hdr_supported() || !zox_gpu_bloom_supported() || zox_xr_active) {
         zox_add(bloom, SettingUnsupported);
     }
+    // the screen itself in hdr (fun/output.c): vulkan with an hdr screen; off on others shows the same
+    const entity hdr = spawn_setting_byte(world, app, "HDR", zox_hdr_output_asked != zox_hdr_output_off);
+    setting_tags(world, hdr, zox_id(SettingTabVideo), zox_id(SettingHdr));
+    if (!zox_gpu_hdr_output_supported() || zox_xr_active) {
+        zox_add(hdr, SettingUnsupported);
+    }
 }
 
 void post_processing_settings_on_dirty(iter* it) {
@@ -34,6 +40,8 @@ void post_processing_settings_on_dirty(iter* it) {
             zox_set_tonemap(world, value);
         } else if (zox_has(e, SettingBloom)) {
             zox_set_bloom(world, value);
+        } else if (zox_has(e, SettingHdr) && zox_hdr_output_asked != zox_hdr_output_canvas) {
+            zox_gpu_set_hdr_output(value ? zox_hdr_output_hdr10 : zox_hdr_output_off);
         }
     }
 }

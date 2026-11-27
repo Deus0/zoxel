@@ -21,6 +21,11 @@ byte sdl_event_display_orientation(SDL_Event *event) {
         event->display.event == SDL_DISPLAYEVENT_ORIENTATION;
 }
 
+byte sdl_event_window_hdr_changed(SDL_Event *event) {
+    (void) event;
+    return 0;
+}
+
 byte sdl_event_window_moved(SDL_Event *event) {
     return event->type == SDL_WINDOWEVENT &&
         event->window.event == SDL_WINDOWEVENT_MOVED;

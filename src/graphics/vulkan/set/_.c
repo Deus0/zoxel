@@ -14,6 +14,7 @@ VkResult (*vk_create_instance_with)(const VkInstanceCreateInfo* info, VkInstance
 VkResult (*vk_pick_physical_with)(VkPhysicalDevice* physical) = NULL;
 VkResult (*vk_create_device_with)(VkPhysicalDevice physical, const VkDeviceCreateInfo* info, VkDevice* device) = NULL;
 byte vk_on_gpu;                 // not lavapipe (software)
+byte vk_hdr_colour_spaces;      // VK_EXT_swapchain_colorspace on: a surface lists its hdr colour spaces
 
 // the target, its images with one depth buffer
 VkSwapchainKHR vk_swapchain;
@@ -33,6 +34,7 @@ VkDeviceMemory vk_depth_memory;
 VkImageView vk_depth_view;
 VkRenderPass vk_pass_clear;     // opens a frame, clearing it
 VkRenderPass vk_pass_load;      // carries on a frame after a read back
+VkFormat vk_pass_format;        // the colour format the two were made for (hdr output changes it)
 VkRenderPass vk_pass_texture_begin[2]; // a render texture's (fun/targets.c): [0] bytes, [1] half floats (hdr)
 VkRenderPass vk_pass_texture_load[2];
 

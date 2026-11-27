@@ -7,6 +7,7 @@
 byte zox_render_lines = 0;
 #include "dat/opengl_mode.c"
 #include "dat/shared_blocks.c"
+#include "dat/hdr_output.c"
 
 #ifdef zox_opengl
     #include "opengl/_.c"

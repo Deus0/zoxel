@@ -1,4 +1,5 @@
 #include "hdr.c"
 #include "outlines.c"
 #include "pass.c"
+#include "output.c"
 #include "terminal.c"

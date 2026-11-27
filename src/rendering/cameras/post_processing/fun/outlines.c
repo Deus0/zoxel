@@ -42,4 +42,10 @@ void render_texture_tonemap(guint material) {
     if (tonemap >= 0) {
         zox_gpu_float(tonemap, zox_tonemap);
     }
+    // hdr output (fun/output.c): up to the screen's headroom, else 1
+    const gint peak = zox_gpu_get_material_property(material, "peak");
+    if (peak >= 0) {
+        const byte hdr = zox_hdr_output == zox_hdr_output_hdr10 || zox_hdr_output == zox_hdr_output_scrgb;
+        zox_gpu_float(peak, hdr && zox_hdr_headroom > 1 ? zox_hdr_headroom : 1);
+    }
 }

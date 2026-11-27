@@ -91,18 +91,23 @@ uniform float tonemap;  // colours past 1 (a camera's half float target) back to
                         //  past 0.8, 2 filmic (doc/plans/hdr.md)
 const float TONEMAP_KNEE = 0.8;
 
+uniform float peak;     // the brightest it may be: 1, else hdr output's headroom over sdr white (fun/output.c)
+
 vec3 tone(vec3 c) {
     c = max(c, vec3(0.0));
     if (tonemap < 0.5) {
-        return min(c, vec3(1.0));
+        return min(c, vec3(peak));
     }
-    if (tonemap < 1.5) {
+    // hdr output: the soft shoulder up to its peak for filmic too (aces' curve squeezes into 1, stretched it'd darken
+    //  what's under white)
+    if (tonemap < 1.5 || peak > 1.0) {
+        float knee = TONEMAP_KNEE * peak;
         // on the brightest channel, so a hue keeps its ratios as it nears white
         float m = max(c.r, max(c.g, c.b));
-        if (m <= TONEMAP_KNEE) {
+        if (m <= knee) {
             return c;
         }
-        float t = TONEMAP_KNEE + (1.0 - TONEMAP_KNEE) * (1.0 - exp(-(m - TONEMAP_KNEE) / (1.0 - TONEMAP_KNEE)));
+        float t = knee + (peak - knee) * (1.0 - exp(-(m - knee) / (peak - knee)));
         return c * (t / m);
     }
     // the aces fit (Narkowicz 2015)

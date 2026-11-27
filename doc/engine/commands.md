@@ -45,6 +45,8 @@ and add it to this doc and to `--help` too.
 | `--outlines` / `--nooutlines` | the Camera Outlines setting (outlined vox models, doc/plans/outlines.md), over the settings file's | [post_processing](../src/rendering/cameras/post_processing/fun/terminal.c) |
 | `--tonemap <n>` | the Tonemap setting: how a render camera's colours past 1 reach the screen, 0 clamp, 1 soft, 2 filmic (doc/plans/hdr.md), over the settings file's | [post_processing](../src/rendering/cameras/post_processing/fun/terminal.c) |
 | `--bloom` / `--nobloom` | the Bloom setting: bright colours glow into their surroundings (doc/plans/hdr.md), over the settings file's | [post_processing](../src/rendering/cameras/post_processing/fun/terminal.c) |
+| `--hdr` / `--nohdr` | the HDR setting: the screen itself in hdr (hdr10 or scrgb), vulkan only, doc/plans/hdr.md B | [post_processing](../src/rendering/cameras/post_processing/fun/terminal.c) |
+| `--hdr-canvas` | hdr output's canvas and encode over an 8 bit swapchain, passed through (a test, looks as off) | [post_processing](../src/rendering/cameras/post_processing/fun/terminal.c) |
 | `--fog <n>` | the Fog setting (0 to 1, as in the menu), over the settings file's | [rendering](../src/rendering/fun/terminal.c) |
 | `--bones` | the bones debug view: bone gizmos (joint lines, boxes turned with their bones, in their paint) over the skeleton meshes see through and painted by bone, as the Gizmos debug ui's Bones (i.e. `bash bsh/punch.sh --bones`) | [bones](../src/bones/fun/debug.c) |
 | `--verbose` | detail logs (`zox_logv`): paths, settings, gl version and renderer, splashes; the default log keeps to warnings, errors and few lines | all |

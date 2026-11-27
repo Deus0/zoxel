@@ -97,6 +97,7 @@ typedef struct {
     byte color_write;
     byte depth_bias;
     byte mask;                  // a render texture's outline mask written (colour attachment 1, doc/plans/outlines.md)
+    uint frame_format;          // the frame's colour format its pass was made for, 0 a texture's (hdr output changes it)
     byte inputs_count;
     struct {
         byte location;

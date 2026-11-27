@@ -19,6 +19,15 @@ byte sdl_event_display_orientation(SDL_Event *event) {
     return event->type == SDL_EVENT_DISPLAY_ORIENTATION;
 }
 
+// its hdr state changed (another screen, hdr turned on or off): its headroom read again
+byte sdl_event_window_hdr_changed(SDL_Event *event) {
+    if (event->type != SDL_EVENT_WINDOW_HDR_STATE_CHANGED) {
+        return 0;
+    }
+    zox_sdl_read_hdr_headroom(SDL_GetWindowFromID(event->window.windowID));
+    return 1;
+}
+
 byte sdl_event_window_moved(SDL_Event *event) {
     return event->type == SDL_EVENT_WINDOW_MOVED;
 }

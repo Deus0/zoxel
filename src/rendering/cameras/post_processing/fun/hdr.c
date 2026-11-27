@@ -1,7 +1,8 @@
 // a render camera's colour target is half floats only while a tonemap or bloom is on (doc/plans/hdr.md): clamp drops
 //  what's past 1, so bytes there (half the memory)
 static inline byte zox_camera_hdr() {
-    return (zox_tonemap || zox_bloom) && zox_gpu_hdr_supported();
+    const byte output = zox_hdr_output == zox_hdr_output_hdr10 || zox_hdr_output == zox_hdr_output_scrgb;
+    return (zox_tonemap || zox_bloom || output) && zox_gpu_hdr_supported();
 }
 
 // bloom: the target's mips, made after each draw, blurred into the view by its pass
@@ -9,13 +10,8 @@ static inline byte zox_camera_bloom() {
     return zox_bloom && zox_camera_hdr() && zox_gpu_bloom_supported();
 }
 
-// a post setting changed: its render textures made again when their format or mips change
-static void zox_set_post_setting(ecs* world, byte* setting, byte value) {
-    const byte was_hdr = zox_camera_hdr(), was_bloom = zox_camera_bloom();
-    *setting = value;
-    if (zox_camera_hdr() == was_hdr && zox_camera_bloom() == was_bloom) {
-        return;
-    }
+// every render texture made again (its format or mips changed)
+static void zox_remake_render_textures(ecs* world) {
     entity_array_d* render_textures = NULL;
     zox_each_begin(RenderTexture);
         if (zox_has(e, TextureGPULink) && zox_getv(e, TextureGPULink)) zox_disposed_add(&render_textures, e);
@@ -23,6 +19,15 @@ static void zox_set_post_setting(ecs* world, byte* setting, byte value) {
     zox_disposed_begin(render_textures, TextureGPULink, texture);
         zox_add(e, RenderTextureDirty);
     zox_disposed_end(render_textures);
+}
+
+// a post setting changed: its render textures made again when their format or mips change
+static void zox_set_post_setting(ecs* world, byte* setting, byte value) {
+    const byte was_hdr = zox_camera_hdr(), was_bloom = zox_camera_bloom();
+    *setting = value;
+    if (zox_camera_hdr() != was_hdr || zox_camera_bloom() != was_bloom) {
+        zox_remake_render_textures(world);
+    }
 }
 
 void zox_set_tonemap(ecs* world, byte value) {

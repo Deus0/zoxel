@@ -296,7 +296,12 @@ static inline void zox_gpu_reset_fbo() {
     if (texture && texture->image && texture->mips > 1) {
         vulkan_texture_mips(vk_contexts[0].commands, texture);
     }
+    const guint was = vk_fbo_bound;
     vulkan_target_frame(vk_pass_load);
+    // hdr output: back to its canvas, not the screen (graphics/dat/hdr_output.c)
+    if (zox_gpu_default_fbo && was != zox_gpu_default_fbo) {
+        zox_gpu_bind_fbo(zox_gpu_default_fbo);
+    }
 }
 
 void vulkan_dispose_targets() {

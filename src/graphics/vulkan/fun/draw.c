@@ -239,6 +239,7 @@ byte vulkan_draw_begin(byte topology, uint vertices, uint instances) {
     memset(&key, 0, sizeof(key));
     key.topology = topology;
     key.target = vk_target_texture;
+    key.frame_format = vk_target_texture ? 0 : vk_color_format;
     key.blend = vk_ctx->blend;
     key.depth_test = vk_ctx->depth_test;
     key.depth_write = vk_ctx->depth_test && vk_ctx->depth_write;     // gl writes no depth with its test off
@@ -336,6 +337,11 @@ static inline void zox_gpu_render_as_lines(gsizei length) {
 
 static inline void zox_gpu_render_triangles_instanced(gsizei indicies, gsizei length) {
     vulkan_draw_indexed(vk_topology_triangles, indicies, length);
+}
+
+// triangles from their vertex shader alone, no vertex or index buffer (a fullscreen pass, gl_VertexID)
+static inline void zox_gpu_render_triangles(gsizei vertices) {
+    vulkan_draw(vk_topology_triangles, vertices, 1);
 }
 
 static inline void zox_gpu_render_points(gsizei length) {

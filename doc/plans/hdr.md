@@ -146,6 +146,29 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
 
 ## Stage B: HDR output (vulkan first)
 
+**Built, vulkan (2026-11-27)**, blind: this screen reports sdr, so how it looks is for an hdr screen to judge.
+
+- **Setting `HDR`** (video tab, `--hdr` / `--nohdr`, saved): off by default; greyed on gl, in xr, and where vulkan has
+  no `VK_EXT_swapchain_colorspace`. Switched as the game runs: the swapchain made again, the frame's two passes made
+  again when its format changes, pipelines keyed by the frame's format (`vk_pipeline_key.frame_format`).
+- **Swapchain** (`vulkan_pick_surface_format`): `A2B10G10R10` / `A2R10G10B10` in `HDR10_ST2084`, else
+  `R16G16B16A16_SFLOAT` in `EXTENDED_SRGB_LINEAR` (scrgb, windows'), else sdr as before; `zox_hdr_output` says which.
+- **The canvas** (rendering/cameras/post_processing/fun/output.c): on, the frame draws into a half float render
+  texture the window's size (bound before the cameras; `zox_gpu_reset_fbo` goes back to it, `zox_gpu_default_fbo`),
+  then one fullscreen triangle (`zox_gpu_render_triangles`) encodes it into the swapchain: the game's display values
+  made linear (srgb's curve, carried on past 1), times paper white (203 nits), rec.709 to rec.2020, pq; scrgb linear
+  over 80 nits. No other shader changed.
+- **The tonemap's peak**: the pass's `peak` uniform, 1 off, the screen's headroom on (sdl's
+  `SDL_PROP_WINDOW_HDR_HEADROOM_FLOAT`, read as the window's made and on `SDL_EVENT_WINDOW_HDR_STATE_CHANGED`, else 4,
+  ~800 nits): clamp cuts at it, soft and filmic take the soft shoulder up to it. Render cameras' targets are half
+  floats while it's on (`zox_camera_hdr`), so clamp keeps what's past 1.
+- **Read back** (screenshots, tests): 10 bit's top 8 bits, scrgb's halves clamped at 1: the encoded values.
+- **Tests**: `hdr_output` (hdr10 asked before boot, offscreen into a 10 bit image: the cube at 3 encodes past white,
+  381 to 573 of 765, pq ~800 nits), `hdr_output_switch` (switched on mid run, the same; `--visible` on the real gpu
+  too), `--hdr-canvas` (the canvas over an 8 bit swapchain, passed through: hdr_bloom, model_views and others as off).
+- **To check on an hdr screen**: the ui at a comfortable white (paper white 203), the sky and glow past it, no
+  colour cast (the rec.2020 matrix), banding in dark areas (10 bits pq). Not yet: a paper white and peak slider.
+
 - **B0, check first**: log every format and colour space `vulkan_pick_surface_format` gets on deusmini (GNOME 51
   on wayland; mesa exposes HDR spaces through `VK_EXT_swapchain_colorspace` with wayland colour management). Only
   `SRGB_NONLINEAR` back means B is blocked here; say so and stop.
@@ -191,7 +214,7 @@ After realm colour generation is redone (the user, 2026-11-27):
 1. A1 + A2: float target and the tonemap setting, gl then vulkan. Nothing looks different at clamp (built).
 2. A4 bloom (built, v1), then A3.1: glow stones past 1 (built), vox palette glow (built), particles' glow (built).
 3. A3.2 to A3.4 as lighting and sky work land.
-4. B0 check, then B on vulkan if the driver offers it.
+4. B0 check (built), then B on vulkan (built, blind: an hdr screen to judge it).
 5. A5: viewport cameras (built), xr.
 
 ## Who does what

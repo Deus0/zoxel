@@ -24,6 +24,30 @@ VkSurfaceFormatKHR vulkan_pick_surface_format() {
     for (uint i = 0; i < count; i++) {
         zox_logv("[vulkan] surface format [%i] colour space [%i]", formats[i].format, formats[i].colorSpace);
     }
+    // hdr asked for (--hdr): hdr10 in 10 bits, else scrgb in half floats, else sdr (zox_hdr_output says which)
+    zox_hdr_output = zox_hdr_output_asked == zox_hdr_output_canvas ? zox_hdr_output_canvas : zox_hdr_output_off;
+    for (uint i = 0; i < count && zox_hdr_output_asked == zox_hdr_output_hdr10; i++) {
+        if ((formats[i].format == VK_FORMAT_A2B10G10R10_UNORM_PACK32 || formats[i].format == VK_FORMAT_A2R10G10B10_UNORM_PACK32)
+            && formats[i].colorSpace == VK_COLOR_SPACE_HDR10_ST2084_EXT)
+        {
+            zox_hdr_output = zox_hdr_output_hdr10;
+            chosen = formats[i];
+        }
+    }
+    for (uint i = 0; i < count && zox_hdr_output_asked == zox_hdr_output_hdr10 && !zox_hdr_output; i++) {
+        if (formats[i].format == VK_FORMAT_R16G16B16A16_SFLOAT && formats[i].colorSpace == VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT) {
+            zox_hdr_output = zox_hdr_output_scrgb;
+            chosen = formats[i];
+        }
+    }
+    if (zox_hdr_output == zox_hdr_output_hdr10 || zox_hdr_output == zox_hdr_output_scrgb) {
+        zox_log("+ vulkan hdr output [%s]", zox_hdr_output == zox_hdr_output_hdr10 ? "hdr10" : "scrgb");
+        free(formats);
+        return chosen;
+    }
+    if (zox_hdr_output_asked == zox_hdr_output_hdr10) {
+        zox_log("- vulkan hdr output: the screen offers no hdr10 or scrgb, sdr");
+    }
     for (uint i = 0; i < count; i++) {
         if (formats[i].format == VK_FORMAT_B8G8R8A8_UNORM || formats[i].format == VK_FORMAT_R8G8B8A8_UNORM) {
             chosen = formats[i];
@@ -196,7 +220,10 @@ byte vulkan_create_swapchain() {
 // no window (--background, tests): one image the size asked for
 byte vulkan_create_offscreen() {
     vk_extent = (VkExtent2D) { int_max(1, vk_window_size.x), int_max(1, vk_window_size.y) };
-    vk_color_format = VK_FORMAT_R8G8B8A8_UNORM;
+    // hdr10 asked with no screen (tests): a 10 bit image, the encode read back unpacked (fun/read.c)
+    zox_hdr_output = zox_hdr_output_asked;
+    vk_color_format = zox_hdr_output == zox_hdr_output_hdr10 ? VK_FORMAT_A2B10G10R10_UNORM_PACK32 :
+        zox_hdr_output == zox_hdr_output_scrgb ? VK_FORMAT_R16G16B16A16_SFLOAT : VK_FORMAT_R8G8B8A8_UNORM;
     vk_images_count = 1;
     vk_readable = 1;
     return vulkan_create_image(vk_extent, vk_color_format,
@@ -261,11 +288,19 @@ byte vulkan_create_target() {
     if (!(vk_surface ? vulkan_create_swapchain() : vulkan_create_offscreen())) {
         return 0;
     }
+    // made again for another colour format (hdr output turned on or off): the frame's pipelines are keyed by it
+    //  (vk_pipeline_key's frame_format), so new ones are made against these; the device is idle (recreate_target)
+    if (vk_pass_clear && vk_pass_format != vk_color_format) {
+        vkDestroyRenderPass(vk_device, vk_pass_clear, NULL);
+        vkDestroyRenderPass(vk_device, vk_pass_load, NULL);
+        vk_pass_clear = vk_pass_load = VK_NULL_HANDLE;
+    }
     if (!vk_pass_clear) {
         vk_depth_format = vulkan_pick_depth_format();
         vk_final_layout = vk_surface ? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR : VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
         vk_pass_clear = vulkan_create_pass(1);
         vk_pass_load = vulkan_create_pass(0);
+        vk_pass_format = vk_color_format;
     }
     return vulkan_create_framebuffers();
 }
@@ -300,6 +335,19 @@ void vulkan_surface_found(VkSurfaceKHR surface) {
     vk_surface = surface;
     vk_surface_lost = 0;
     vk_resized = 1;
+}
+
+// hdr output asked for (the HDR setting, graphics/dat/hdr_output.c): the swapchain made again at the next frame
+static inline void zox_gpu_set_hdr_output(byte asked) {
+    if (asked != zox_hdr_output_asked) {
+        zox_hdr_output_asked = asked;
+        vk_resized = 1;
+    }
+}
+
+// a window's surface and the colour space extension: hdr10 or scrgb can be asked of it (tests ask offscreen too)
+static inline byte zox_gpu_hdr_output_supported() {
+    return !vk_surface || vk_hdr_colour_spaces;
 }
 
 void vulkan_set_vsync(byte value) {

@@ -22,6 +22,13 @@ const zox_tst_hdr_view zox_tst_hdr_target_views[4] = {
     { 1, 0, 1, "hdr_soft_1.ppm" },
     { 2, 0, 1.5f, "hdr_filmic_15.ppm" },
     { 2, 0, 3, "hdr_filmic_3.ppm" } };
+// hdr output (fun/output.c): its encode into a 10 bit hdr10 image (offscreen, no screen needed), clamp's peak the
+//  headroom: brightness 3 past sdr white, not clipped at it
+const zox_tst_hdr_view zox_tst_hdr_output_views[4] = {
+    { 0, 0, 1, "output_clamp_1.ppm" },
+    { 0, 0, 3, "output_clamp_3.ppm" },
+    { 1, 0, 3, "output_soft_3.ppm" },
+    { 2, 0, 3, "output_filmic_3.ppm" } };
 const zox_tst_hdr_view zox_tst_hdr_bloom_views[4] = {
     { 0, 0, 1, "bloom_off_1.ppm" },
     { 0, 0, 3, "bloom_off_3.ppm" },
@@ -160,7 +167,52 @@ void zox_tst_viewport_bloom_check(ecs* world) {
     zox_tst_bloom_check(world);
 }
 
+// tst: hdr_output, hdr10 output's encode (doc/plans/hdr.md B, rendering/cameras/post_processing/fun/output.c), vulkan
+//  - asked for before boot (as --hdr), offscreen: the frame's a 10 bit image, the canvas encoded into it as pq
+//  - the hdr_target cube at brightness 1 and 3 on grey, read on the cube: clamp 3 is brighter than clamp 1 (on an
+//    sdr screen both clip to white), past sdr white's pq (~148 a channel of 255, 203 nits); soft and filmic 3 too
+//  - run: bash bsh/tst.sh hdr_output --vulkan
+void zox_tst_hdr_output_setup() {
+    zox_hdr_output_asked = zox_hdr_output_hdr10;
+}
+
+byte zox_tst_hdr_output_ready(ecs* world) {
+    return zox_tst_hdr_views_ready(world, zox_tst_hdr_output_views, 200);
+}
+
+void zox_tst_hdr_output_check(ecs* world) {
+    (void) world;
+    zox_tst_check(zox_hdr_output == zox_hdr_output_hdr10, "no hdr10 output [%i] (vulkan's, run with --vulkan)", zox_hdr_output);
+    int v[4] = { 0 };
+    if (!zox_tst_hdr_reads(zox_tst_hdr_output_views, 0.5f, 0.62f, v)) {
+        return;
+    }
+    zox_log("[tst] hdr_output (pq, 0 to 765): clamp 1 [%i] clamp 3 [%i] soft 3 [%i] filmic 3 [%i], sdr white's [~444]",
+        v[0], v[1], v[2], v[3]);
+    zox_tst_check(v[0] > 200 && v[0] < 500, "brightness 1's cube [%i] isn't near sdr white's pq (~444)", v[0]);
+    zox_tst_check(v[1] > v[0] + 60, "brightness 3 [%i] isn't past brightness 1 [%i]: clipped at sdr white", v[1], v[0]);
+    zox_tst_check(v[2] > v[0] + 30 && v[3] > v[0] + 30, "the tonemaps' brightness 3 [%i %i] isn't past 1's [%i]",
+        v[2], v[3], v[0]);
+}
+
+// tst: hdr_output_switch, hdr_output switched on as the game runs (the HDR setting): the swapchain, the frame's passes
+//  and their pipelines made again for its format, the render cameras' targets half floats; then off again
+//  - run: bash bsh/tst.sh hdr_output_switch --vulkan
+byte zox_tst_hdr_output_switch_ready(ecs* world) {
+    zox_gpu_set_hdr_output(zox_hdr_output_hdr10);
+    return zox_tst_hdr_views_ready(world, zox_tst_hdr_output_views, 200);
+}
+
+void zox_tst_hdr_output_switch_check(ecs* world) {
+    zox_tst_hdr_output_check(world);
+    zox_gpu_set_hdr_output(zox_hdr_output_off);
+}
+
 void zox_tsts_render_textures_hdr(ecs* world) {
+    zox_tst_add("hdr_output_switch", zox_tst_hdr_output_switch_ready, zox_tst_hdr_output_switch_check, 30);
+    zox_tst_set_setup("hdr_output_switch", NULL, 1);
+    zox_tst_add("hdr_output", zox_tst_hdr_output_ready, zox_tst_hdr_output_check, 30);
+    zox_tst_set_setup("hdr_output", zox_tst_hdr_output_setup, 1);
     zox_tst_add("hdr_target", zox_tst_hdr_ready, zox_tst_hdr_check, 30);
     zox_tst_set_setup("hdr_target", NULL, 1);
     zox_tst_add("hdr_bloom", zox_tst_bloom_ready, zox_tst_bloom_check, 30);

@@ -71,6 +71,7 @@ byte vulkan_create_instance(const char* const* extensions, uint extensions_count
     // a window's surface lists its hdr colour spaces only with this on (doc/plans/hdr.md B0), it changes nothing else
     if (extensions_count && count < 16 && vulkan_has_instance_extension(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME)) {
         all[count++] = VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME;
+        vk_hdr_colour_spaces = 1;
     }
     const VkApplicationInfo app = {
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,

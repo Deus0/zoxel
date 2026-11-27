@@ -91,8 +91,12 @@ static inline void zox_gpu_dispose_fbo(guint id) {
     zox_gpu_fbos_live--;
 }
 
+// hdr output is vulkan's (graphics/dat/hdr_output.c): egl's hdr colour spaces are patchy, gl stays sdr
+static inline void zox_gpu_set_hdr_output(byte asked) { (void) asked; }
+static inline byte zox_gpu_hdr_output_supported() { return 0; }
+
 static inline void zox_gpu_reset_fbo() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, zox_gpu_default_fbo);
 }
 
 static inline void zox_gpu_bind_fbo(guint id) {

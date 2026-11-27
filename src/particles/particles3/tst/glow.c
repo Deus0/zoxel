@@ -3,7 +3,7 @@
 //  what it spawns, sys/emit.c)
 //  - the menu's camera in a black void (zox_tst_lids_make_void), up in an empty sky, the emitters 1.5 in front of it
 //  - views: clamp (tst/particle_glow/clamp.ppm), then bloom on (bloom.ppm), to look at
-//  - checks: the right's lit pixels brighter than the left's, by over half again (128 64 20 at 3 clips to 255 192 60)
+//  - checks: the right's lit pixels brighter than the left's, by over 1.3x (128 64 20 at 3 clips to 255 192 60)
 //  - run: bash bsh/tst.sh particle_glow [--vulkan]
 byte zox_tst_pglow_stage = 0;
 int zox_tst_pglow_frames = 0;
@@ -88,7 +88,8 @@ void zox_tst_particle_glow_check(ecs* world) {
     zox_log("[tst] particle_glow: brightness 1 [%i] over [%i] pixels, brightness 3 [%i] over [%i] pixels", left, left_lit,
         right, right_lit);
     zox_tst_check(left_lit > 20 && right_lit > 20, "the particles weren't drawn: [%i] and [%i] lit pixels", left_lit, right_lit);
-    zox_tst_check(right * 2 > left * 3, "brightness 3's particles [%i] aren't half again brighter than 1's [%i]", right, left);
+    // 1.5 to 1.6x measured (random particles, alpha blended edges): over 1.3x, the same brightness ~1x
+    zox_tst_check(right * 10 > left * 13, "brightness 3's particles [%i] aren't 1.3x brighter than 1's [%i]", right, left);
     for (byte i = 0; i < 2; i++) {
         zox_delete(zox_tst_pglow_emitters[i]);
     }
