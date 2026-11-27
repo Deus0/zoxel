@@ -41,6 +41,15 @@ void element_drag_system(iter* it) {
                 size.y = int_max(80, before.y + sign * delta->value.y);
                 position.y += sign * (size.y - before.y) / 2;
             }
+            // no larger than its canvas (window_canvas_fit keeps it on it)
+            const entity canvas = zox_get_parent_by_id(world, dragged, zox_id(Canvas));
+            if (zox_valid(canvas)) {
+                const int2 canvas_size = zox_getv(canvas, LayoutSize);
+                const int2 fit = { int_min(size.x, int_max(before.x, canvas_size.x)), int_min(size.y, int_max(before.y, canvas_size.y)) };
+                position.x -= (anchor.x == 0 ? -1 : anchor.x == 1 ? 1 : 0) * (size.x - fit.x) / 2;
+                position.y -= (anchor.y == 0 ? -1 : anchor.y == 1 ? 1 : 0) * (size.y - fit.y) / 2;
+                size = fit;
+            }
             if (!int2_equals(size, before)) {
                 zox_setv(dragged, LayoutSize, size);
                 zox_setv(dragged, LayoutPosition, position);

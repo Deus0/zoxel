@@ -2,12 +2,18 @@
 #include "search.c"
 #include "scroll_overlap.c"
 #include "resize.c"
+#include "grid.c"
+#include "resize_layout.c"
 
 static void zox_tsts_windows(void) {
     zox_tst_add("window_search", zox_tst_window_search_ready, zox_tst_ui_fixture_check, 20);
     zox_tst_set_setup("window_search", NULL, 1);
     zox_tst_add("window_resize", zox_tst_window_resize_ready, zox_tst_ui_fixture_check, 20);
     zox_tst_set_setup("window_resize", NULL, 1);
+    zox_tst_add("window_grid_resize", zox_tst_window_grid_resize_ready, zox_tst_ui_fixture_check, 20);
+    zox_tst_set_setup("window_grid_resize", NULL, 1);
+    zox_tst_add("window_resize_layout", zox_tst_window_resize_layout_ready, zox_tst_ui_fixture_check, 60);
+    zox_tst_set_setup("window_resize_layout", NULL, 1);
     zox_tst_add("window_stack_input", zox_tst_window_stack_ready, zox_tst_ui_fixture_check, 30);
     zox_tst_set_setup("window_stack_input", NULL, 1);
     zox_tst_add("scrollview_overlap", zox_tst_scroll_overlap_ready, zox_tst_ui_fixture_check, 30);

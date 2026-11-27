@@ -25,3 +25,7 @@ static inline byte2 byte2_add(byte2 a, byte2 b) {
         byte_clamp(a.y + b.y, 0, 255)
     };
 }
+
+static inline byte byte2_equals(byte2 a, byte2 b) {
+    return a.x == b.x && a.y == b.y;
+}

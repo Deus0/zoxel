@@ -15,10 +15,11 @@ static int2 window_resize_handle_size(int2 window_size, float2 anchor) {
     return side_x ? (int2) { thick, window_size.y } : (int2) { window_size.x, thick };
 }
 
-// just outside the window's edge, so it never covers the window's own buttons
+// just outside the window's edge, so it never covers the window's own buttons: an anchor puts its centre on the edge,
+//  half its thickness out puts its side on it (no gap to miss)
 static int2 window_resize_handle_position(float2 anchor) {
-    const int thick = 6;
-    return (int2) { anchor.x == 0 ? -thick : anchor.x == 1 ? thick : 0, anchor.y == 0 ? -thick : anchor.y == 1 ? thick : 0 };
+    const int half = 3;
+    return (int2) { anchor.x == 0 ? -half : anchor.x == 1 ? half : 0, anchor.y == 0 ? -half : anchor.y == 1 ? half : 0 };
 }
 
 static void spawn_window_resize_handles(ecs* world, entity window, int2 size) {

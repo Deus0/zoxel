@@ -32,6 +32,12 @@ static const zox_tst_window_resize_drag zox_tst_window_resize_drags[] = {
     { { 0, 0.5f }, { -30, 0 }, { 290, 160 }, { 5, 0 } },       // left side
     { { 1, 1 }, { 10, 20 }, { 300, 180 }, { 10, 10 } },        // top right corner
     { { 1, 0.5f }, { -500, 0 }, { 120, 180 }, { -80, 10 } },   // right side, past the minimum width
+    { { 0.5f, 0 }, { 0, -20 }, { 120, 200 }, { -80, 0 } },     // bottom side
+    { { 0.5f, 1 }, { 0, -40 }, { 120, 160 }, { -80, -20 } },   // top side
+    { { 0, 0 }, { -30, 10 }, { 150, 150 }, { -95, -15 } },     // bottom left corner
+    { { 0, 1 }, { 10, 10 }, { 140, 160 }, { -90, -10 } },      // top left corner
+    { { 1, 0 }, { 20, -20 }, { 160, 180 }, { -80, -20 } },     // bottom right corner
+    { { 0.5f, 1 }, { 0, -500 }, { 160, 80 }, { -80, -70 } },   // top side, past the minimum height
 };
 
 // the mouse drags the right side handle 40 to the right: hover (it lights up), press, move, release

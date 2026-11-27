@@ -96,6 +96,7 @@ entity3 spawn_window_footer(
             fill,
             outline);
         zox_set_unique_name(body, "body");
+        zox_add(body, WindowBody);  // a grid's too (prefab_grid): window_layout fits it
         output.z = body;
     }
     // its footer, under its body

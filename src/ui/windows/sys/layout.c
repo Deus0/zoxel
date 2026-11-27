@@ -11,8 +11,8 @@ static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
             const int2 handle_size = window_resize_handle_size(size, zox_getv(handle, Anchor));
             if (!int2_equals(zox_getv(handle, LayoutSize), handle_size)) {
                 zox_setv(handle, LayoutSize, handle_size);
-                zox_add(handle, LayoutSizeDirty);
             }
+            zox_add(handle, LayoutSizeDirty);   // placed on the window's new edges
             if (docked == zox_has(handle, Dragable)) {
                 zox_setv(handle, RenderDisabled, docked);
                 if (docked) {
@@ -25,20 +25,96 @@ static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
     }
 }
 
+// a grid body (an inventory's slots): its columns fit its width, its rows follow, the window grows to fit them
+//  - chrome: the window's height outside its body (header, footer, search bar)
+static void window_grid_fit(ecs* world, entity window, entity body, int2* size, int chrome) {
+    const entity cell = zox_has(body, GridSize) ? zox_get_child_by_id(world, body, zox_id(LayoutSize)) : 0;
+    if (!cell) {
+        return;
+    }
+    const int2 cell_size = zox_getv(cell, LayoutSize);
+    const byte2 margins = zox_getv(body, GridMargins);
+    const int gap = zox_getv(body, GridPadding).x;     // grid_system's between columns
+    const int count = zox_get_children_count(world, body);
+    const int columns = int_clamp((size->x - 2 * margins.x + gap) / int_max(1, cell_size.x + gap), 1,
+        int_clamp(count, 1, 255));
+    const int rows = int_min(255, (count + columns - 1) / columns);
+    const byte2 grid = { columns, rows };
+    if (!byte2_equals(zox_getv(body, GridSize), grid)) {
+        zox_setv(body, GridSize, grid);
+    }
+    zox_add(body, Refresh);     // grid_system places its cells for its new size, next frame
+    const int2 least = { columns * (cell_size.x + gap) - gap + 2 * margins.x, chrome + rows * cell_size.y + 2 * margins.y };
+    if (size->x < least.x || size->y < least.y) {
+        *size = (int2) { int_max(size->x, least.x), int_max(size->y, least.y) };
+        zox_setv(window, LayoutSize, *size);
+    }
+}
+
+// a list's window (a game menu's) no narrower than its widest row, its margins and its scrollbar; a virtual list's rows
+//  (the editor's names) are cut by its mask instead
+static void window_rows_fit(ecs* world, entity window, entity scrollview, int2* size) {
+    const entity list = zox_valid(scrollview) ? zox_get_link(world, scrollview, ListUILink) : 0;
+    if (!zox_valid(list) || zox_has(list, VirtualList)) {
+        return;
+    }
+    int widest = 0;
+    iter it = zox_children(world, list);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            widest = int_max(widest, zox_getv(it.entities[i], LayoutSize).x);
+        }
+    }
+    const int least = widest + 2 * zox_getv(list, ListMargins).x + scrollview_bar_size(world, scrollview, 0);
+    if (widest && size->x < least) {
+        size->x = least;
+        zox_setv(window, LayoutSize, *size);
+    }
+}
+
+// a floating window stays on its canvas: no larger than it, its edges on it
+static void window_canvas_fit(ecs* world, entity window, int2* size) {
+    const entity canvas = zox_get_parent_by_id(world, window, zox_id(Canvas));
+    if (zox_has(window, Docked) || !zox_has(window, BoundToParent) || !zox_valid(canvas)) {
+        return;
+    }
+    const int2 canvas_size = zox_getv(canvas, LayoutSize);
+    const int2 fit = { int_min(size->x, canvas_size.x), int_min(size->y, canvas_size.y) };
+    if (!int2_equals(fit, *size)) {
+        *size = fit;
+        zox_setv(window, LayoutSize, fit);
+    }
+    // as canvas_bounds_system's constraints: its centre's range for its anchor
+    const float2 anchor = zox_getv(window, Anchor);
+    const int2 position = zox_getv(window, LayoutPosition);
+    const int2 kept = {
+        int_clamp(position.x, -canvas_size.x * anchor.x + fit.x / 2, canvas_size.x * (1 - anchor.x) - fit.x / 2),
+        int_clamp(position.y, -canvas_size.y * anchor.y + fit.y / 2, canvas_size.y * (1 - anchor.y) - fit.y / 2) };
+    if (!int2_equals(kept, position)) {
+        zox_setv(window, LayoutPosition, kept);
+    }
+}
+
 static void window_layout(ecs* world, entity window, int2 size) {
-    window_resize_handles_fit(world, window, size);
     const entity header = zox_get_child_by_id(world, window, zox_id(Header));
     const entity body = zox_get_child_by_id(world, window, zox_id(WindowBody));
     const entity scrollview = zox_get_link(world, window, ScrollviewLink);
     if (!header || !body) {
+        window_canvas_fit(world, window, &size);
+        window_resize_handles_fit(world, window, size);
         return;
     }
     window_undock_button(world, window, header);
-    const int2 header_size = { size.x, zox_getv(header, LayoutSize).y };
+    const int header_height = zox_getv(header, LayoutSize).y;
     const entity footer = zox_get_child_by_id(world, window, zox_id(WindowFooter));
     const int footer_height = footer ? zox_getv(footer, LayoutSize).y : 0;
     const entity search = window_search_bar_shown(world, window);
     const int search_height = search ? zox_getv(search, LayoutSize).y : 0;
+    window_grid_fit(world, window, body, &size, header_height + footer_height + search_height);
+    window_rows_fit(world, window, scrollview, &size);
+    window_canvas_fit(world, window, &size);     // after: a grid's rows can grow it
+    window_resize_handles_fit(world, window, size);
+    const int2 header_size = { size.x, header_height };
     const int2 body_size = { size.x, int_max(1, size.y - header_size.y - footer_height - search_height) };
     if (int2_equals(zox_getv(body, LayoutSize), body_size) &&
         (!zox_valid(scrollview) || !zox_has(scrollview, LayoutSize) ||

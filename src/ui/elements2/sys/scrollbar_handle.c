@@ -19,10 +19,7 @@ void scrollbar_handle_event(iter* it) {
         }
         // set handle size here
         entity list = zox_get_link(world, scrollview, ListUILink);
-        const int list_children_length = zox_get_children_count(world, list);
-        if (!list_children_length) {
-            continue;
-        }
+        const int list_children_length = zox_get_children_count(world, list);   // none: the handle fills its bar
         entity scrollbar = zox_get_child_by_id(world, scrollview, zox_id(Scrollbar)); // scrollarea_children[0];
         if (!zox_valid(scrollbar)) {
             continue;
