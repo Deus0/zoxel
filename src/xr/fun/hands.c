@@ -66,9 +66,15 @@ static float3 xr_hands_target(ecs* world, entity skeleton, entity shoulder, byte
     return float3_add(body_shoulder, float4_rotate_float3(frame.rotation, out));
 }
 
+// multi threaded, the xr camera its one entity (one worker runs it): it writes only the shoulders' ik targets and
+//  weights, read after the barrier by arm_ik_system (zoxp_layouts); it reads the spine's lean and shift (written in
+//  zoxp_update) and the bones' world transforms (the hierarchy's, later): none written in zoxp_trails
 void xr_hands_ik_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
+    if (!it->count) {
+        return;
+    }
     const entity player = zox_players[0];
     if (!zox_xr_active || !zox_valid(player)) {
         return;
@@ -98,8 +104,7 @@ void xr_hands_ik_system(iter* it) {
 
 void zox_systems_xr_hands(ecs* world) {
     // after physics moved the body, before the arms' ik (zoxp_layouts)
-    // main thread in zoxp_trails on purpose (as xr_room_walk_system, fun/body.c): xr only, before the transforms
-    zox_system_1(xr_hands_ik_system, zoxp_trails, 0);
+    zox_system(xr_hands_ik_system, zoxp_trails, [none] cameras.XrCamera);
     zox_set_enabled_id(ecs_id(xr_hands_ik_system), 0);
 }
 

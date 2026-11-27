@@ -447,10 +447,13 @@ void xr_room_walk_system(iter* it) {
 //    (it turned by both: looking down the chest pitched forward and the head past the eyes, they went through the
 //    head to its back, tst xr_look_down)
 //  - after the head's own systems (zoxp_update: head_look eases it to ahead), before the hierarchy
+// multi threaded, the xr camera its one entity (one worker runs it): the head's rotation set, head_look_system leaving
+//  it (HeadHeld: they raced, zoxp_update and physics have no barrier), spine_twist_system turning it after (zoxp_trails,
+//  after the barrier); the lean read was written by xr_room_walk_system (main thread, before)
 void xr_head_bone_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
-    if (!zox_xr_active) {
+    if (!zox_xr_active || !it->count) {
         return;
     }
     const entity character = xr_body_character(world);
@@ -462,6 +465,9 @@ void xr_head_bone_system(iter* it) {
     if (zox_has(head, OscillatePosition3D)) {
         zox_remove(head, OscillatePosition3D);
     }
+    if (!zox_has(head, HeadHeld)) {
+        zox_add(head, HeadHeld);
+    }
     const float4 lean = zox_has(skeleton, SpineLean) ? zox_getv(skeleton, SpineLean) : quaternion_identity;
     zox_getm(head, LocalRotation3D)->value = quaternion_rotate(quaternion_inverse(lean), xr_body_head_local(xr_head_now_rotation));
     zox_sys_on_end();
@@ -469,10 +475,11 @@ void xr_head_bone_system(iter* it) {
 
 void zox_systems_xr_body(ecs* world) {
     // after the stick's velocity (controllers, imported before), before physics
-    // main thread outside spawn/gpu_upload/render, on purpose (doc/engine/thread_safety.md): xr only (off otherwise), each
-    //  where its order needs it, direct writes to the player's bones; costs a merge pair in xr, not in play
+    // main thread outside spawn/gpu_upload/render, on purpose (doc/engine/thread_safety.md): xr only (off otherwise); it
+    //  adds to the character's Velocity3D in place, which movement writes in zoxp_update and physics reads right after
+    //  with no barrier between: its merges keep that order. Costs a merge pair in xr, not in play
     zox_system_1(xr_room_walk_system, zoxp_update, 0);
-    zox_system_1(xr_head_bone_system, zoxp_post_update, 0);
+    zox_system(xr_head_bone_system, zoxp_post_update, [none] cameras.XrCamera);
     // off without a headset (xr_systems_boot): main thread systems between multi threaded ones add merges
     zox_set_enabled_id(ecs_id(xr_room_walk_system), 0);
     zox_set_enabled_id(ecs_id(xr_head_bone_system), 0);

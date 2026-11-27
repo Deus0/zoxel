@@ -66,7 +66,8 @@ void zox_systems_bones(ecs *world) {
         [in] LookTarget,
         [in] transforms3.Position3D,
         [out] transforms3.LocalRotation3D,
-        [none] HeadBone
+        [none] HeadBone,
+        [none] !HeadHeld
     );
     zox_system(
         head_animate_system,

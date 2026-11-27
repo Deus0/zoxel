@@ -6,6 +6,7 @@ zoxc_float3(BoneSize);
 zoxc_float3(RestPosition3D);    // on a bone the rig moves: its LocalPosition3D at rest (a chest leaning, ik/sys/spine.c; a shoulder reaching, ik/sys/arm_ik.c)
 zoxc_float3(BoneCentre);    // its part's middle, the skeleton's space at rest (BonePosition is its pivot, the joint)
 zox_tag(HeadBone);
+zox_tag(HeadHeld);      // a head turned by something else (xr's headset, xr_head_bone_system): head_look_system leaves it
 zox_tag(HipsBone);
 zox_tag(ArmBone);
 zox_tag(HandBone);
@@ -64,6 +65,7 @@ void zox_components_bones(ecs* world) {
     zoxd_float3(BoneCentre);
     zoxd_float3(RestPosition3D);
     zoxd_tag(HeadBone);
+    zoxd_nf_tag(HeadHeld);
     zoxd_tag(HipsBone);
     zoxd_tag(ArmBone);
     zoxd_tag(HandBone);
