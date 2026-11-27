@@ -186,7 +186,7 @@ static inline int scrollview_bar_size(ecs* world, entity scrollview, byte horizo
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
             const entity bar = it2.entities[j];
-            if (zox_has(bar, Scrollbar) && zox_has(bar, HorizontalScrollbar) == horizontal &&
+            if (zox_has_id(bar, horizontal ? zox_id(HorizontalScrollbar) : zox_id(Scrollbar)) &&
                 !zox_getv(bar, RenderDisabled)) {
                 return horizontal ? zox_getv(bar, LayoutSize).y : zox_getv(bar, LayoutSize).x;
             }
@@ -201,5 +201,26 @@ void scrollview_fit_list(ecs* world, entity scrollview, entity list) {
     if (zox_valid(scrollview) && zox_valid(list) && zox_has(scrollview, LayoutSize)) {
         scrollview_fit_list_bars(world, scrollview, list, scrollview_bar_size(world, scrollview, 0),
             scrollview_bar_size(world, scrollview, 1));
+    }
+}
+
+// the vertical bar stops above a shown horizontal one (bottom: its height, 0 while hidden)
+static inline void scrollview_fit_vertical_bar(ecs* world, entity scrollview, int bottom) {
+    const entity bar = zox_get_child_by_id(world, scrollview, zox_id(Scrollbar));
+    if (!zox_valid(bar)) {
+        return;
+    }
+    const int height = zox_getv(scrollview, LayoutSize).y - bottom;
+    int2 size = zox_getv(bar, LayoutSize);
+    if (size.y == height) {
+        return;
+    }
+    size.y = height;
+    zox_setv(bar, LayoutSize, size);
+    zox_setv(bar, LayoutPosition, ((int2) { zox_getv(bar, LayoutPosition).x, bottom / 2 }));
+    zox_add(bar, LayoutSizeDirty);
+    const entity list = zox_get_link(world, scrollview, ListUILink);   // its handle fits the shorter bar
+    if (zox_valid(list)) {
+        zox_add_id(list, zox_has(list, VirtualList) ? zox_id(Dirty) : zox_id(ListDirty));
     }
 }

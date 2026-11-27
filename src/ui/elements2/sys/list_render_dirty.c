@@ -47,14 +47,18 @@ static void update_horizontal_scrollbar(ecs* world, entity scrollview, entity li
     if (!has_offset || zox_getv(list, ListScrollX) != offset) {
         zox_setv(list, ListScrollX, offset);
     }
+    // the bars meet at the corner, neither overlaps the other
+    const int vertical = scrollview_bar_size(world, scrollview, 0);
     int2 bar_size = zox_getv(bar, LayoutSize);
-    if (bar_size.x != width) {
-        bar_size.x = width;
+    if (bar_size.x != width - vertical) {
+        bar_size.x = width - vertical;
         zox_setv(bar, LayoutSize, bar_size);
+        zox_setv(bar, LayoutPosition, ((int2) { -vertical / 2, zox_getv(bar, LayoutPosition).y }));
         zox_add(bar, LayoutSizeDirty);
     }
+    scrollview_fit_vertical_bar(world, scrollview, disabled ? 0 : bar_size.y);
     zox_setv(handle, SlideBounds, ((float2) { low, high }));
-    const int length = range && width > 1 ? int_max(1, (int) ((float) width * width / (width + range))) : width;
+    const int length = range && bar_size.x > 1 ? int_max(1, (int) ((float) bar_size.x * width / (width + range))) : bar_size.x;
     layout_scrollbar_handle(world, handle, bar_size, length, range ? (offset - low) / (float) range : 0, 1);
     // the bar shows or hides: the viewport follows (its RenderDisabled set above is deferred: use disabled)
     scrollview_fit_list_bars(world, scrollview, list, scrollview_bar_size(world, scrollview, 0),

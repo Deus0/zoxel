@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-28
+-x Scroll views' horizontal and vertical bars overlapped at the corner: each spanned the whole view. The horizontal
+  bar stops at the vertical one, the vertical above the horizontal while it shows (scrollview_fit_vertical_bar);
+  scrollview_bar_size never found a horizontal bar (it looked for Scrollbar on it too). tst scroll_corner
 -x Editor hierarchy missed entities spawned after it opened (a realm's children besides its tilemap): it only
   rebuilt on its own events (open, fold, scroll). An observer on ChildOf added or removed (hierarchy_child_event)
   refreshes it when the parent's row is shown (a root, or unfolded). A text shrinking (a row relabelled) positioned

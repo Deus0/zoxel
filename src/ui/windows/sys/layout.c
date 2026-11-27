@@ -254,9 +254,7 @@ static void window_layout(ecs* world, entity window, int2 size) {
     zox_setv(scrollview, LayoutSize, body_size);
     const entity list = zox_get_link(world, scrollview, ListUILink);
     const entity scrollbar = zox_get_child_by_id(world, scrollview, zox_id(Scrollbar));
-    if (scrollbar) {
-        zox_setv(scrollbar, LayoutSize, ((int2) { zox_getv(scrollbar, LayoutSize).x, body_size.y }));
-    }
+    scrollview_fit_vertical_bar(world, scrollview, scrollview_bar_size(world, scrollview, 1));
     if (zox_valid(list)) {
         scrollview_fit_list_size(world, list, body_size, scrollview_bar_size(world, scrollview, 0),
             scrollview_bar_size(world, scrollview, 1));
