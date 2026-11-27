@@ -200,7 +200,6 @@ void vox_instance_render_system(iter* it) {
     }
     // Static vox instances
     zox_gpu_material(material_link);
-    zox_gpu_float4(material_attributes->fog_data, get_fog_value());
     zox_gpu_float(material_attributes->brightness, 1);
     zox_gpu_float(material_attributes->alpha, 1);
     zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
@@ -231,7 +230,6 @@ void vox_instance_render_system(iter* it) {
         // wrap time to keep float precision in the shader
         float sway_time = (float) fmod(zox_current_time, 3600.0);
         zox_gpu_material(sway_material_link);
-        zox_gpu_float4(sway_attributes->fog_data, get_fog_value());
         zox_gpu_float(sway_attributes->brightness, 1);
         zox_gpu_float(sway_attributes->alpha, 1);
         zox_gpu_float4x4(sway_attributes->camera_matrix, render_camera_matrix);
@@ -261,7 +259,6 @@ void vox_instance_render_system(iter* it) {
     //  but not writing it, so a shell's far faces aren't hidden by its near ones drawn first (thin lines through it)
     if (has_see_through) {
         zox_gpu_material(material_link);
-        zox_gpu_float4(material_attributes->fog_data, get_fog_value());
         zox_gpu_float(material_attributes->brightness, 1);
         zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
         zox_gpu_enable_blend();

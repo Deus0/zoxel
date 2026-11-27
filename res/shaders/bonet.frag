@@ -1,7 +1,6 @@
 out vec4 frag_color;
 in vec3 vertex_color_frag;
 in float fog_blend;
-uniform vec4 fog_data;
 uniform float brightness;
 
 void main() {

@@ -1,38 +1,47 @@
-// Uniform buffers (the instance matrices): kept on the cpu, copied into the frame's ring when a draw reads them
+// Uniform buffers (the instance matrices, rendering's RenderView): kept on the cpu, copied into the frame's ring when a draw reads them
 //  - gl's binding points (zox_gpu_ubo_initialize_matricies) name which buffer a program's block reads
 
-// the buffer's cpu copy, sized for length matrices
-void vulkan_ubo_write(guint id, gsizei length, gsizei capacity, const void* ptr) {
+// the buffer's cpu copy, room for capacity bytes, used of them written from ptr
+void vulkan_ubo_write(guint id, size_t used, size_t capacity, const void* ptr) {
     vk_buffer* buffer = vk_buffer_of(id);
     if (!buffer) {
         return;
     }
-    const VkDeviceSize bytes = (VkDeviceSize) (capacity > length ? capacity : length) * sizeof(float4x4);
+    const VkDeviceSize bytes = (VkDeviceSize) (capacity > used ? capacity : used);
     if (bytes > buffer->size || !buffer->shadow) {
         buffer->shadow = realloc(buffer->shadow, bytes);
         memset(buffer->shadow, 0, bytes);
         buffer->size = bytes;
     }
     if (ptr) {
-        memcpy(buffer->shadow, ptr, (size_t) length * sizeof(float4x4));
+        memcpy(buffer->shadow, ptr, used);
     }
-    buffer->shadow_used = (VkDeviceSize) length * sizeof(float4x4);
+    buffer->shadow_used = (VkDeviceSize) used;
     buffer->shadow_dirty = 1;
 }
 
-static inline void zox_gpu_ubo_set_matricies(guint id, gsizei length, const void* ptr) {
-    vulkan_ubo_write(id, length, length, ptr);
-}
-
-static inline void zox_gpu_ubo_stream_matricies(guint id, gsizei length, gsizei capacity, const void* ptr) {
-    vulkan_ubo_write(id, length, capacity, ptr);
-}
-
-static inline void zox_gpu_ubo_initialize_matricies(guint id, guint binding_point, gsizei length) {
-    vulkan_ubo_write(id, 0, length, NULL);
+// a buffer of bytes for blocks at binding_point to read (gl's glBindBufferBase)
+static inline void zox_gpu_ubo_initialize(guint id, guint binding_point, gsizei bytes) {
+    vulkan_ubo_write(id, 0, bytes, NULL);
     if (binding_point < vk_slots_max) {
         vk_ubo_points[binding_point] = id;
     }
+}
+
+static inline void zox_gpu_ubo_set(guint id, gsizei bytes, const void* ptr) {
+    vulkan_ubo_write(id, bytes, bytes, ptr);
+}
+
+static inline void zox_gpu_ubo_set_matricies(guint id, gsizei length, const void* ptr) {
+    zox_gpu_ubo_set(id, length * sizeof(float4x4), ptr);
+}
+
+static inline void zox_gpu_ubo_stream_matricies(guint id, gsizei length, gsizei capacity, const void* ptr) {
+    vulkan_ubo_write(id, length * sizeof(float4x4), capacity * sizeof(float4x4), ptr);
+}
+
+static inline void zox_gpu_ubo_initialize_matricies(guint id, guint binding_point, gsizei length) {
+    zox_gpu_ubo_initialize(id, binding_point, length * sizeof(float4x4));
 }
 
 static inline void zox_gpu_ubo_block_binding(guint program_id, guint block_index, guint binding) {

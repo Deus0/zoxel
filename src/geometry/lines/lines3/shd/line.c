@@ -4,7 +4,6 @@ typedef struct {
     gint position;
     gint color;
     gint camera_matrix;
-    gint fog_data;
 } MaterialLine3D;
 zoxc_custom(MaterialLine3D);
 
@@ -13,7 +12,6 @@ MaterialLine3D create_MaterialLine3D(guint material) {
         .position = zox_gpu_get_material_attribute(material, "position"),
         .color = zox_gpu_get_material_property(material, "color"),
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
-        .fog_data = zox_gpu_get_material_property(material, "fog_data")
     };
 }
 
@@ -25,7 +23,6 @@ typedef struct {
     gint end;
     gint color;
     gint camera_matrix;
-    gint fog_data;
 } MaterialLine3DInstanced;
 zoxc_custom(MaterialLine3DInstanced);
 
@@ -36,7 +33,6 @@ MaterialLine3DInstanced create_MaterialLine3DInstanced(guint material) {
         .end = zox_gpu_get_material_attribute(material, "line_end"),
         .color = zox_gpu_get_material_attribute(material, "line_color"),
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
-        .fog_data = zox_gpu_get_material_property(material, "fog_data")
     };
 }
 
@@ -53,7 +49,6 @@ static inline const MaterialLine3D* line3D_material_begin(ecs* world) {
     if (line3D) {
         zox_gpu_material(zox_getv(material_line3D, MaterialGPULink));
         zox_gpu_enable_attribute(line3D->position);
-        zox_gpu_float4(line3D->fog_data, get_fog_value());
         zox_gpu_float4x4(line3D->camera_matrix, render_camera_matrix);
     }
     return line3D;

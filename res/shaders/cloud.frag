@@ -1,7 +1,6 @@
 out vec4 frag_color;
 in float fog_level;
 in vec3 local_position;
-uniform vec4 fog_data;
 uniform vec4 color;
 
 void main() {
@@ -12,6 +11,6 @@ void main() {
         shade = local_position.y > 0.0 ? 1.0 : 0.8;
     }
     frag_color = vec4(color.xyz * shade, color.w);
-    float fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
+    float fog_blend = zox_fog_blend(fog_level);
     frag_color.xyz = mix(frag_color.xyz, fog_data.xyz, fog_blend);
 }

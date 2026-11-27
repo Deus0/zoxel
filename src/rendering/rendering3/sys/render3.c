@@ -49,11 +49,10 @@ void basic3_render_system(iter* it) {
         {
             static byte warned = 0;
             if (!warned) {
-                zox_loge("(Basic3) missing required locations [%s] pos [%i] mvp_matrix [%i] color [%i] fog [%i]",
+                zox_loge("(Basic3) missing required locations [%s] pos [%i] mvp_matrix [%i] color [%i]",
                     zox_getn(e),
                     attributes->vertex_position, attributes->mvp_matrix,
-                    attributes->color,
-                    attributes->fog_data);
+                    attributes->color);
                 warned = 1;
             }
             continue;
@@ -80,9 +79,6 @@ void basic3_render_system(iter* it) {
             attributes->mvp_matrix,
             mvp_matrix);
         // zox_gpu_float4x4(attributes->camera_matrix, render_camera_matrix);
-        if (attributes->fog_data) {
-            zox_gpu_float4(attributes->fog_data, get_fog_value());
-        }
         if (attributes->color) {
             float4 colorf = color_to_float4(fill->value);
             colorf.x *= brightness->value;
@@ -108,10 +104,9 @@ void basic3_render_system(iter* it) {
                 alpha->value);
             zox_log("   - At [%fx%fx%f]", position.x, position.y, position.z);
             zox_log("   - GPU: Mesh [%ix%i]", mesh->value.x, mesh->value.y);
-            zox_log("   - Locations: pos [%i] mvp_matrix [%i] color [%i] fog [%i]",
+            zox_log("   - Locations: pos [%i] mvp_matrix [%i] color [%i]",
                 attributes->vertex_position, attributes->mvp_matrix,
-                attributes->color,
-                attributes->fog_data);
+                attributes->color);
         }
         zox_gpu_disable_attribute(attributes->vertex_position);
         zox_gpu_reset_mesh();

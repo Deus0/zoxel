@@ -10,7 +10,6 @@ uniform InstanceMatrices {
     mat4 matrices[zox_ubo_max];
 };
 uniform mat4 camera_matrix;
-uniform vec4 fog_data;
 out vec3 vertex_color_frag;
 out float fog_blend;
 
@@ -21,5 +20,5 @@ void main() {
     gl_Position = camera_matrix * (model_matrix * vec4(vertex_position, 1.0));
     vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW);
     float fog_level = gl_Position.z * gl_Position.z;
-    fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
+    fog_blend = zox_fog_blend(fog_level);
 }

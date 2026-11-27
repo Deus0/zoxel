@@ -1,8 +1,19 @@
-// UBOs
+// UBOs: sized in bytes (a struct, rendering's RenderView), or in matrices (the instance matrices)
+
+// a buffer of bytes for blocks at binding_point to read (bound once, it stays)
+static inline void zox_gpu_ubo_initialize(guint id, guint binding_point, gsizei bytes) {
+    glBindBuffer(GL_UNIFORM_BUFFER, id);
+    glBufferData(GL_UNIFORM_BUFFER, bytes, NULL, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, id);
+}
+
+static inline void zox_gpu_ubo_set(guint id, gsizei bytes, const void* ptr) {
+    glBindBuffer(GL_UNIFORM_BUFFER, id);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, bytes, ptr);
+}
 
 static inline void zox_gpu_ubo_set_matricies(guint id, gsizei length, const void* ptr) {
-    glBindBuffer(GL_UNIFORM_BUFFER, id);
-    glBufferSubData(GL_UNIFORM_BUFFER, 0, length * sizeof(float4x4), ptr);
+    zox_gpu_ubo_set(id, length * sizeof(float4x4), ptr);
 }
 
 // as set, its storage orphaned first (fresh, its capacity): the draw before can still read the old, no stall waiting
@@ -14,9 +25,7 @@ static inline void zox_gpu_ubo_stream_matricies(guint id, gsizei length, gsizei 
 }
 
 static inline void zox_gpu_ubo_initialize_matricies(guint id, guint binding_point, gsizei length) {
-    glBindBuffer(GL_UNIFORM_BUFFER, id);
-    glBufferData(GL_UNIFORM_BUFFER, sizeof(float4x4) * length, NULL, GL_DYNAMIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, binding_point, id);
+    zox_gpu_ubo_initialize(id, binding_point, length * sizeof(float4x4));
 }
 
 // a program's uniform block reads the buffer bound at binding (glBindBufferBase); lost when the program relinks

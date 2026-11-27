@@ -52,6 +52,7 @@ guint spawn_gpu_material_program(guint2 shader) {
         glDeleteProgram(material);
         return 0;
     }
+    zox_gpu_bind_shared_blocks(material);
     zox_gpu_programs_live++;
     return material;
 }

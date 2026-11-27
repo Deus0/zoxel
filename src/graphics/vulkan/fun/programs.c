@@ -181,6 +181,7 @@ guint spawn_gpu_material_program(guint2 shader) {
     for (int b = 0; b < program->blocks_count; b++) {
         program->blocks[b].point = -1;
     }
+    zox_gpu_bind_shared_blocks(id);
     return id;
 }
 

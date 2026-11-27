@@ -107,9 +107,6 @@ static inline uint render_chunk_meshes(iter* it, byte transparent) {
             /*zox_gpu_float4x4(
                 attributes->camera_matrix,
                 render_camera_matrix);*/
-            zox_gpu_float4(
-                attributes->fog_data,
-                get_fog_value());
             zox_gpu_float(
                 attributes->brightness,
                 1);

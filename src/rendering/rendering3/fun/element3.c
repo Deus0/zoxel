@@ -12,7 +12,6 @@ const MaterialTextured3D* element3_draw_begin(ecs* world) {
     zox_gpu_enable_blend();
     zox_gpu_enable_depth_test();
     zox_gpu_material(zox_getv(material_textured3D, MaterialGPULink));
-    zox_gpu_float4(attributes->fog_data, get_fog_value());
     zox_gpu_float(attributes->brightness, element3_brightness);
     zox_gpu_float(attributes->alpha_cutoff, 0);
     return attributes;

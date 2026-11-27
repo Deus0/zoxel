@@ -5,6 +5,7 @@ void process_shaders(ecs *world) {
         zox_loge("Rendering is not enabled.");
         //exit(1);
     } else {
+        render_view_create();
         run_hook_load_shader(world);
     }
 }

@@ -6,6 +6,7 @@
  * */
 byte zox_render_lines = 0;
 #include "dat/opengl_mode.c"
+#include "dat/shared_blocks.c"
 
 #ifdef zox_opengl
     #include "opengl/_.c"
@@ -21,6 +22,7 @@ static inline void zox_gpu_run_system(ecs* world, entity system, byte parallel) 
     zox_run(world, system);
 }
 #endif
+#include "fun/shared_blocks.c"
 #include "fun/screenshot.c"
 #include "fun/gif.c"
 

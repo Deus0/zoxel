@@ -4,7 +4,6 @@ typedef struct {
     gint color;
     gint size;
     gint camera_matrix;
-    gint fog_data;
     gint thickness;
 } MaterialParticle3D;
 zoxc_custom(MaterialParticle3D);
@@ -15,7 +14,6 @@ MaterialParticle3D create_MaterialParticle3D(guint material) {
         .color = zox_gpu_get_material_attribute(material, "color"),
         .size = zox_gpu_get_material_attribute(material, "size"),
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
-        .fog_data = zox_gpu_get_material_property(material, "fog_data"),
         .thickness = zox_gpu_get_material_property(material, "thickness")
     };
 }

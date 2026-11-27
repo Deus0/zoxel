@@ -2,23 +2,13 @@
 //  also LODing support
 entity shader_vox_instance = 0;
 entity material_vox_instance = 0;
-#define zox_instance_matrices_binding 0    // the InstanceMatrices ubo's binding, both vox instance materials read it
-
-// the material's InstanceMatrices block reads the instance ubo, set again after a relink (a gpu restore)
-static inline void bind_instance_matrices(guint material) {
-#ifndef zox_disable_ubos
-    zox_gpu_ubo_block_binding(material, zox_gpu_get_material_uniform(material, "InstanceMatrices"), zox_instance_matrices_binding);
-#else
-    (void) material;
-#endif
-}
+#define zox_instance_matrices_binding 0    // the InstanceMatrices ubo's binding, a shared block (zox_gpu_share_block)
 
 typedef struct {
     gint vertex_position;
     gint vertex_color;
     gint matrices;
     guint brightness;
-    guint fog_data;
     guint camera_matrix;
     guint alpha;
     gint outline;           // its outline id in the mask (doc/plans/outlines.md)
@@ -35,7 +25,6 @@ MaterialVoxInstance create_MaterialVoxInstance(const uint material) {
         0,
 #endif
         zox_gpu_get_material_property(material, "brightness"),
-        zox_gpu_get_material_property(material, "fog_data"),
         zox_gpu_get_material_property(material, "camera_matrix"),
         zox_gpu_get_material_property(material, "alpha"),
         zox_gpu_get_material_property(material, "outline")
@@ -91,7 +80,6 @@ entity spawn_material_vox_instance(ecs* world) {
     }
     const MaterialVoxInstance materialVoxInstance =  create_MaterialVoxInstance(material);
     zox_set_data(e, MaterialVoxInstance, materialVoxInstance)
-    bind_instance_matrices(material);
     guint ubo = generate_ubo(zox_instance_matrices_binding);
     zox_setv(e, UboGPULink, ubo);
     material_vox_instance = e;

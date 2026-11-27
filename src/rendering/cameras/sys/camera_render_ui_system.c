@@ -30,6 +30,7 @@ void camera_render_ui_system(iter* it) {
         render_camera_matrix = matrix->value;
         render_camera_position = position->value;
         renderer_fog_color = fog->value;
+        render_view_upload();
         zox_gpu_set_viewport(
             int2_to_float2(screen_position->value),
             int2_to_float2(screen_size->value));

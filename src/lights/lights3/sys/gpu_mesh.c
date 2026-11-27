@@ -434,7 +434,6 @@ void chunk_gpu_render_system(iter* it) {
             terrain_scale = zox_getv(terrain, BlockScale);
             if (program) {
                 zox_gpu_material(program);
-                zox_gpu_program_float4(program, "fog_data", get_fog_value());
                 zox_gpu_program_float4(program, "shading", (float4) { 1, 0, 0, 0 });
             }
         }

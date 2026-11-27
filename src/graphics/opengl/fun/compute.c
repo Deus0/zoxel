@@ -317,6 +317,7 @@ guint zox_gpu_draw_program(const char* vertex_source, const char* fragment_sourc
         glDeleteProgram(program);
         return 0;
     }
+    zox_gpu_bind_shared_blocks(program);
     return program;
 #else
     (void) vertex_source; (void) fragment_source;

@@ -2,7 +2,6 @@ layout(location=0) in vec3 vertex_position;
 layout(location=1) in vec4 vertex_color;     // its colour, its alpha its glow
 uniform mat4 mvp_matrix;
 uniform mat4 model_matrix;
-uniform vec4 fog_data;
 out vec4 vertex_color_frag;
 out vec3 world_position;
 out float fog_blend;
@@ -12,5 +11,5 @@ void main() {
     world_position = (model_matrix * vec4(vertex_position, 1)).xyz;
     vertex_color_frag = vertex_color;
     float fog_level = gl_Position.z * gl_Position.z;
-    fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
+    fog_blend = zox_fog_blend(fog_level);
 }

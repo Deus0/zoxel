@@ -1,4 +1,5 @@
 #include "read.c"
+#include "view.c"
 #include "version.c"
 #include "precision.c"
 #include "gles2.c"

@@ -59,9 +59,6 @@ void textured_render_system(iter* it) {
         zox_gpu_float4x4(
             attributes->transform_matrix,
             matrix->value);*/
-        zox_gpu_float4(
-            attributes->fog_data,
-            get_fog_value());
         zox_gpu_float(attributes->brightness, 1);
         zox_gpu_bind_buffer_element(mesh->value.x);
         opengl_enable_vertex_buffer(

@@ -1,7 +1,6 @@
 out vec4 frag_color;
 in float fog_level;
 uniform vec4 color;
-uniform vec4 fog_data;
 
 void main() {
     frag_color = color;

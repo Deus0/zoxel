@@ -16,7 +16,6 @@ void particle3d_render_system(iter* it) {
     zox_gpu_enable_points();
     zox_gpu_enable_blend();
     zox_gpu_material(zox_getv(material_particle3D, MaterialGPULink));
-    zox_gpu_float4(particle3D->fog_data, get_fog_value());
     zox_gpu_float4x4(particle3D->camera_matrix, render_camera_matrix);
     // a vox model's voxel in the world (vox_model_scale): its pixels at depth 1, the shader divides by the depth
     const float fov = (render_camera_fov ? render_camera_fov : 90) * (float) M_PI / 180.0f;

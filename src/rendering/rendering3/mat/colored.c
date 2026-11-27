@@ -6,7 +6,6 @@ typedef struct {
     gint vertex_color;
     guint mvp_matrix;
     guint brightness;
-    guint fog_data;
     guint alpha;
     gint outline;           // its outline id in the mask (doc/plans/outlines.md)
 } MaterialColored3D;
@@ -18,7 +17,6 @@ MaterialColored3D create_MaterialColored3D(guint material) {
         .vertex_color = zox_gpu_get_material_attribute(material, "vertex_color"),
         .mvp_matrix = zox_gpu_get_material_property(material, "mvp_matrix"),
         .brightness = zox_gpu_get_material_property(material, "brightness"),
-        .fog_data = zox_gpu_get_material_property(material, "fog_data"),
         .alpha = zox_gpu_get_material_property(material, "alpha"),
         .outline = zox_gpu_get_material_property(material, "outline")
     };

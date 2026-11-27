@@ -67,7 +67,6 @@ void line3d_render_system(iter* it) {
             }
             zox_gpu_line_thickness((width / it->count) * get_viewport_scale());
             zox_gpu_material(zox_getv(material_line3D_instanced, MaterialGPULink));
-            zox_gpu_float4(instanced->fog_data, get_fog_value());
             zox_gpu_float4x4(instanced->camera_matrix, render_camera_matrix);
             line3D_instanced_reserve(count);
             // per vertex: 0 or 1 along the line

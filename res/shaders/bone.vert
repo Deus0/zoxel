@@ -6,7 +6,6 @@ layout(location=2) in vec4 bone_index;    // two bones, the second's weight (bon
 uniform mat4 mvp_matrix;
 uniform mat4 bone_matrix[32];
 uniform vec3 bone_positions[32];
-uniform vec4 fog_data;
 uniform float paint_weights;  // 1: coloured by bone, mixed at joints by weight (the Paint Weights setting)
 out vec3 vertex_color_frag;
 out float fog_blend;
@@ -27,5 +26,5 @@ void main() {
     gl_Position = mvp_matrix * final_position;
     vertex_color_frag = paint_weights > 0.5 ? mix(bone_paint(a), bone_paint(b), bone_index.z) : vertex_color.rgb * (1.0 + vertex_color.a * GLOW);
     float fog_level = gl_Position.z * gl_Position.z;
-    fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));
+    fog_blend = zox_fog_blend(fog_level);
 }

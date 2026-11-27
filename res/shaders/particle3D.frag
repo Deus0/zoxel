@@ -1,5 +1,4 @@
 out vec4 color_output;
-uniform vec4 fog_data;
 in float fog_level;
 in vec4 frag_color;
 

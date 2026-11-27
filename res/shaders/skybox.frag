@@ -3,7 +3,6 @@ in vec3 mesh_pos;
 in float fog_level;
 // uniform float brightness;
 uniform vec4 color;
-uniform vec4 fog_data;
 uniform float time;
 uniform vec3 sky_top_color;
 uniform vec3 sky_bottom_color;

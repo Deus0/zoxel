@@ -75,6 +75,7 @@ void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 v
     render_camera_matrix = float4x4_multiply(float4x4_inverse(world_eye), projection);   // the view, then the projection
     renderer_fog_color = color_to_color_rgb(xr_clear_color);
     render_underwater = terrain_water_at(world, local_terrain, render_camera_position);   // src/terrains/voxel/sys/water_view.c
+    render_view_upload();
     // the world (shut, none of it), then the lids over it, then the 3D uis over them
     for (byte ui = 0; ui < 2; ui++) {
         if (ui) {

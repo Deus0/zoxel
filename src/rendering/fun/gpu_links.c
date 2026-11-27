@@ -51,10 +51,12 @@ void gpu_dispose_rendering(ecs* world) {
         material->value = 0;
         zox_disposed_add(&disposed_materials, e);
     zox_each_end();
+    render_view_dispose();
 }
 
 // makes them again: shaders before the materials linking them; meshes and textures upload again (MeshDirty, TextureDirty)
 void gpu_restore_rendering(ecs* world) {
+    render_view_create();
     zox_disposed_begin(disposed_meshes, MeshGPULink, mesh);
         mesh->value = spawn_gpu_mesh_buffers();
     zox_disposed_end(disposed_meshes);

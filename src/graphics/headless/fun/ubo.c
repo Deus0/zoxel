@@ -1,5 +1,7 @@
 // UBOs
 
+void zox_gpu_ubo_initialize(uint id, uint binding_point, uint bytes) { }
+void zox_gpu_ubo_set(uint id, uint bytes, const void* ptr) { }
 void zox_gpu_ubo_set_matricies(uint id, uint length, const void* ptr) { }
 void zox_gpu_ubo_stream_matricies(uint id, uint length, uint capacity, const void* ptr) { }
 void zox_gpu_ubo_initialize_matricies(uint id, uint binding_point, uint length) { }

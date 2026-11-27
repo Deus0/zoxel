@@ -61,7 +61,6 @@ void skeleton3_render_system(iter* it) {
             }*/
             zox_gpu_material(material_link);
             // zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
-            zox_gpu_float4(material_attributes->fog_data, get_fog_value());
             zox_gpu_float(material_attributes->brightness, 1);
             zox_gpu_float(material_attributes->paint_weights, paint_weights);
             if (!transparent_meshes) {  // bonet.frag writes no mask

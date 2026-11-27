@@ -712,7 +712,6 @@ static const char* zox_gpu_mesh_textured_vertex_source =
 "        float((face_lights >> 16) & 255u), float(face_lights >> 24)) / 255.0;\n"
 "}\n";
 static const char* zox_gpu_mesh_textured_fragment_source =
-"uniform vec4 fog_data;\n"
 "uniform vec4 shading;\n"
 "uniform sampler2D zexture;\n"
 "in float fog_level;\n"
@@ -729,7 +728,7 @@ static const char* zox_gpu_mesh_textured_fragment_source =
 "    }\n"
 "    float light = mix(mix(corner_lights.x, corner_lights.y, side.x), mix(corner_lights.z, corner_lights.w, side.x), side.y);\n"
 "    vec3 color = texel.rgb * (glow > 0.0 ? 1.0 : light) * (1.0 + glow * GLOW) * shading.x;\n"
-"    float fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));\n"
+"    float fog_blend = zox_fog_blend(fog_level);\n"
 "    frag_color = vec4(mix(color, fog_data.xyz, fog_blend), texel.a);\n"
 "}\n";
 
@@ -785,7 +784,13 @@ uint gpu_mesh_textured_program() {
     if (!zox_gpu_compute_supported()) {
         return 0;
     }
-    return zox_gpu_draw_program(zox_gpu_mesh_textured_vertex_source, zox_gpu_mesh_textured_fragment_source);
+    // the camera's view block before each stage, as file shaders get it (res/shaders/view.glsl)
+    char* vertex = shader_add_view(zox_gpu_mesh_textured_vertex_source);
+    char* fragment = shader_add_view(zox_gpu_mesh_textured_fragment_source);
+    const uint program = vertex && fragment ? zox_gpu_draw_program(vertex, fragment) : 0;
+    free(vertex);
+    free(fragment);
+    return program;
 }
 
 // a mesher with room for max_faces faces, 1 on success (needs a compute capable context)

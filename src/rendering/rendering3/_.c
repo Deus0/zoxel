@@ -22,6 +22,7 @@ double zox_vox_instance_render_ms = 0;    // vox_instance_render_system's time, 
 
 void import_rendering3(ecs* world) {
     zox_module(rendering3);
+    zox_gpu_share_block("InstanceMatrices", zox_instance_matrices_binding);
     zox_components_rendering3(world);
     zox_systems_basics3(world);
 #ifdef zox_tests

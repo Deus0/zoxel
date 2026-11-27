@@ -22,7 +22,7 @@ void gpu_restore_rendering3(ecs* world) {
         bones->value = zox_gpu_create_buffer();
         zox_add(e, SkeletonMeshDirty);
     zox_disposed_end(disposed_bone_indexes);
-    // the materials relinked (gpu_restore_rendering): their locations again, the instance blocks bound again
+    // the materials relinked (gpu_restore_rendering): their locations again (their shared blocks bound as they're made)
     zox_gpu_relocate(MaterialBasic3D);
     zox_gpu_relocate(MaterialColored3D);
     zox_gpu_relocate(MaterialColoredLit3D);
@@ -31,8 +31,6 @@ void gpu_restore_rendering3(ecs* world) {
 #ifndef zox_disable_rendering_instances
     zox_gpu_relocate(MaterialVoxInstance);
     zox_gpu_relocate(MaterialVoxInstanceSway);
-    if (zox_valid(material_vox_instance)) bind_instance_matrices(zox_getv(material_vox_instance, MaterialGPULink));
-    if (zox_valid(material_vox_instance_sway)) bind_instance_matrices(zox_getv(material_vox_instance_sway, MaterialGPULink));
     zox_each_begin(UboGPULink);
         zox_each_o(UboGPULink, ubo);
         ubo->value = generate_ubo(zox_instance_matrices_binding);

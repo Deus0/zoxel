@@ -1,6 +1,5 @@
 in vec3 vertex_color_frag;
 in float fog_blend;
-uniform vec4 fog_data;
 uniform float brightness;
 uniform float alpha;    // 1 drawn solid, less for a see through mesh (drawn after, blended)
 #ifdef zox_outlines

@@ -6,7 +6,6 @@ typedef struct {
     gint bone_matrix;
     gint bone_positions;
     gint brightness;
-    gint fog_data;
     gint paint_weights;
     gint outline;           // its outline id in the mask (doc/plans/outlines.md)
 } MaterialBone;
@@ -21,7 +20,6 @@ MaterialBone create_MaterialBone(guint material) {
         zox_gpu_get_material_property(material, "bone_matrix"),
         zox_gpu_get_material_property(material, "bone_positions"),
         zox_gpu_get_material_property(material, "brightness"),
-        zox_gpu_get_material_property(material, "fog_data"),
         zox_gpu_get_material_property(material, "paint_weights"),
         zox_gpu_get_material_property(material, "outline")
     };

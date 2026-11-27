@@ -1,5 +1,10 @@
 static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const char* path) {
-    char* source = zox_read_shader(path);
+    char* read = zox_read_shader(path);
+    if (!read) {
+        return 0;
+    }
+    char* source = shader_add_view(read);
+    free(read);
     if (!source) {
         return 0;
     }
@@ -56,6 +61,7 @@ void load_files_shaders(ecs *world) {
     char* load_directory = concat_file_path(resources_path, directory_shaders);
     zox_logv("  - Loading Files Shaders [%s]", load_directory);
     FileList files = get_files(load_directory, 1);
+    load_shader_view(load_directory);
     free(load_directory);
     files_shaders = malloc(sizeof(entity) * files.count);
     files_hashmap_shaders = create_string_hashmap(files.count);
@@ -64,7 +70,10 @@ void load_files_shaders(ecs *world) {
         char* filepath = files.files[i];
         char* filename = files.filenames[i];
         zox_logv("   - [%i] [shader] [%s]", i, filepath);
-        entity e = spawn_file_shader_at_path(world, prefab_file_shader, filepath);
+        // view.glsl is added to the others, not a shader itself
+        const size_t length = strlen(filename);
+        entity e = length > 5 && strcmp(filename + length - 5, ".glsl") == 0 ? 0 :
+            spawn_file_shader_at_path(world, prefab_file_shader, filepath);
         if (e) {
             string_hashmap_add(files_hashmap_shaders, new_string_data_clone(filename), e);
         }
@@ -77,6 +86,7 @@ void load_files_shaders(ecs *world) {
 void dispose_files_shaders() {
     zox_logv(" > disposing [%i] [shaders]", files_hashmap_shaders->size);
     string_hashmap_dispose(files_hashmap_shaders);
+    dispose_shader_view();
     files_hashmap_shaders = NULL;
     free(files_shaders);
     files_shaders = NULL;

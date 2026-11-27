@@ -54,6 +54,7 @@ void viewport_clear_system(iter* it) {
 
 void import_rendering(ecs* world) {
     zox_module(rendering);
+    zox_gpu_share_block("RenderView", zox_render_view_binding);
     initialize_render_loop();
     initialize_hook_load_shader();
     initialize_hook_gpu_dispose();

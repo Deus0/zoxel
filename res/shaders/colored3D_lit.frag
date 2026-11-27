@@ -3,7 +3,6 @@ in vec4 vertex_color_frag;
 in vec3 world_position;
 in float fog_blend;
 const float GLOW = 3.0;   // a vertex's glow (its colour's alpha, doc/plans/hdr.md), not lit: up to this much past white
-uniform vec4 fog_data;
 uniform float brightness;
 uniform float alpha;
 uniform vec3 camera_position;

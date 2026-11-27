@@ -7,7 +7,6 @@ typedef struct {
     gint vertex_color;
     gint matrices;
     guint brightness;
-    guint fog_data;
     guint camera_matrix;
     guint sway_data;
     guint alpha;
@@ -24,7 +23,6 @@ MaterialVoxInstanceSway create_MaterialVoxInstanceSway(const uint material) {
         0,
 #endif
         zox_gpu_get_material_property(material, "brightness"),
-        zox_gpu_get_material_property(material, "fog_data"),
         zox_gpu_get_material_property(material, "camera_matrix"),
         zox_gpu_get_material_property(material, "sway_data"),
         zox_gpu_get_material_property(material, "alpha")
@@ -49,7 +47,6 @@ entity spawn_material_vox_instance_sway(ecs* world) {
         zox_loge("vox instance sway material failed to initialize")
         return 0;
     }
-    bind_instance_matrices(material);
     const MaterialVoxInstanceSway data = create_MaterialVoxInstanceSway(material);
     zox_set_data(e, MaterialVoxInstanceSway, data)
     material_vox_instance_sway = e;

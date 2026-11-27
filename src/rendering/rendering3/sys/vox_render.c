@@ -26,7 +26,6 @@ static inline const MaterialColored3D* vox_render_bind(ecs* world, entity materi
     const MaterialColoredLit3D* lit = zox_has(material, MaterialColoredLit3D) ? zox_get(material, MaterialColoredLit3D) : NULL;
     const MaterialColored3D* attributes = lit ? &lit->colored : zox_get(material, MaterialColored3D);
     zox_gpu_material(gpu);
-    zox_gpu_float4(attributes->fog_data, get_fog_value());
     zox_gpu_float(attributes->alpha, 1);
     if (lit) {
         zox_gpu_float3(lit->camera_position, render_camera_position);
