@@ -43,6 +43,8 @@ void zox_systems_editor(ecs *world) {
         [none] elements2.VirtualList,
         [none] core.Dirty
     );
+    zox_on_add(hierarchy_child_event, (ChildOf, *));
+    zox_observer(hierarchy_child_event, EcsOnRemove, (ChildOf, *));
     zox_on_add(hierarchy_slot_event, [none] editor.HierarchySlot, [none] core.Dirty);
     zox_on_add(inspector_search_event, [none] containers.ListVisible, [none] core.Dirty);
     zox_on_add(

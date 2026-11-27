@@ -14,3 +14,4 @@ color editor_hover_fill = (color) { 31, 111, 235, 255 };
 // button_font_thickness_fill
 // button_font_thickness_outline
 // button_font_resolution
+entity hierarchy_list_open;   // the open hierarchy list: its tree refreshes when entities spawn into it (hierarchy_child_event)

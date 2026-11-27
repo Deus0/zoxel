@@ -197,3 +197,28 @@ static void hierarchy_spawn_event(iter* it) {
         virtual_list_finish(world, list, &page, walk.first, count, walk.start);
     }
 }
+
+
+static byte hierarchy_shows_children(ecs* world, entity list, entity parent) {
+    return zox_is_scene_root(world, parent) || zox_is_linked(world, list, Unfolded, parent);
+}
+
+// A child added to or removed from a shown row (unfolded, or a root's fold arrow) refreshes the tree.
+static void hierarchy_child_event(iter* it) {
+    zox_sys_world();
+    const entity list = hierarchy_list_open;
+    if (!list || !zox_valid(list) || zox_has(list, Dirty)) {
+        return;
+    }
+    for (int i = 0; i < it->count; i++) {
+        const entity parent = zox_get_parent(world, it->entities[i]);
+        if (!zox_valid(parent) || !hierarchy_row_entity(world, it->entities[i])) {
+            continue;
+        }
+        const entity grand = zox_get_parent(world, parent);
+        if (hierarchy_shows_children(world, list, parent) || (grand && zox_is_linked(world, list, Unfolded, grand))) {
+            zox_add(list, Dirty);
+            return;
+        }
+    }
+}

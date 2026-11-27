@@ -1,5 +1,11 @@
 # Done
 
+## 2026-11-28
+-x Editor hierarchy missed entities spawned after it opened (a realm's children besides its tilemap): it only
+  rebuilt on its own events (open, fold, scroll). An observer on ChildOf added or removed (hierarchy_child_event)
+  refreshes it when the parent's row is shown (a root, or unfolded). A text shrinking (a row relabelled) positioned
+  its stale glyphs, about to be deleted, and logged errors; they're skipped (texts_position_system). tst
+  hierarchy_spawned
 ## 2026-11-27
 -x Grid windows have a scroll view: spawn_window_grid (its body a scroll view, the grid its list), a vertical bar
   shown while its rows don't fit and hidden when they do, set as the window lays out (window_grid_fit), the grid

@@ -64,6 +64,10 @@ void texts_position_system(iter* it) {
         /*if (dirty->value != zox_dirty_end) {
             continue;
         }*/
+        uint glyphs = 0;
+        for (uint k = 0; k < text_data->length; k++) {
+            glyphs += !is_skip_zigel(text_data->value[k]);
+        }
         iter it2 = zox_children(world, e);
         while (zox_children_next(it2)) {
             for (int j = 0; j < it2.count; j++) {
@@ -73,6 +77,9 @@ void texts_position_system(iter* it) {
                 }
                 // NOTE: glyphs aren't iterated in order, so use their index
                 const uint child_index = zox_getv(e2, ChildIndex);
+                if (child_index >= glyphs) {
+                    continue;   // the text shrank, text_update_system deletes this glyph
+                }
                 if (!zox_has(e2, LayoutPosition)) {
                     zox_logw("Glyph [%s] is missing Layout Components",
                         zox_get_name(e2));
