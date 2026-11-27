@@ -90,8 +90,6 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 - dig_light on vulkan (2026-11-27, every run, master too): "the hole's faces never showed (0 of 5)"; gl passes
 - bed_sleep (2026-11-27, solo, 1 run in 5): "asleep it isn't still: DisableMovement [0]" on climbing on, then
   "getting off it can already move"; the next 3 runs passed
-- editor (2026-11-26, zoxel and zedit): fails at step 9, "fps display didn't open" after toggle_fps_viewer (z), then
-  times out waiting for every editor tool to close. The FPS setting is spawned (editor/eve app_initialize_editor)
 - canvas_resize_input (2026-11-27, master too): at [440x300] and [300x440] the anchored button doesn't draw at its
   anchor ([260,110], [120,250]) and gets no clicks
 - chunk_mesh_flicker, stream_seams: rare seams left, doc/plans/chunk_lods.md

@@ -171,6 +171,9 @@ byte zox_tst_editor_ready(ecs* world) {
             break;
         case 9:
             zox_tst_waiting = "the fps display and debug label";
+            if (!zox_tst_menu(world, canvas, zox_id(FPSDisplay)) || !zox_tst_menu(world, canvas, zox_id(GameDebugLabel))) {
+                return 0;
+            }
             zox_tst_check(zox_tst_menu(world, canvas, zox_id(FPSDisplay)), "fps display didn't open");
             zox_tst_check(zox_tst_menu(world, canvas, zox_id(GameDebugLabel)), "debug label didn't open");
             toggle_fps_viewer(world, zox_key_z);

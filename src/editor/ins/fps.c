@@ -39,16 +39,18 @@ void toggle_fps_viewer(ecs *world, int32_t keycode) {
     if (keycode != zox_key_z || !zox_valid(main_app)) {
         return;
     }
+    // set before the setting's Dirty: its observer (editor_settings_observer_callback) can run right away and set it too
+    const byte on = !zox_fps_display;
+    zox_fps_display = on;
     iter it = zox_children(world, main_app);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             const entity e = it.entities[i];
             if (zox_has(e, SettingFPSDisplay)) {
-                zox_set(e, SettingByte, { !zox_fps_display });
+                zox_set(e, SettingByte, { on });
                 zox_add(e, Dirty);
                 zox_add(e, Refresh);   // the save
             }
         }
     }
-    zox_fps_display = !zox_fps_display;
 }
