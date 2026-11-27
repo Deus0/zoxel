@@ -7,8 +7,10 @@
 //  - the hands on their controllers: walking, a hand stays where it is on the body as standing (it trailed a frame)
 //  - everything tracked is scaled to the body (its height over the player's): leaning 0.3m in the room moves the
 //    eyes 0.3m scaled
-//  - the left stick walks the character, at speed straight away and stopped straight away (no inertia), each
-//    frame's move steady over its dt (friction on: its drag flickering with Grounded made bumps)
+//  - the left stick (doc/tech/vr.md): the view (the eyes) at speed straight away and stopped straight away, each
+//    frame's move steady over its dt (a view speeding up or sliding sickens); the body walks after it by the move
+//    (physics), back under the view half a second after it stops (the view's lead on it under 3cm: it slides ~10cm
+//    past, then steps back)
 //  - the device mode is the controllers': they're enabled playing, the keyboard, mouse and touchscreen feeders
 //    (on a headset Android's stray pointer events switched the mode off them, the stick didn't walk)
 //  - looking about (the simulator's head turning about a neck, as a person's) doesn't move the body
@@ -24,7 +26,10 @@ float zox_tst_xr_body_facing_turn = 0;      // the character's facing, turned by
 float zox_tst_xr_body_look = 0;             // the camera's look on the head's (1 the same)
 float zox_tst_xr_body_walked = 0;           // by the stick
 float zox_tst_xr_body_room = 0;             // by the room
-float zox_tst_xr_body_started = 0;          // the ground speed 3 frames into the stick (no inertia: at speed)
+float zox_tst_xr_body_started = 0;          // the view's speed 3 frames into the stick (no inertia: at speed)
+float zox_tst_xr_body_lead_after = 1;       // the view's lead on the body half a second after the stick's let go
+float zox_tst_xr_body_lead_most = 0;        // the most the view led the body walking
+float3 zox_tst_xr_body_eyes_last;
 float zox_tst_xr_body_stopped = 1;          // 3 frames after it's let go (stopped)
 float zox_tst_xr_body_speed_min = 1000;     // each frame's move over its dt, walking: steady (no bumps)
 float zox_tst_xr_body_speed_max = 0;
@@ -116,8 +121,9 @@ byte zox_tst_xr_body_ready(ecs* world) {
         xr_body_frame frame;
         if (zox_valid(shoulder) && zox_has(shoulder, IKHeld) && ik_arm_find(world, shoulder, &arm) &&
             xr_body_frame_get(world, xr_camera, xr_head_now_rotation, xr_head_now_position, &frame)) {
+            // on the body: the view's lead on it taken off (the hands are the player's, on the view)
             const float3 hand = float4_rotate_float3(quaternion_inverse(frame.rotation),
-                float3_sub(zox_getv(arm.bones[arm.length - 1], Position3D), frame.position));
+                float3_sub(float3_add(zox_getv(arm.bones[arm.length - 1], Position3D), xr_stick_lead_now(world, character)), frame.position));
             if (f > 140 && f < 150) {
                 zox_tst_xr_body_hand_still = hand;
                 zox_tst_xr_body_hand_seen = 1;
@@ -162,7 +168,14 @@ byte zox_tst_xr_body_ready(ecs* world) {
         xr_sim_script_left_stick = (float2) { 0, 1 };
     }
     {
-        const float3 p = zox_getv(character, Position3D);
+        // the view's speed: the eyes (the body's would speed up and slide, the move's physics)
+        const float3 p = zox_tst_xr_body_eyes();
+        if (f >= 150 && f < 210) {
+            zox_tst_xr_body_lead_most = float_max(zox_tst_xr_body_lead_most, float3_length(xr_stick_lead));
+        }
+        if (f == 240) {
+            zox_tst_xr_body_lead_after = float3_length(xr_stick_lead);
+        }
         if (f >= 153 && f < 210 && zox_tst_xr_body_dt_last > 0) {
             const float3 d = float3_sub(p, zox_tst_xr_body_last);
             const float speed = sqrtf(d.x * d.x + d.z * d.z) / zox_tst_xr_body_dt_last;
@@ -172,9 +185,14 @@ byte zox_tst_xr_body_ready(ecs* world) {
         zox_tst_xr_body_last = p;
         zox_tst_xr_body_dt_last = (float) zox_delta_time;
     }
+    if (f == 212) {
+        zox_tst_xr_body_eyes_last = zox_tst_xr_body_eyes();
+    }
     if (f == 153 || f == 213) {
         // the speed it moved this frame (its velocity is after drag: the next frame's is set again)
-        const float speed = f == 153 ? zox_tst_xr_body_speed_max : sqrtf(zox_getv(character, Velocity3D).x * zox_getv(character, Velocity3D).x + zox_getv(character, Velocity3D).z * zox_getv(character, Velocity3D).z);
+        const float3 d = float3_sub(zox_tst_xr_body_eyes(), zox_tst_xr_body_eyes_last);
+        const float speed = f == 153 ? zox_tst_xr_body_speed_max :
+            (zox_tst_xr_body_dt_last > 0 ? sqrtf(d.x * d.x + d.z * d.z) / zox_tst_xr_body_dt_last : 0);
         if (f == 153) {
             zox_tst_xr_body_started = speed;
         } else {
@@ -341,12 +359,15 @@ void zox_tst_xr_body_check(ecs* world) {
     zox_tst_check(zox_tst_xr_body_worst_eyes < 0.02f, "the eyes left the camera by [%f]", zox_tst_xr_body_worst_eyes);
     zox_tst_check(zox_tst_xr_body_facing_turn < 0.0001f, "the head's turn turned the body [%f]", zox_tst_xr_body_facing_turn);
     zox_tst_check(zox_tst_xr_body_look > 0.99f, "the camera doesn't look where the head does [%f]", zox_tst_xr_body_look);
-    zox_log("[tst] xr_body: speed 3 frames in [%.3f] of [%.3f], 3 frames after [%.3f]", zox_tst_xr_body_started, max_velocity3D.y, zox_tst_xr_body_stopped);
+    zox_log("[tst] xr_body: the view's speed 3 frames in [%.3f] of [%.3f], 3 frames after [%.3f]", zox_tst_xr_body_started, max_velocity3D.y, zox_tst_xr_body_stopped);
+    zox_log("[tst] xr_body: the view led the body by at most [%.3f] walking, [%.3f] half a second after", zox_tst_xr_body_lead_most, zox_tst_xr_body_lead_after);
+    // the body slides ~10cm past the view as it stops (its push and friction brake it), then steps back: ~2cm left
+    zox_tst_check(zox_tst_xr_body_lead_after < 0.03f, "the body isn't back under the view [%f] half a second after", zox_tst_xr_body_lead_after);
     zox_log("[tst] xr_body: walking speed per frame [%.4f to %.4f]", zox_tst_xr_body_speed_min, zox_tst_xr_body_speed_max);
     zox_tst_check(zox_tst_xr_body_speed_min > max_velocity3D.y * 0.97f && zox_tst_xr_body_speed_max < max_velocity3D.y * 1.03f,
         "walking speed bumped, [%f to %f] of [%f]", zox_tst_xr_body_speed_min, zox_tst_xr_body_speed_max, max_velocity3D.y);
     zox_tst_check(zox_tst_xr_body_started > max_velocity3D.y * 0.97f, "the stick ramped up, not at speed [%f]", zox_tst_xr_body_started);
-    zox_tst_check(zox_tst_xr_body_stopped < 0.05f, "let go it coasted [%f]", zox_tst_xr_body_stopped);
+    zox_tst_check(zox_tst_xr_body_stopped < 0.05f, "let go the view coasted [%f]", zox_tst_xr_body_stopped);
     zox_tst_check(zox_tst_xr_body_walked > 0.3f, "the left stick didn't walk the character [%f]", zox_tst_xr_body_walked);
     zox_log("[tst] xr_body: walking, the right hand shifted on the body by [%.4f] from standing", zox_tst_xr_body_hand_walking);
     zox_tst_check(zox_tst_xr_body_hand_walking >= 0, "no right hand held on its controller");

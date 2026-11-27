@@ -1,5 +1,6 @@
 #include "labels.c"
 #include "third_person.c"
+#include "move.c"
 
 // returns success
 byte get_player_linked_things(

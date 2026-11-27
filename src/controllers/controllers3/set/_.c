@@ -12,6 +12,13 @@ byte player_turn_instant = 0;
 float player_turn_strength = 400;   // the spring: angular acceleration a radian off
 float player_turn_damping = 30;     // against its spin (critically damped near 2 * sqrt(strength))
 float player_turn_max = 800;        // the most angular acceleration, radians a second squared
+// a headset's stick (doc/tech/vr.md): its view moves at the stick's speed at once, steady, stopped at once (a view
+//  speeding up or sliding sickens); the body walks after it by the move like any character (xr/fun/body.c)
+float3 xr_stick_velocity = { 0, 0, 0 };     // the view's this frame, world, flat (movement.c writes it)
+float3 xr_stick_lead = { 0, 0, 0 };         // how far the view is ahead of the body, world, flat (xr/fun/body.c)
+float xr_stick_turn = 0;                    // the right stick's turn of the body this frame, radians about its up
+                                            //  (rotation.c): xr/fun/body.c turns the view about the head by it
+float xr_stick_catch = 6;                   // the body's push toward the view: metres a second for each metre behind
 // the speed stat (StatSpeed, 1 a player's start) over 1 raises its top speed and push by this much of it
 float player_speed_stat_scale = 0.5f;
 const float min_mouse_delta3 = 0.01f;

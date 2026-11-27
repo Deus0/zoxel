@@ -5,32 +5,19 @@
 //  - not playing, its movement off, a free camera: it wants nothing (it would walk on, on the last input)
 //  - crouching it sets itself (the skeleton's CrouchState); a headset walks without inertia, on its own (below)
 
-// a character's up, against its gravity (any direction: a gravity cube's flip), +y without one
-static inline float3 character_up(ecs* world, entity character) {
-    return physics3_up(zox_has(character, Gravity3D) ? zox_getv(character, Gravity3D) : float3_zero);
-}
 
-// the ground velocity straight from the stick (XR): along the ground at the walk's top speed, along the character's
-//  facing, its part along up (falling, jumping) kept; scaled against this frame's drag, so it moves the same each frame (friction
-//  kept, physics3_drag_compensation)
-static inline void player3d_move_direct(ecs* world, entity character, float2 stick, byte is_running) {
-    float3 local = { stick.x * max_velocity3D.x, 0, -stick.y * max_velocity3D.y };
-    if (is_camera_positive_z) {
-        local.x *= -1;
-        local.z *= -1;
-    }
-    if (is_running) {
-        local.x *= run_speed;
-        local.z *= run_speed;
-    }
-    if (zox_has(character, InWater)) {
-        local = float3_scale(local, swim_speed);
-    }
-    const float3 world_velocity = float3_scale(float4_rotate_float3(zox_getv(character, Rotation3D), local),
-        physics3_drag_compensation(world, character));
-    const float3 up = character_up(world, character);
-    Velocity3D* velocity = zox_getm(character, Velocity3D);
-    velocity->value = float3_add(float3_scale(up, float3_dot(velocity->value, up)), physics3_flatten(world_velocity, up));
+// a headset: the stick moves the view at once at its top speed (xr_stick_velocity, body.c adds it to the view); the
+//  body's move is that and a push toward the view's lead on it (xr_stick_lead), so it walks after the view and back
+//  under it when it stops, by the move's physics (inertia, collisions, the speed stat)
+static inline void player3_move_xr(ecs* world, entity character, MoveDirection* move, float2 stick) {
+    const float4 frame = zox_getv(character, Rotation3D);
+    const float2 top = character3_top_speed(world, character);
+    const float3 local = player3_move_local(stick);
+    xr_stick_velocity = physics3_flatten(float4_rotate_float3(frame, (float3) { local.x * top.x, 0, local.z * top.y }),
+        character_up(world, character));
+    const float3 wanted = float3_add(xr_stick_velocity, float3_scale(xr_stick_lead, xr_stick_catch));
+    const float3 in_frame = float4_rotate_float3(float4_inverse(frame), wanted);
+    move->value = float4_rotate_float3(frame, (float3) { top.x > 0 ? in_frame.x / top.x : 0, 0, top.y > 0 ? in_frame.z / top.y : 0 });
 }
 
 void player3d_move_system(iter* it) {
@@ -49,6 +36,9 @@ void player3d_move_system(iter* it) {
         // written in place, once a frame: two deferred sets in one pass lost the stick's (tst walk_bob stood still)
         MoveDirection* move = zox_getm(character, MoveDirection);
         move->value = float3_zero;      // wants nothing unless its input says (below)
+        if (zox_xr_active) {
+            xr_stick_velocity = float3_zero;
+        }
         if (state->value != zox_player_state_playing || zox_has(character, DisableMovement)) {
             continue;
         }
@@ -141,7 +131,7 @@ void player3d_move_system(iter* it) {
         // a headset walks without inertia: the stick sets the ground velocity, at speed the frame it's pushed,
         //  stopped the frame it's let go (accelerating up and friction coasting down felt like lag, and sickens)
         if (zox_xr_active && !zox_getv(character, FlyMode)) {
-            player3d_move_direct(world, character, left_stick, is_running);
+            player3_move_xr(world, character, move, left_stick);
             continue;
         }
         if (is_running && !zox_has(character, Running)) {

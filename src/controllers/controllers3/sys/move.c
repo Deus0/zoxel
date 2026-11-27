@@ -52,10 +52,6 @@ static inline physics_step character3_step(ecs* world, entity e) {
     return physics_step_new(k, (float) zox_delta_time);
 }
 
-// how much the speed stat (1 a player's start) raises its top speed and push
-static inline float character3_speed_scale(ecs* world, entity e) {
-    return 1 + (character_speed(world, e) - 1) * player_speed_stat_scale;
-}
 
 void character3_move_system(iter* it) {
     zox_sys_on_begin();
@@ -90,9 +86,7 @@ void character3_move_system(iter* it) {
             continue;
         }
         const byte flying = zox_has(e, FlyMode) && zox_getv(e, FlyMode);
-        const entity skeleton = get_skeleton(world, e);
-        const byte crouching = !zox_xr_active && zox_valid(skeleton) && zox_has(skeleton, CrouchState) &&
-            zox_getv(skeleton, CrouchState);
+        const byte crouching = character3_crouching(world, e);
         const byte running = zox_has(e, Running) && !crouching;
         const float speed = character3_speed_scale(world, e);
         // its move in its own frame (as it now faces), each axis its power
@@ -104,19 +98,13 @@ void character3_move_system(iter* it) {
             movement.x *= acceleration_scale;
             movement.y *= acceleration_scale;
         }
-        float2 max_speed = float2_multiply1(max_velocity3D, speed);
+        // an axis asked past 1 (a headset's body catching its view up, movement.c player3_move_xr) may go that much
+        //  faster, to half again: players' sticks never ask past 1
+        const float2 top = character3_top_speed(world, e);
+        const float2 max_speed = { top.x * clampf(fabsf(local.x), 1, 1.5f), top.y * clampf(fabsf(local.z), 1, 1.5f) };
         if (crouching) {
-            max_speed = float2_multiply1(max_speed, crouch_speed);
             movement.x *= crouch_speed;
             movement.z *= crouch_speed;
-        }
-        if (running) {
-            const float top = flying ? fly_run_speed : run_speed;
-            max_speed.x *= top;
-            max_speed.y *= top;
-        }
-        if (zox_has(e, InWater)) {
-            max_speed = float2_multiply1(max_speed, swim_speed);
         }
         // along the ground: flat against its up (its gravity's, any way)
         const float3 up = character_up(world, e);

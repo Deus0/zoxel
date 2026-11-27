@@ -6,6 +6,7 @@
 #include "room.c"
 #include "body.c"
 #include "lean.c"
+#include "stick.c"
 #include "frustum.c"
 #include "reach.c"
 #include "options.c"
@@ -23,6 +24,7 @@ void zox_tsts_xr(ecs* world) {
     zox_tsts_xr_play(world);
     zox_tsts_xr_room(world);
     zox_tsts_xr_body(world);
+    zox_tsts_xr_stick(world);
     zox_tsts_xr_lean(world);
     zox_tsts_xr_frustum(world);
     zox_tsts_xr_reach(world);

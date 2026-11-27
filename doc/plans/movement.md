@@ -57,7 +57,15 @@ Who writes it, nothing else:
 3. **Npcs.** The ai writes `MoveDirection`; `move_forward_system`'s push and `rotate_towards_system`'s torque go.
    Npcs then turn and accelerate like players; tune with step 1's npc numbers and play tests (it changes how they
    feel: decide together).
-4. **XR.** Its direct stick (no inertia) becomes a setting of the move (no acceleration for a headset), not its own path.
+4. [x] **XR** (2026-11-27, doc/tech/vr.md, Moving by the stick; the head into a wall fading not done yet). The body moves by the move like any character (physics, turning, the speed stat); the view stays
+   comfortable and the camera stays the real head, never smoothed or lagged:
+   - the view (the play space) still moves straight from the stick, steady, no speeding up or sliding (accelerating
+     views sicken: the eyes see it, the inner ear doesn't)
+   - a balancer keeps the body under the head: leans and steps the legs to catch up, keeps the torso and head bones
+     steady meanwhile (builds on xr/fun/body.c and the leg stepping in bones). Others, mirrors and shadows see this body
+   - the camera is attached as now; only the play space's motion differs from the body's. Walls (as Half-Life: Alyx
+     and most VR games): the view moved by the stick stops at the body's collisions; the real head leaning into a wall
+     fades the view to black, never pushed back (doc/tech/vr.md)
 
 Each step its own commit, zoxel's movement tests (crouch, auto_jump, step_gap, footsteps, npc_speed, npc_attacks)
 before and after.
