@@ -32,9 +32,11 @@ void zox_systems_controllers3(ecs *world) {
         [in] inputs.DeviceMode,
         [none] players.Player
     );
+    // after physics moved its target (zoxp_trails_sync, a barrier), before the camera's matrix: aimed at where the
+    //  character is drawn, not where it was (before physics, the camera shook as it walked)
     zox_system(
         orbit_camera_system,
-        zoxp_update,
+        zoxp_trails,
         [in] players.PlayerState,
         [none] players.Player
     );

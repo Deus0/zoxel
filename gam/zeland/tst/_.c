@@ -25,11 +25,18 @@ void zox_tst_zeland_boot_check(ecs* world) {
 }
 
 
-// tst: zeland_walk, auto jump on (as with a touchscreen), W pressed then pushed 2 seconds: the character walks away from the orbit camera (along its facing), turned that
-//  way, on the ground; the camera follows; a screenshot (zeland_walk.ppm)
+// tst: zeland_walk, auto jump on (as with a touchscreen), W held 2 seconds (the fake keyboard, as a player would): the
+//  character walks away from the orbit camera, faces that way, on the ground; the camera follows without shaking
+//  (the character still on screen frame to frame); a screenshot (zeland_walk.ppm)
 double zox_tst_zw_time = 0;
 float3 zox_tst_zw_start;
 byte zox_tst_zw_shot = 0;
+float3 zox_tst_zw_seen;         // the character's direction in the camera's frame, the frame before
+float zox_tst_zw_shake = 0;     // the most it moved on screen in a frame while walking, degrees
+float3 zox_tst_zw_forward;      // the camera's forward, the frame before
+float zox_tst_zw_turn = 0;      // how far the camera turned the frame before, degrees
+float zox_tst_zw_jerk = 0;      // the most its turn changed between frames: a shake turns it one way then the other
+int zox_tst_zw_frames = 0;
 
 static inline void zox_tst_zw_hold_w(ecs* world, byte held) {
     entity devices[zox_children_capacity];
@@ -39,6 +46,12 @@ static inline void zox_tst_zw_hold_w(ecs* world, byte held) {
             zox_set(devices[i], Keyboard, { .w.is_pressed = held });
         }
     }
+}
+
+// the character's direction from the camera, in the camera's own frame: where it is on screen
+static inline float3 zox_tst_zw_on_screen(ecs* world, entity camera, entity character) {
+    const float3 to = float3_normalize(float3_sub(zox_getv(character, Position3D), zox_getv(camera, Position3D)));
+    return float4_rotate_float3(float4_inverse(zox_getv(camera, Rotation3D)), to);
 }
 
 byte zox_tst_zeland_walk_ready(ecs* world) {
@@ -58,16 +71,29 @@ byte zox_tst_zeland_walk_ready(ecs* world) {
         zox_tst_zw_start = zox_getv(character, Position3D);
     }
     zox_tst_waiting = "the character to walk";
+    if (zox_current_time - zox_tst_zw_time >= 2) {
+        zox_tst_zw_hold_w(world, 0);
+    }
     if (zox_current_time - zox_tst_zw_time < 2) {
-        // W is read from SDL each frame (a test can't hold it): pressed once it turns the character to the camera's
-        //  forward (movement.c), then it's pushed along its facing at walking speed (as tst auto_jump)
+        // the camera eased behind it after the first half second: from then it should hold the character still on screen
+        const float3 seen = zox_tst_zw_on_screen(world, camera, character);
+        if (zox_current_time - zox_tst_zw_time > 0.5) {
+            const float turn = acosf(fminf(1, float3_dot(seen, zox_tst_zw_seen))) * 180 / M_PI;
+            zox_tst_zw_shake = fmaxf(zox_tst_zw_shake, turn);
+            zox_tst_zw_frames++;
+        }
+        zox_tst_zw_seen = seen;
+        const float3 forward = float4_rotate_float3(zox_getv(camera, Rotation3D), (float3) { 0, 0, -1 });
+        const float camera_turn = acosf(fminf(1, float3_dot(forward, zox_tst_zw_forward))) * 180 / M_PI;
+        if (zox_current_time - zox_tst_zw_time > 0.5) {
+            zox_tst_zw_jerk = fmaxf(zox_tst_zw_jerk, fabsf(camera_turn - zox_tst_zw_turn));
+        }
+        zox_tst_zw_turn = camera_turn;
+        zox_tst_zw_forward = forward;
+        // W held, as a player would (tests read no real keyboard: zox_keyboard_fake)
         zox_tst_zw_hold_w(world, 1);
-        const float3 facing = float4_rotate_float3(zox_getv(character, Rotation3D), (float3) { 0, 0, -1 });
-        const float3 velocity = zox_getv(character, Velocity3D);
-        zox_setv(character, Velocity3D, ((float3) { facing.x * 3, velocity.y, facing.z * 3 }));
         return 0;
     }
-    zox_tst_zw_hold_w(world, 0);
     if (!zox_tst_zw_shot) {
         zox_tst_zw_shot = 1;
         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("zeland_walk.ppm"));
@@ -82,8 +108,8 @@ void zox_tst_zeland_walk_check(ecs* world) {
     const float3 position = zox_getv(character, Position3D);
     const float3 moved = float3_sub(position, zox_tst_zw_start);
     // the camera starts at yaw 0, behind it on +z: forward is -z
-    zox_tst_check(moved.z < -1, "it didn't walk away from the camera (moved [%f %f %f])", moved.x, moved.y, moved.z);
-    const float3 facing = float4_rotate_float3(zox_getv(character, Rotation3D), (float3) { 0, 0, -1 });
+    zox_tst_check(moved.z < -1 && fabsf(moved.x) < -moved.z / 3, "W didn't walk it away from the camera (moved [%f %f %f])", moved.x, moved.y, moved.z);
+    const float3 facing = float4_rotate_float3(zox_getv(character, Rotation3D), (float3) { 0, 0, is_camera_positive_z ? 1 : -1 });
     zox_tst_check(facing.z < -0.9f, "it doesn't face where it walked (facing [%f %f %f])", facing.x, facing.y, facing.z);
     const entity terrain = zox_get_link(world, character, TerrainLink);
     const float3 local = float3_sub(position, zox_getv(terrain, Position3D));
@@ -96,6 +122,10 @@ void zox_tst_zeland_walk_check(ecs* world) {
     const uint count = zox_get_children_by_id(world, character, meshes, 8, zox_id(VoxMesh));
     zox_tst_check(count == 1 && zox_getv(meshes[0], MeshRenderCount) > 0, "its capsule mesh isn't drawn ([%u] meshes, count [%i])",
         count, count ? (int) zox_getv(meshes[0], MeshRenderCount) : -1);
+    zox_log("[tst] shake: the character moved on screen at most [%.3f] degrees a frame, the camera's turn changed at most [%.3f] between frames, over [%i] frames", zox_tst_zw_shake, zox_tst_zw_jerk, zox_tst_zw_frames);
+    // walking straight on the gpu both are ~0.03; the play test's shake isn't reproduced here yet (2026-11-27)
+    zox_tst_check(zox_tst_zw_frames > 5 && zox_tst_zw_shake < 0.15f, "the camera shakes: the character moved [%.3f] degrees on screen in a frame", zox_tst_zw_shake);
+    zox_tst_check(zox_tst_zw_jerk < 0.15f, "the camera shakes: its turn changed [%.3f] degrees between frames", zox_tst_zw_jerk);
     const uint errors = zox_log_errors_count - zox_tst_errors_start;
     zox_tst_check(errors == 0, "[%u] errors logged", errors);
 }

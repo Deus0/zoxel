@@ -168,11 +168,7 @@ void player3d_move_system(iter* it) {
             continue;
         }
         // NOTE: Z axis is negative forward
-        float3 movement = { left_stick.x * player_movement_power.x, 0, -left_stick.y * player_movement_power.y };
-        if (is_camera_positive_z) {
-            movement.x *= -1;
-            movement.z *= -1;
-        }
+        float3 movement = player3_move_local(left_stick);
         if (is_running) {
             if (!zox_getv(character, FlyMode)) {
                 movement.x *= run_accceleration;
@@ -193,10 +189,14 @@ void player3d_move_system(iter* it) {
         {
             if (zox_valid(camera)) {
                 float4 camera_rotation = zox_getv(camera, Rotation3D);
-                float3 camera_euler = quaternion_to_euler(camera_rotation);
-                camera_euler.x = 0;
-                camera_euler.z = 0;
-                movement_rotation = euler_to_quaternion(camera_euler);
+                if (camera_mode == zox_camera_state_third_person) {
+                    movement_rotation = third_person_move_rotation(camera_rotation);   // fun/third_person.c
+                } else {
+                    float3 camera_euler = quaternion_to_euler(camera_rotation);
+                    camera_euler.x = 0;
+                    camera_euler.z = 0;
+                    movement_rotation = euler_to_quaternion(camera_euler);
+                }
                 // Align Character to new move rotation!
                 zox_muter(character, Rotation3D, character_rotation_mut);
                 character_rotation_mut->value = movement_rotation;

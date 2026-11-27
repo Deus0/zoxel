@@ -294,8 +294,10 @@ void zox_tst_screenshot_check(ecs* world) {
 #include "stick_deadzone.c"
 #include "touch_actions.c"
 #include "free_roam_pose.c"
+#include "third_person.c"
 
 void zox_tsts_controllers(ecs* world) {
+    zox_tsts_third_person_moves(world);
     zox_tsts_music(world);
     zox_tsts_crouch(world);
     zox_tsts_walk_bob(world);
