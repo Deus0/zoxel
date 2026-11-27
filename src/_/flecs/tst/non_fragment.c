@@ -244,3 +244,62 @@ void zox_tst_nf_realm_full_check(ecs* world) {
     zox_delete(base_stat);
     zox_delete(base_character);
 }
+
+// tst: nf_dying_parent, a child parented in the same deferred batch its parent is deleted in (a spawn system's
+//  child into a chunk the game's end deletes that frame): the child goes with it, not left alive with no parent
+//  - each way: ChildOf and non fragmenting, the parent set before the delete and after it (stages merge in any order)
+//  - flecs patch "dying parent" (doc/engine/flecs_patches.md)
+//  - run: bash bsh/tst.sh nf_dying_parent
+void zox_tst_nf_dying_parent_check(ecs* world) {
+    for (byte nf = 0; nf <= 1; nf++) {
+        for (byte delete_first = 0; delete_first <= 1; delete_first++) {
+            const entity parent = zox_new();
+            zox_defer_begin();
+            const entity child = zox_new();
+            if (delete_first) {
+                zox_delete(parent);
+            }
+            if (nf) {
+                zox_set_parent_non_fragment(world, child, parent);
+            } else {
+                zox_set_parent(world, child, parent);
+            }
+            if (!delete_first) {
+                zox_delete(parent);
+            }
+            zox_defer_end();
+            zox_tst_check(!zox_alive(parent), "the parent is alive");
+            zox_tst_check(!zox_alive(child), "[%s, parent set %s its delete] the child outlived its parent",
+                nf ? "non fragmenting" : "ChildOf", delete_first ? "after" : "before");
+            if (zox_alive(child)) {
+                zox_delete(child);
+            }
+        }
+    }
+}
+
+// tst: nf_dying_parent_stage, as nf_dying_parent, the child spawned in another stage (a multithreaded system's queue)
+//  merged after the parent's delete was applied: its parent set to a dead entity at the merge
+void zox_tst_nf_dying_parent_stage_check(ecs* world) {
+    for (byte nf = 0; nf <= 1; nf++) {
+        const entity parent = zox_new();
+        ecs_world_t* stage = ecs_stage_new(world);
+        const entity child = ecs_new(stage);
+        if (nf) {
+            const EcsParent value = { parent };
+            ecs_set_id(stage, child, ecs_id(EcsParent), sizeof(EcsParent), &value);
+        } else {
+            ecs_add_pair(stage, child, EcsChildOf, parent);
+        }
+        zox_delete(parent);
+        ecs_merge(stage);
+        ecs_stage_free(stage);
+        zox_tst_check(!zox_alive(parent), "the parent is alive");
+        zox_tst_check(!zox_alive(child), "[%s] the child outlived its parent, its parent set after its delete merged",
+            nf ? "non fragmenting" : "ChildOf");
+        if (zox_alive(child)) {
+            zox_log("[tst] nf_dying_parent_stage: the orphan's type: %s", ecs_type_str(world, ecs_get_type(world, child)));
+            zox_delete(child);
+        }
+    }
+}

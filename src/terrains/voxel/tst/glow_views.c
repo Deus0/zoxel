@@ -57,25 +57,11 @@ byte zox_tst_glow_views_ready(ecs* world) {
         if (!zox_tst_room_settled(world, chunk, &zox_tst_gviews_settled)) {
             return 0;
         }
-        // the lamp's model, as the vodes spawner places it (vodes3/sys/spawn.c), which spawns only while a game plays:
-        //  its block's prefab, its model's cube from the base voxel's corner
-        const entity lamp = zox_tst_air_block(world, zox_id(BlockLamp));
-        if (zox_valid(lamp)) {
-            const entity prefab = zox_getv(lamp, BlockPrefabLink);
-            const entity model = zox_get_link(world, lamp, ModelLink);
-            const float scale = zox_getv(zox_tst_world_terrain, BlockScale);
-            const float to_centre = ((1 << block_model_extra_depth(world, model)) - 1) * 0.5f * scale;
-            const float3 at = float3_add(zox_tst_air_position(world, chunk, (float3) { 5, 4, 6 }),
-                float3_single(to_centre - 0.5f * scale));
-            const byte index = zox_getv(lamp, BlockIndex) - 1;
-            const byte depth = zox_getv(chunk, NodeDepth);
-            const entity vox = zox_has(prefab, BlockVox) ?
-                spawn_block_vox(world, prefab, lamp, model, index, depth, 0, (byte3) { 5, 4, 6 }, at, scale) :
-                spawn_block_vox_instanced(world, prefab, lamp, model, index, depth, 0, (byte3) { 5, 4, 6 },
-                    int3_zero, at, quaternion_identity);
-            zox_tst_check(zox_valid(vox), "the street lamp's model didn't spawn");
-            zox_log("[tst] glow_views: the lamp [%s] at [%.2f %.2f %.2f], its model's glows [%i]", zox_valid(vox) ? zox_getn(vox) : "none",
-                at.x, at.y, at.z, zox_has(model, ColorGlows) ? zox_get(model, ColorGlows)->length : -1);
+        // the lamp's model, spawned by the vodes spawner (vodes3/sys/spawn.c) and linked to its base voxel
+        zox_tst_waiting = "the street lamp's model to spawn";
+        const VoxelNode* base = get_VoxelNode(zox_get(chunk, VoxelNode), zox_getv(chunk, NodeDepth), (byte3) { 5, 4, 6 });
+        if (!base || !is_linked_VoxelNode(base)) {
+            return 0;
         }
         const float3 target = zox_tst_air_position(world, chunk, (float3) { 7, 4, 7 });
         const float3 eye = zox_tst_air_position(world, chunk, (float3) { 7, 8, 10 });

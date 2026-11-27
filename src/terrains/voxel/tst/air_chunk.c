@@ -2,6 +2,7 @@
 //  - for tests that build something in an empty chunk (place_mesh, water_block, water_flow, water_splash)
 //  - register the test with zox_tst_set_setup(name, NULL, 1): it runs on the menus, no game started
 //  - its realm: zox_tst_world_realm, its terrain: zox_tst_world_terrain
+//  - block voxes spawn in it (vodes3/sys/spawn.c): place a block and wait for its voxel's link
 entity zox_tst_air_streamer = 0;
 entity zox_tst_air_found = 0;
 double zox_tst_air_begin = 0;
