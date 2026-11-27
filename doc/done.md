@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-27
+-x Grid windows have a scroll view: spawn_window_grid (its body a scroll view, the grid its list), a vertical bar
+  shown while its rows don't fit and hidden when they do, set as the window lays out (window_grid_fit), the grid
+  narrower by it; its handle sized by rows; the grid no longer scrolls itself (tst window_grid_resize)
 -x tst third_person_inputs: the third person camera and walk by fake devices (a click, the mouse up and right, W held,
   touch's look joystick right and up); with the old inverted signs it fails 3 of its checks
 -x A home stayed dark once its door shut, its glow stone unlit: a dark reaching a voxel on its last step (distance 0,

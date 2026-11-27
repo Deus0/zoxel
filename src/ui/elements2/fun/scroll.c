@@ -20,12 +20,6 @@ static void layout_scrollbar_handle(ecs* world, entity handle, int2 size, int le
 //  - ListStart is the list's first shown element, ListVisible how many show at once
 //  - dragging the handle (scrollbar_system) and the mouse wheel (scrollview_wheel_system) set the start
 
-// a scrollview's list: its ListUILink, or itself without one (a grid scrolls itself)
-static inline entity scrollview_list(ecs* world, entity scrollview) {
-    const entity list = zox_get_link(world, scrollview, ListUILink);
-    return zox_valid(list) ? list : scrollview;
-}
-
 // the furthest the list can scroll, 0 if every element fits
 int get_scrollview_max_start(
     ecs* world,
@@ -111,7 +105,7 @@ byte set_scrollview_start(
     int start,
     byte move_handle)
 {
-    const entity list = scrollview_list(world, scrollview);
+    const entity list = zox_get_link(world, scrollview, ListUILink);
     if (!set_list_start(world, list, start)) {
         return 0;
     }

@@ -25,44 +25,79 @@ static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
     }
 }
 
-// a grid body (an inventory's slots): its columns fit its width, its rows follow, those that don't fit scroll
-//  - its own scroll area (elements2/pre/grid.c): a Mask clips the rows past its edges, the wheel scrolls it,
-//    ListStart its first shown row, ListVisible how many fit (grid_system places them from it)
+// the vertical bar of a scroll view (not its horizontal one)
+static inline entity scrollview_vertical_bar(ecs* world, entity scrollview) {
+    iter it = zox_children(world, scrollview);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            if (zox_has(it.entities[i], Scrollbar) && !zox_has(it.entities[i], HorizontalScrollbar)) {
+                zox_children_end(it);
+                return it.entities[i];
+            }
+        }
+    }
+    return 0;
+}
+
+// a grid's window (ins/grid.c, an inventory's slots): its columns fit its width, its rows follow, those that don't
+//  fit scroll (ListStart its first shown row, ListVisible how many fit, grid_system places them from it, the list's
+//  Mask clips the rest)
+//  - its vertical bar shows while rows don't fit, hides when they all do; the grid narrower by it while it shows
 //  - the window is at least a cell, never grown to fit its rows (it moved about as they reflowed)
 //  - chrome: the window's height outside its body (header, footer, search bar)
-static void window_grid_fit(ecs* world, entity window, entity body, int2* size, int chrome) {
-    if (!zox_has(body, GridSize)) {
+static void window_grid_fit(ecs* world, entity window, entity scrollview, int2* size, int chrome) {
+    const entity grid = zox_valid(scrollview) ? zox_get_link(world, scrollview, ListUILink) : 0;
+    if (!zox_valid(grid) || !zox_has(grid, GridSize)) {
         return;
     }
-    const entity cell = zox_get_child_by_id(world, body, zox_id(LayoutSize));
+    const entity cell = zox_get_child_by_id(world, grid, zox_id(LayoutSize));
     if (!cell) {
         return;
     }
     const int2 cell_size = zox_getv(cell, LayoutSize);
-    const byte2 margins = zox_getv(body, GridMargins);
-    const int gap = zox_getv(body, GridPadding).x;     // grid_system's between columns
-    const int count = zox_get_children_count(world, body);
-    const int columns = int_clamp((size->x - 2 * margins.x + gap) / int_max(1, cell_size.x + gap), 1,
-        int_clamp(count, 1, 255));
-    const int rows = int_min(255, (count + columns - 1) / columns);
-    const byte2 grid = { columns, rows };
-    if (!byte2_equals(zox_getv(body, GridSize), grid)) {
-        zox_setv(body, GridSize, grid);
-    }
-    // at least one cell
-    const int2 least = { cell_size.x + 2 * margins.x, chrome + cell_size.y + 2 * margins.y };
+    const byte2 margins = zox_getv(grid, GridMargins);
+    const int gap = zox_getv(grid, GridPadding).x;     // grid_system's between columns
+    const int count = zox_get_children_count(world, grid);
+    const entity bar = scrollview_vertical_bar(world, scrollview);
+    const int bar_width = bar ? zox_getv(bar, LayoutSize).x : 0;
+    // at least one cell, and its bar
+    const int2 least = { cell_size.x + 2 * margins.x + bar_width, chrome + cell_size.y + 2 * margins.y };
     if (size->x < least.x || size->y < least.y) {
         *size = (int2) { int_max(size->x, least.x), int_max(size->y, least.y) };
         zox_setv(window, LayoutSize, *size);
     }
-    // the rows that fit, its scroll kept in them
-    const int visible = int_clamp((size->y - chrome - 2 * margins.y) / int_max(1, cell_size.y), 1, int_max(1, rows));
-    zox_setv(body, ListVisible, visible);
-    const int start = int_min(zox_getv(body, ListStart), rows - visible);
-    if (start != zox_getv(body, ListStart)) {
-        zox_setv(body, ListStart, start);
+    const int fits = int_max(1, (size->y - chrome - 2 * margins.y) / int_max(1, cell_size.y));
+    // its columns in a width, without its bar first, with it if the rows don't fit then
+    byte shown = 0;
+    int columns = 1, rows = 1;
+    for (byte with_bar = 0; with_bar < 2; with_bar++) {
+        const int width = size->x - (with_bar ? bar_width : 0);
+        columns = int_clamp((width - 2 * margins.x + gap) / int_max(1, cell_size.x + gap), 1, int_clamp(count, 1, 255));
+        rows = int_min(255, (count + columns - 1) / columns);
+        shown = with_bar;
+        if (rows <= fits || !bar) {
+            break;
+        }
     }
-    zox_add(body, Refresh);     // grid_system places its cells for its new size, next frame
+    const byte2 grid_size = { columns, rows };
+    if (!byte2_equals(zox_getv(grid, GridSize), grid_size)) {
+        zox_setv(grid, GridSize, grid_size);
+    }
+    // its bar: in place, the layout reads it next (scrollview_bar_size)
+    if (bar && zox_getv(bar, RenderDisabled) == shown) {
+        zox_muter(bar, RenderDisabled, hidden);
+        hidden->value = !shown;
+        set_children_render_disabled(world, bar, !shown);
+    }
+    // the rows that fit, its scroll kept in them
+    const int visible = int_min(fits, rows);
+    zox_setv(grid, ListVisible, visible);
+    const int start = int_min(zox_getv(grid, ListStart), rows - visible);
+    if (start != zox_getv(grid, ListStart)) {
+        zox_setv(grid, ListStart, start);
+    }
+    zox_add(grid, ListDirty);   // its bar's handle (scrollbar_handle_event)
+    zox_add(grid, Refresh);     // grid_system places its cells for its new size, next frame
 }
 
 // a list's window (a game menu's) no narrower than its widest row, its margins and its scrollbar; a virtual list's rows
@@ -181,8 +216,12 @@ static void window_layout(ecs* world, entity window, int2 size) {
     const entity search = window_search_bar_shown(world, window);
     const int search_height = search ? zox_getv(search, LayoutSize).y : 0;
     const int2 asked = size;
-    window_grid_fit(world, window, body, &size, header_height + footer_height + search_height);
-    window_rows_fit(world, window, scrollview, &size);
+    window_grid_fit(world, window, scrollview, &size, header_height + footer_height + search_height);
+    const entity view_list = zox_valid(scrollview) ? zox_get_link(world, scrollview, ListUILink) : 0;
+    const byte grid = zox_valid(view_list) && zox_has(view_list, GridSize);
+    if (!grid) {
+        window_rows_fit(world, window, scrollview, &size);
+    }
     window_grown_keeps_side(world, window, asked, size);
     window_canvas_fit(world, window, &size);     // after: a grid's rows can grow it
     window_resize_handles_fit(world, window, size);
@@ -221,6 +260,14 @@ static void window_layout(ecs* world, entity window, int2 size) {
     if (zox_valid(list)) {
         scrollview_fit_list_size(world, list, body_size, scrollview_bar_size(world, scrollview, 0),
             scrollview_bar_size(world, scrollview, 1));
+        if (grid) {
+            zox_add(list, ListDirty);
+            zox_add(list, Refresh);
+            if (scrollbar) {
+                zox_add(scrollbar, LayoutSizeDirty);
+            }
+            return;
+        }
         const byte2 padding = zox_getv(list, TextPadding);
         const byte2 margins = zox_getv(list, ListMargins);
         const int row = int_max(1, zox_getv(list, ElementFontSize) + 2 * padding.y + zox_getv(list, ListPadding).y);

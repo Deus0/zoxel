@@ -105,6 +105,7 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
   the 8 models in parallel) it'd be a fraction: ask first, it changes how model nodes run
 
 # Bugs
+- tst navigator_grid flaky (2/3, 2026-11-28): the stick right stepped two cells once (its repeat timing)
 - tst item_split times out waiting for "paused" after button_event_pause_game (on master too, 2026-11-27): likely
   the same as resume_no_punch below
 - tst input_focus_lifecycle fails: "first click did not activate text input" (on master too, 2026-11-26)

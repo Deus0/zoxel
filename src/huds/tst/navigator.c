@@ -289,8 +289,8 @@ static entity zox_tst_nav2_grid_spawn(ecs* world, entity canvas) {
     const byte2 cells = zox_tst_nav2_grid_size;
     const int frame = 32;
     const int2 size = calculate_grid_size(cells, frame, byte2_single(2), byte2_single(4));
-    const entity3 e3 = spawn_window(world, prefab_window, prefab_grid, "Grid", canvas, int2_zero, size, float2_half,
-        8, (byte2) { 4, 2 }, NULL);
+    const entity3 e3 = spawn_window_grid(world, prefab_window, canvas, "Grid", int2_zero, size, float2_half, 8,
+        (byte2) { 4, 2 }, NULL);
     zox_setv(e3.z, GridSize, cells);
     zox_setv(e3.z, GridPadding, byte2_single(2));
     zox_setv(e3.z, GridMargins, byte2_single(4));

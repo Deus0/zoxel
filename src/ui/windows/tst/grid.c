@@ -1,14 +1,21 @@
 // tst: window_grid_resize, a grid window (an inventory's slots) resized: its columns fit its width, its rows follow and
 //  scroll in its body, it stays on its canvas (sys/layout.c window_grid_fit, window_canvas_fit)
+//  - a grid window (ins/grid.c: its body a scroll view, the grid its list, a vertical bar while its rows don't fit)
 //  - a window of 16 cells, 4 by 4, made narrow by its right handle: fewer columns, more rows, the same height, the
 //      rows that don't fit past its body (its Mask clips them); the fake mouse's wheel over it scrolls a row down
 //  - its bottom right corner dragged to the minimum (a window's, 120 x 80): one row shows; then wide past the canvas: as wide as the canvas,
-//      every row shown, the window on it
+//      every row shown, its scrollbar hidden, the window on it
 //  - before: the window grew taller to fit its rows, round its centre, so it moved about as they reflowed (play test
 //      2026-11-27); before that its cells spilled out of a narrow window
 //  - run: bash bsh/tst.sh window_grid_resize
 #define zox_tst_grid_cells 16
 #define zox_tst_grid_cell 40
+
+// its scroll view's vertical bar shows
+static byte zox_tst_grid_bar_shown(ecs* world, entity body) {
+    const entity bar = scrollview_vertical_bar(world, zox_get_link(world, body, ScrollviewLink));
+    return bar && !zox_getv(bar, RenderDisabled);
+}
 
 // the shown rows' cells inside its body, the scrolled away ones past it, and the window inside its canvas
 static void zox_tst_grid_inside(ecs* world, entity canvas, entity window, entity body, const char* when) {
@@ -54,8 +61,8 @@ static byte zox_tst_window_grid_resize_ready(ecs* world) {
             }
             const byte2 margins = byte2_single(4);
             const int side = 4 * zox_tst_grid_cell + 2 * margins.x;
-            const entity3 e3 = spawn_window(world, prefab_window, prefab_grid, "Grid", canvas, int2_zero,
-                (int2) { side, side }, float2_half, 12, byte2_single(4), NULL);
+            const entity3 e3 = spawn_window_grid(world, prefab_window, canvas, "Grid", int2_zero, (int2) { side, side },
+                float2_half, 12, byte2_single(4), NULL);
             window = e3.x;
             body = e3.z;
             zox_setv(body, GridSize, ((byte2) { 4, 4 }));
@@ -75,6 +82,7 @@ static byte zox_tst_window_grid_resize_ready(ecs* world) {
                 return 0;
             }
             zox_tst_grid_inside(world, canvas, window, body, "spawned");
+            zox_tst_check(!zox_tst_grid_bar_shown(world, body), "spawned: every row fits, its scrollbar shows");
             before = zox_getv(window, LayoutSize);
             grid_before = zox_getv(body, GridSize);
             zox_setv(handle, DraggingDelta, ((int2) { -2 * zox_tst_grid_cell, 0 }));    // two columns narrower
@@ -97,6 +105,7 @@ static byte zox_tst_window_grid_resize_ready(ecs* world) {
                 "in [%i]", grid.x, grid.y, zox_getv(body, ListVisible), zox_getv(window, LayoutSize).y, grid_before.x,
                 grid_before.y, before.y);
             zox_tst_grid_inside(world, canvas, window, body, "narrowed");
+            zox_tst_check(zox_tst_grid_bar_shown(world, body), "narrowed: its rows don't fit, its scrollbar is hidden");
             grid_before = grid;
             // the fake mouse over its body, its wheel down a notch
             int2 point;
@@ -152,6 +161,8 @@ static byte zox_tst_window_grid_resize_ready(ecs* world) {
                 "widened past the canvas: the window is [%i] wide, its canvas [%i]", zox_getv(window, LayoutSize).x,
                 zox_getv(canvas, LayoutSize).x);
             zox_tst_grid_inside(world, canvas, window, body, "widened");
+            zox_tst_check(zox_getv(body, ListVisible) < zox_getv(body, GridSize).y || !zox_tst_grid_bar_shown(world, body),
+                "widened: every row fits, its scrollbar still shows");
             return 1;
     }
     step++;

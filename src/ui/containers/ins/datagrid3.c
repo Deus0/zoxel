@@ -54,18 +54,8 @@ entity spawn_datagrid_slots2(
         10 * ui_scale,
         4 * ui_scale
     };
-    entity3 e3 = spawn_window(
-        world,
-        prefab,
-        prefab_grid,
-        header_label,
-        canvas,
-        position,
-        size,
-        position_anchor,
-        header_font_size,
-        header_padding,
-        on_closed_taskbar_window);
+    entity3 e3 = spawn_window_grid(world, prefab, canvas, header_label, position, size, position_anchor,
+        header_font_size, header_padding, on_closed_taskbar_window);
     entity e = e3.x;
     entity grid = e3.z;
     // zox_set_unique_name(grid, "window_gridg");

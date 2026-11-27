@@ -3,6 +3,7 @@
 #include "resize.c"
 #include "window.c"
 #include "list.c"
+#include "grid.c"
 #include "tabs.c"
 #include "search.c"
 #include "undock.c"
