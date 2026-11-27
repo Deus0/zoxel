@@ -79,6 +79,10 @@ static entity2 spawn_item_list_button(ecs* world, entity prefab, entity parent, 
     const entity2 button = spawn_button(world, prefab, parent, label, position, size, anchor,
         alignment, font, byte2_single(alignment == zox_alignment_left ? 4 : 0), button_fill, button_outline, button_font_fill, button_font_outline);
     zox_add(button.y, TextLabel);
+    if (alignment == zox_alignment_left) {
+        zox_setv(button.y, Anchor, float2_left);    // its text from the button's left edge, not its centre
+        zox_setv(button.y, LayoutPosition, ((int2) { 4, 0 }));
+    }
     if (!ui_is3D(world, parent)) {
         zox_setv(button.x, Layer, layer);
         zox_setv(button.y, Layer, layer + 1);

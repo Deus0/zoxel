@@ -24,7 +24,22 @@ static byte zox_tst_menu_ready(ecs* world) {
     item_list_set_disabled(world, disabled, 1);
     const entity toggle = spawn_menu_item(world, menu, "Grid", (ClickEvent) { 0 });
     item_list_set_checked(world, toggle, 0);
+    const entity wide = spawn_menu_item(world, menu, "A Much Longer Item", (ClickEvent) { 0 });
     zox_defer_end();
+
+    // under its button, left edges lined up (anchored at its bottom left), as wide as its longest text and a tick
+    const entity popup = item_list_popup(world, menu);
+    const int2 popup_size = zox_getv(popup, LayoutSize);
+    const entity wide_label = zox_get_child_by_id(world, wide, zox_id(TextLabel));
+    const TextData* wide_text = zox_get(wide_label, TextData);
+    const int wide_width = calculate_zext_size(wide_text->value, wide_text->length, zox_getv(wide_label, TextFontSize),
+        zox_getv(wide_label, TextPadding), default_line_padding).x;
+    zox_tst_check(float2_equals(zox_getv(popup, Anchor), float2_zero) &&
+        zox_getv(popup, LayoutPosition).x == popup_size.x / 2, "the popup's left edge isn't its button's");
+    zox_tst_check(popup_size.x >= wide_width + menu_item_tick_room &&
+        zox_getv(first, LayoutSize).x == popup_size.x && zox_getv(wide, LayoutSize).x == popup_size.x,
+        "the popup is [%i] wide, its items [%i] and [%i], its longest text needs [%i]", popup_size.x,
+        zox_getv(first, LayoutSize).x, zox_getv(wide, LayoutSize).x, wide_width + menu_item_tick_room);
 
     zox_tst_check(item_list_item_at(world, menu, 0) == first &&
         item_list_item_at(world, menu, 1) == disabled && item_list_item_at(world, menu, 2) == toggle,
