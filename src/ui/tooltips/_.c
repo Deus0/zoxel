@@ -6,6 +6,7 @@ byte zox_log_tooltips = 0;
 #include "sys/_.c"
 #ifdef zox_tests
 #include "tst/gone.c"
+#include "tst/back_to_back.c"
 #endif
 
 void import_tooltips(ecs* world) {
@@ -14,5 +15,6 @@ void import_tooltips(ecs* world) {
     zox_systems_tooltips(world);
 #ifdef zox_tests
     zox_tsts_tooltip_gone(world);
+    zox_tsts_tooltip_back_to_back(world);
 #endif
 }

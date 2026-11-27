@@ -77,10 +77,10 @@ static inline void zox_tst_navinv_tip(ecs* world, entity canvas) {
     const int4 t = get_element_pointer_bounds(world, &viewport, tooltip, zox_getv(tooltip, Position2), zox_getv(tooltip, LayoutSize));
     const int4 b = get_element_pointer_bounds(world, &viewport, icon, zox_getv(icon, Position2), zox_getv(icon, LayoutSize));
     const int2 off = { t.y - b.y, t.w - b.z };
-    // under it, or moved right or above to keep on its canvas, and on it
+    // under it, or moved right, left or above to keep on its canvas, and on it
     const byte on_canvas = t.x >= viewport.position.x - 1 && t.z >= viewport.position.y - 1 &&
         t.y <= viewport.position.x + viewport.size.x + 1 && t.w <= viewport.position.y + viewport.size.y + 1;
-    const byte kept_on = (t.x - viewport.position.x) <= 1 || t.z > b.w;
+    const byte kept_on = (t.x - viewport.position.x) <= 1 || t.y >= viewport.position.x + viewport.size.x - 1 || t.z > b.w;
     const byte under = on_canvas && ((abs(off.x) <= 3 && off.y <= 0 && off.y >= -8) || kept_on);
     char* shown = get_zext_text(text);
     char expected[128];
@@ -95,6 +95,10 @@ static inline void zox_tst_navinv_tip(ecs* world, entity canvas) {
     free(shown);
     zox_tst_navinv_tips_bare += !background;
     zox_tst_navinv_tips_off += !under;
+    if (!under) {
+        zox_log("[tst] step [%i] [%s]'s tooltip [%i %i %i %i] isn't under it [%i %i %i %i], off [%i %i] on canvas [%i] viewport [%i %i %i %i]",
+            zox_tst_navinv_moves, zox_get_name(icon), t.x, t.y, t.z, t.w, b.x, b.y, b.z, b.w, off.x, off.y, on_canvas, viewport.position.x, viewport.position.y, viewport.size.x, viewport.size.y);
+    }
     if (!background || !under) {
         zox_log("[tst] [%s]'s tooltip: background [%i], from its bottom right [%i %i]", zox_get_name(icon), background,
             off.x, off.y);

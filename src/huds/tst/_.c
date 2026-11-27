@@ -52,7 +52,7 @@ void zox_tsts_huds(ecs* world) {
     zox_tst_set_setup("mouse_leave", NULL, 1);
     zox_tst_add("ui_leaks", zox_tst_ui_leaks_ready, zox_tst_ui_leaks_check, 120);
     zox_tst_set_setup("ui_leaks", NULL, 1);
-    zox_tst_add("tooltips", zox_tst_tooltips_ready, zox_tst_tooltips_check, 60);
+    zox_tst_add("tooltips", zox_tst_tooltips_ready, zox_tst_tooltips_check, 120);   // 40 rounds: ~100s on a busy llvmpipe
     zox_tst_set_setup("tooltips", NULL, 1);
     zox_tst_add("tooltip_blink", zox_tst_tooltip_blink_ready, zox_tst_tooltip_blink_check, 60);
     zox_tst_set_setup("tooltip_blink", NULL, 1);

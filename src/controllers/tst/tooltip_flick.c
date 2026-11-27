@@ -49,9 +49,19 @@ byte zox_tst_tooltip_flick_ready(ecs* world) {
             zox_tst_mouse((int2) { 40, 40 }, zox_tst_tf_frames > 10 && zox_tst_tf_frames < 14);
             return 0;
         }
-        // two on screen (the taskbar is wider than a small window), their tooltips differing
+        // the game menu opened for a gamepad (the newest window, on top) covers the taskbar in a small window
+        if (zox_tst_tf_frames == 30) {
+            close_game_uis(world, canvas);
+            return 0;
+        }
+        // two of the taskbar's on screen (it's wider than a small window), their tooltips differing; not the open
+        //  windows' (a window over the taskbar covered one)
+        const entity taskbar = zox_get_child_by_id(world, canvas, zox_id(Taskbar));
+        if (!taskbar) {
+            return 0;
+        }
         entity all[16];
-        const int count = zox_tst_tf_find_all(world, canvas, all, 16, 0);
+        const int count = zox_tst_tf_find_all(world, taskbar, all, 16, 0);
         int found = 0;
         for (int k = 0; k < count && found < 2; k++) {
             int2 at;
@@ -84,7 +94,9 @@ byte zox_tst_tooltip_flick_ready(ecs* world) {
         const entity tooltip = zox_get_child_by_id(world, canvas, zox_id(Tooltip));
         char* text = get_zext_text(zox_get(tooltip, TextData));
         const byte same = text && !strcmp(text, zox_tst_tf_text);
-        zox_log("[tst] the pointer targets [%s], the second icon is [%lu], the mouse lock [%i]", zox_getn(zox_tst_mouse_target(world, dbg_player)), zox_tst_tf_icons[1], zox_tst_mouse_lock(world, dbg_player));
+        const entity target = zox_tst_mouse_target(world, dbg_player);
+        zox_log("[tst] the pointer targets [%s] in [%s], the second icon is [%lu], the mouse lock [%i]", zox_getn(target),
+            zox_getn(zox_get_parent(world, target)), zox_tst_tf_icons[1], zox_tst_mouse_lock(world, dbg_player));
         if (!same) {
             zox_log("[tst] the tooltip says [%s], not [%s]", text ? text : "", zox_tst_tf_text);
         }
