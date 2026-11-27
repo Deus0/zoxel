@@ -77,10 +77,16 @@ test runner. `tst.sh all` runs `spawn_particles` for particle behavior coverage.
 
 ## Glow views
 
-`bash bsh/tools/view_glow.sh` runs tst glow_views: a glow stone and a street lamp (its glass a palette glow) on the
-floor of a closed brick room (no sky) in an all air chunk in the void, through the game's camera, four views as pngs in `tst/glow/glow_views/`: `glow_clamp`, `glow_bloom`,
-`glow_soft_bloom`, `glow_filmic_bloom` (doc/plans/hdr.md). `--vulkan` for the vulkan backend (gpu meshed terrain and models),
-`--nobuild` to rerun.
+Glowing things in the dark through the game's camera, in an all air chunk in the void, four views each as pngs
+(`clamp`, `bloom`, `soft_bloom`, `filmic_bloom`, doc/plans/hdr.md):
+
+```bash
+bash bsh/tools/view_glow.sh          # a glow stone in a closed brick room (tst glow_views), tst/glow/glow_views/
+bash bsh/tools/view_glow.sh --lamp   # a street lamp in a rough stone cave (tst lamp_views), tst/glow/lamp_views/
+```
+
+`--vulkan` for the vulkan backend (gpu meshed terrain and models), `--nobuild` to rerun. Neither is dark yet: a room
+walled in in the air chunk keeps its sunlight (255 inside, todo.md door_glow).
 
 ## Still in bsh, to move here
 

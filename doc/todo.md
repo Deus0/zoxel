@@ -86,7 +86,8 @@ section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what
 - 2026-11-24 full runs: 391 of 395 pass (the rest pass alone, flaky under load: stream_seams, tables_stream,
   punch_wind_up, map_pixel, door_save, town_furniture)
 - door_glow (2026-11-27, solo, every run, master too): "open: no light came in by the door [255], shut it was [255]",
-  the light by the door is full both ways
+  the light by the door is full both ways. Same cause seen in lamp_views: a room walled in in the air chunk keeps the
+  sunlight it had (255 inside, no emitter needed), so glow_views and lamp_views aren't dark either
 - dig_light on vulkan (2026-11-27, every run, master too): "the hole's faces never showed (0 of 5)"; gl passes
 - bed_sleep (2026-11-27, solo, 1 run in 5): "asleep it isn't still: DisableMovement [0]" on climbing on, then
   "getting off it can already move"; the next 3 runs passed

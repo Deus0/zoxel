@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
-# A glow stone in a dark brick room through the game's camera: clamp, bloom, soft and filmic tonemaps with bloom
-#   (tst glow_views, doc/plans/hdr.md). Saves tst/glow/glow_*.png. --vulkan for the vulkan backend, --nobuild to rerun.
+# Glowing things in the dark through the game's camera: clamp, bloom, soft and filmic tonemaps with bloom
+#   (doc/plans/hdr.md). Default: a glow stone in a brick room (tst glow_views); --lamp: a street lamp in a stone cave
+#   (tst lamp_views). Saves tst/glow/<test>/*.png. --vulkan for the vulkan backend, --nobuild to rerun.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 export zox_tst_dir="${zox_tst_dir:-tst/glow}"
-bash bsh/tst.sh glow_views "$@"
+test=glow_views
+args=()
+for arg in "$@"; do
+    if [[ "${arg}" == "--lamp" ]]; then
+        test=lamp_views
+    else
+        args+=("${arg}")
+    fi
+done
+bash bsh/tst.sh "${test}" "${args[@]}"
 if command -v magick > /dev/null; then
-    for ppm in "${zox_tst_dir}"/glow_views/glow_*.ppm "${zox_tst_dir}"/glow_*.ppm; do
+    for ppm in "${zox_tst_dir}/${test}"/*.ppm; do
         [[ -f "${ppm}" ]] && magick "${ppm}" "${ppm%.ppm}.png"
     done
 fi
-ls "${zox_tst_dir}" "${zox_tst_dir}/glow_views" 2> /dev/null | grep png || true
+ls "${zox_tst_dir}/${test}" 2> /dev/null | grep png || true

@@ -39,8 +39,8 @@ How a vertex's colour reaches the shaders, per mesh path (2026-11-27, block glow
   voxes, the meshers read it from the palette's owner. Not yet: combined models (combine.c, characters), .vox files'
   emission, blueprints (gravity cores).
 - The gpu greedy merge's flags sit in its run word (bits 30, 31), so a face's colour keeps all 32 bits.
-- Tests: lights/tst glow_view (cpu meshes on gl, gpu on vulkan), terrains/voxel/tst glow_views (a street lamp's glass,
-  `bsh/tools/view_glow.sh`).
+- Tests: lights/tst glow_view (cpu meshes on gl, gpu on vulkan), terrains/voxel/tst glow_views and lamp_views (a
+  street lamp's glass, `bsh/tools/view_glow.sh --lamp`).
 
 ## Lit meshes
 
