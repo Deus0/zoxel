@@ -24,7 +24,7 @@ void player_auto_jump_system(iter* it) {
             continue;
         }
         const entity terrain = zox_get_link(world, character, TerrainLink);
-        if (!zox_valid(terrain)) {
+        if (!zox_valid(terrain) || !zox_has(terrain, BlockScale)) {     // steps up blocks: voxel terrains only
             continue;
         }
         // along the ground, under its gravity (any way: a gravity cube's flip)

@@ -25,7 +25,7 @@ void zox_tst_zeland_boot_check(ecs* world) {
 }
 
 
-// tst: zeland_walk, W pressed then pushed 2 seconds: the character walks away from the orbit camera (along its facing), turned that
+// tst: zeland_walk, auto jump on (as with a touchscreen), W pressed then pushed 2 seconds: the character walks away from the orbit camera (along its facing), turned that
 //  way, on the ground; the camera follows; a screenshot (zeland_walk.ppm)
 double zox_tst_zw_time = 0;
 float3 zox_tst_zw_start;
@@ -42,6 +42,7 @@ static inline void zox_tst_zw_hold_w(ecs* world, byte held) {
 }
 
 byte zox_tst_zeland_walk_ready(ecs* world) {
+    auto_jump = 1;     // on with a touchscreen: it must skip a poly terrain (it read its BlockScale, a crash)
     zox_tst_waiting = "the game to play with the orbit camera";
     if (!zox_tst_zeland_boot_ready(world)) {
         return 0;
