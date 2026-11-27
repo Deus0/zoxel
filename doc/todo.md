@@ -294,6 +294,12 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Prefab events to observers (the user, 2026-11-27): `InitializeEvent` (a listener list of function pointers on
   prefab_app, `zoxc_listener`, src/_/com) has 17 users, mostly settings spawning (`add_to_InitializeEvent`). Each
   becomes an observer in its module (on the app's Initialize), and the listener component goes
+- The gles2 build (`zox_gles2`, opengl/_.c): nothing builds it (the makefile's run-gles2 needs a build-gles2 that's
+  gone), and it has no uniform blocks, so every 3D shader's view block (res/shaders/view.glsl) breaks it. Remove it
+  and its `zox_disable_ubos` / `zox_disable_instancing` branches, or bring it back with a fallback
+- Lit meshes' sun is three globals (`render_sun_direction`, `render_sun_light`, `render_ambient_light`,
+  src/rendering/set/light.c) set as uniforms in vox_render.c for colored3D_lit: make it a light source entity (the
+  realm's `Sun`, day and night), read through the camera's view block, and the globals go; tst lit sets its own sun
 - Clean up the module organization: features in the module that owns them (doc/engine/architecture.md "Code goes
   where it belongs"), folders as the coding standards lay out (com, pre, ins, fun, eve, sys, tst), no reaching into
   another module's includes for load order

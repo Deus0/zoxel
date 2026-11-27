@@ -17,14 +17,17 @@ void dispose_shader_view() {
 }
 
 // source after the view, malloc'd: #line keeps compile errors at the source's own lines
-char* shader_add_view(const char* source) {
+//  - fragment: zox_fragment defined, for the view's fragment only parts (the fog reads gl_FragCoord)
+char* shader_add_view(const char* source, byte fragment) {
     const char* view = shader_view_source ? shader_view_source : "";
+    const char* stage = fragment ? "#define zox_fragment\n" : "";
     const char* line = "\n#line 1\n";
-    char* output = malloc(strlen(view) + strlen(line) + strlen(source) + 1);
+    char* output = malloc(strlen(stage) + strlen(view) + strlen(line) + strlen(source) + 1);
     if (!output) {
         return NULL;
     }
-    strcpy(output, view);
+    strcpy(output, stage);
+    strcat(output, view);
     strcat(output, line);
     strcat(output, source);
     return output;

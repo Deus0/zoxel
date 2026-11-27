@@ -73,9 +73,10 @@ void xr_render_eye(ecs* world, float4x4 eye, float4 fov, float4x4 body, float2 v
     const float4x4 world_eye = float4x4_multiply(eye, body);    // the eye, then the body
     render_camera_position = float4x4_get_position(world_eye);
     render_camera_matrix = float4x4_multiply(float4x4_inverse(world_eye), projection);   // the view, then the projection
-    renderer_fog_color = color_to_color_rgb(xr_clear_color);
+    // the camera's fog, the sky's colour (the clear colour's grey didn't blend the terrain into the sky)
+    renderer_fog_color = zox_valid(xr_camera) && zox_has(xr_camera, FogColor) ? zox_getv(xr_camera, FogColor) : color_to_color_rgb(xr_clear_color);
     render_underwater = terrain_water_at(world, local_terrain, render_camera_position);   // src/terrains/voxel/sys/water_view.c
-    render_view_upload();
+    render_view_upload(world, xr_camera, viewport_position, viewport_size);
     // the world (shut, none of it), then the lids over it, then the 3D uis over them
     for (byte ui = 0; ui < 2; ui++) {
         if (ui) {

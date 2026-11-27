@@ -4,11 +4,8 @@ const float GLOW = 3.0;   // a vertex's glow (its colour's alpha, doc/plans/hdr.
 
 uniform mat4 mvp_matrix;
 out vec3 vertex_color_frag;
-out float fog_blend;
 
 void main() {
     gl_Position = mvp_matrix * vec4(vertex_position, 1);
-    vertex_color_frag = vertex_color.rgb * (1.0 + vertex_color.a * GLOW);
-    float fog_level = gl_Position.z * gl_Position.z;
-    fog_blend = zox_fog_blend(fog_level);
+    vertex_color_frag = vertex_color.rgb * (1.0 + vertex_color.a * GLOW) * zox_sky_light(vertex_color.a);
 }

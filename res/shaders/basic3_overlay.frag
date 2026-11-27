@@ -1,10 +1,7 @@
 out vec4 frag_color;
-in float fog_level;
 uniform vec4 color;
 
 void main() {
-    frag_color = color;
-    float fog_blend = zox_fog_blend(fog_level);
-    frag_color.xyz = mix(frag_color.xyz, vec3(fog_data.x, fog_data.y, fog_data.z), fog_blend);
+    frag_color = vec4(zox_fog(color.xyz), color.w);
     gl_FragDepth = gl_FragCoord.z - 0.0001;
 }

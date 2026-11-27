@@ -1,6 +1,7 @@
-# Lighting: Sky and Block Light, Suns, Day and Night
+# Lighting: Sky and Block Light
 
 A technical plan, for review before code. It changes the light octrees, the flood passes and the mesh colours.
+The time of day, suns and moons are in doc/plans/day_night.md, with whether to split at all (the flood's cost).
 
 ## Why
 
@@ -39,8 +40,8 @@ The buffers, their memory and their uploads stay the same. Each frame, one unifo
 
 ## What changes
 
-1. **Light octrees:** `LightOctree` becomes `SkyLightOctree` and `BlockLightOctree` (a byte a voxel, rgb later).
-   - It could be one octree of byte pairs instead. Two octrees keep every octree function as it is.
+1. **Light octrees:** `LightOctree` stays, as sky light (no rename: its 294 uses keep working), `BlockLightOctree`
+   beside it (a byte a voxel, rgb later). The passes already take their octree and queue by pointer, they run once a pair.
 2. **Flooding:** the sunlight pass (`sunlight.c`) writes sky light only.
    - The flood, dark and edit passes (`flood.c`, `dark.c`, `editing.c`) run for each value.
    - Sources: sky light from the top, block light from blocks with a `BlockLight` value.
@@ -51,25 +52,20 @@ The buffers, their memory and their uploads stay the same. Each frame, one unifo
    - The corner rule (a corner behind two solids is dark) and the lod leaf max apply to both.
 5. **Shaders:** the terrain, vox and skeleton shaders take the sky tint uniform and do the max.
    - Minivoxes and characters (`Brightness`) sample both values and get the same treatment.
-6. **Suns:** a `Sun` entity per sun, children of the realm: intensity curve, colour, direction, day length.
-   - A small system sums them into the sky tint each frame.
-   - The sky colour follows the same sum, the fog too.
-   - One sun is the default realm. Alien realms spawn two or three from their seed.
+6. **Suns:** doc/plans/day_night.md.
 
 ## Order, each step working and tested
 
-1. Glow stone on the current single value (block light floods into `LightOctree`), to prove emissive sources.
-2. Split `LightOctree` into sky and block octrees. All tests pass with the sky tint fixed at 1 (looks the same).
-3. Mesh colours: r and g, and the shader max.
-4. Suns and the time of day: the tint moves. Sunset costs nothing.
-5. Coloured suns, more than one sun, moons, face shading by sun direction.
-6. Coloured block light (rgb, a separate job): each colour floods on its own, mana circuits glow blue.
+1. Glow stone on the current single value (block light floods into `LightOctree`), to prove emissive sources. Done.
+2. The time of day and the tint first (doc/plans/day_night.md), then measure the split's cost.
+3. Add `BlockLightOctree`. All tests pass with the sky tint fixed at 1 (looks the same).
+4. Mesh colours rgba, and the shader max.
+5. Coloured block light (rgb, a separate job): each colour floods on its own, mana circuits glow blue.
 
 ## Tests
 
 - `smooth_lights` and `lod_lights` for both values.
 - `glow_light`: a glow stone in a dark cave lights its neighbours, falling off a step a voxel, gone when removed.
-- `day_night`: the sky tint at noon and midnight, and two suns summing.
 - No chunk relights while the time moves (count light flood passes over a minute of game time).
 - `perf_stream` and `perf_fly` don't slow.
 

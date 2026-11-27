@@ -28,7 +28,6 @@ static inline const MaterialColored3D* vox_render_bind(ecs* world, entity materi
     zox_gpu_material(gpu);
     zox_gpu_float(attributes->alpha, 1);
     if (lit) {
-        zox_gpu_float3(lit->camera_position, render_camera_position);
         zox_gpu_float3(lit->sun_direction, float3_normalize(render_sun_direction));
         zox_gpu_float3(lit->sun_light, render_sun_light);
         zox_gpu_float3(lit->ambient_light, render_ambient_light);

@@ -31,6 +31,9 @@ zox_tag(ViewportCamera);
 zox_tag(RenderCamera);
 zox_tag(RenderTexture);
 zox_tag(RenderTextureLink);    // camera -> the render texture it draws to
+zoxc_float3(SkyTint);       // the light of its realm's sky on it: its suns summed, a night floor (sky/sys/camera_sky.c)
+zoxc_float3(SunDirection);  // towards its realm's brightest sun, normalized
+zoxc_float3(SunColor);      // that sun's colour now: its realm's sunset colour low down, its own high up
 zoxc_float(OrbitDistance);  // an orbit camera's distance from its CameraTarget, metres (controllers3/sys/orbit.c)
 // Properties
 zox_tag(CanRoam);
@@ -38,6 +41,9 @@ zox_tag(Roaming);
 zox_tag(AttachDirty);
 
 void zox_components_cameras(ecs *world) {
+    zoxd_float3(SkyTint);
+    zoxd_float3(SunDirection);
+    zoxd_float3(SunColor);
     zoxd_tag(Camera);
     zoxd_tag(XrCamera);
     zoxd_nf_link(CameraLink);

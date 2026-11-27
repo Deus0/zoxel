@@ -181,6 +181,11 @@ static inline float3 float3_lerp(float3 a, float3 b, float t) {
     };
 }
 
+// each axis the larger
+static inline float3 float3_max(float3 a, float3 b) {
+    return (float3) { float_max(a.x, b.x), float_max(a.y, b.y), float_max(a.z, b.z) };
+}
+
 static inline float float3_sign2(float3 value) {
     float abs_x = float_abs(value.x);
     float abs_y = float_abs(value.y);

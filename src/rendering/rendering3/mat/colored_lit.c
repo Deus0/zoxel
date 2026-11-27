@@ -4,7 +4,6 @@ entity material_colored3D_lit;
 typedef struct {
     MaterialColored3D colored;  // the same mesh data and uniforms as colored3D
     guint model_matrix;
-    guint camera_position;
     guint sun_direction;
     guint sun_light;
     guint ambient_light;
@@ -15,8 +14,7 @@ MaterialColoredLit3D create_MaterialColoredLit3D(guint material) {
     return (MaterialColoredLit3D) {
         .colored = create_MaterialColored3D(material),
         .model_matrix = zox_gpu_get_material_property(material, "model_matrix"),
-        .camera_position = zox_gpu_get_material_property(material, "camera_position"),
-        .sun_direction = zox_gpu_get_material_property(material, "sun_direction"),
+        .sun_direction = zox_gpu_get_material_property(material, "lit_sun_direction"),
         .sun_light = zox_gpu_get_material_property(material, "sun_light"),
         .ambient_light = zox_gpu_get_material_property(material, "ambient_light")
     };

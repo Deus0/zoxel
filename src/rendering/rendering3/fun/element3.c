@@ -5,13 +5,13 @@ float element3_brightness = 1;   // the 3D uis' brightness, all of them (a label
 
 // starts drawing them: the textured material, blending, depth tested; returns its attributes, NULL without it
 const MaterialTextured3D* element3_draw_begin(ecs* world) {
-    if (!material_textured3D) {
+    if (!material_element3) {
         return NULL;
     }
-    const MaterialTextured3D* attributes = zox_get(material_textured3D, MaterialTextured3D);
+    const MaterialTextured3D* attributes = zox_get(material_element3, MaterialTextured3D);
     zox_gpu_enable_blend();
     zox_gpu_enable_depth_test();
-    zox_gpu_material(zox_getv(material_textured3D, MaterialGPULink));
+    zox_gpu_material(zox_getv(material_element3, MaterialGPULink));
     zox_gpu_float(attributes->brightness, element3_brightness);
     zox_gpu_float(attributes->alpha_cutoff, 0);
     return attributes;

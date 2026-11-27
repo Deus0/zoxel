@@ -3,7 +3,9 @@ static inline entity spawn_file_shader_at_path(ecs *world, entity prefab, const 
     if (!read) {
         return 0;
     }
-    char* source = shader_add_view(read);
+    const size_t path_length = strlen(path);
+    const byte fragment = path_length > 5 && strcmp(path + path_length - 5, ".frag") == 0;
+    char* source = shader_add_view(read, fragment);
     free(read);
     if (!source) {
         return 0;

@@ -695,14 +695,12 @@ static const char* zox_gpu_mesh_textured_vertex_source =
 "uniform mat4 mvp_matrix;\n"
 "uniform vec4 transform;\n"
 "uniform vec4 glows[64];\n"     // each voxel value's glow, 0 to 1 (BlockGlow), 4 a vec4
-"out float fog_level;\n"
 "out vec2 uv;\n"
 "out vec2 side;\n"
 "flat out vec4 corner_lights;\n"
 "flat out float glow;\n"
 "void main() {\n"
 "    gl_Position = mvp_matrix * vec4(vertex.xyz * transform.w, 1.0);\n"
-"    fog_level = gl_Position.z * gl_Position.z;\n"
 "    uv = vertex_uv;\n"
 "    int voxel = int(vertex.w + 0.5) & 255;\n"
 "    glow = glows[voxel >> 2][voxel & 3];\n"
@@ -714,7 +712,6 @@ static const char* zox_gpu_mesh_textured_vertex_source =
 static const char* zox_gpu_mesh_textured_fragment_source =
 "uniform vec4 shading;\n"
 "uniform sampler2D zexture;\n"
-"in float fog_level;\n"
 "in vec2 uv;\n"
 "in vec2 side;\n"
 "flat in vec4 corner_lights;\n"
@@ -727,9 +724,8 @@ static const char* zox_gpu_mesh_textured_fragment_source =
 "        discard;\n"
 "    }\n"
 "    float light = mix(mix(corner_lights.x, corner_lights.y, side.x), mix(corner_lights.z, corner_lights.w, side.x), side.y);\n"
-"    vec3 color = texel.rgb * (glow > 0.0 ? 1.0 : light) * (1.0 + glow * GLOW) * shading.x;\n"
-"    float fog_blend = zox_fog_blend(fog_level);\n"
-"    frag_color = vec4(mix(color, fog_data.xyz, fog_blend), texel.a);\n"
+"    vec3 color = texel.rgb * (glow > 0.0 ? vec3(1.0) : light * sky_tint.xyz) * (1.0 + glow * GLOW) * shading.x;\n"
+"    frag_color = vec4(zox_fog(color), texel.a);\n"
 "}\n";
 
 // a grid's bytes uploaded: (2^depth + 2)^3 rounded up to whole uints (depth 0's 27 is 28), grids are made that big
@@ -785,8 +781,8 @@ uint gpu_mesh_textured_program() {
         return 0;
     }
     // the camera's view block before each stage, as file shaders get it (res/shaders/view.glsl)
-    char* vertex = shader_add_view(zox_gpu_mesh_textured_vertex_source);
-    char* fragment = shader_add_view(zox_gpu_mesh_textured_fragment_source);
+    char* vertex = shader_add_view(zox_gpu_mesh_textured_vertex_source, 0);
+    char* fragment = shader_add_view(zox_gpu_mesh_textured_fragment_source, 1);
     const uint program = vertex && fragment ? zox_gpu_draw_program(vertex, fragment) : 0;
     free(vertex);
     free(fragment);

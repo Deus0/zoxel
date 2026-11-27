@@ -35,3 +35,8 @@ static inline void zox_gpu_scissor(const int4* rect) {
         glDisable(GL_SCISSOR_TEST);
     }
 }
+
+// how a fragment's gl_FragCoord maps back to the viewport (shaders: (frag - xy) / zw is 0 to 1 across it, y up)
+static inline float4 zox_gpu_frag_viewport(float2 position, float2 size) {
+    return (float4) { position.x, position.y, size.x, size.y };
+}

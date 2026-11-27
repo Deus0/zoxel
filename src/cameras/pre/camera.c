@@ -24,6 +24,9 @@ entity spawn_prefab_camera(ecs* world) {
     zox_setv(e, CameraFarDistance, camera_far_distance);
     zox_setv(e, ScreenToCanvas, float4_zero);
     zox_setv(e, FogColor, menu_sky_color); // color_rgb_green);
+    zox_setv(e, SkyTint, float3_one);       // full daylight without a realm (menus, viewports)
+    zox_setv(e, SunDirection, float3_up);
+    zox_setv(e, SunColor, float3_one);
     // culling
     zox_setv(e, Position3DBounds, float6_zero);
     zox_add(e, CameraPlanes);

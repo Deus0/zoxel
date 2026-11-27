@@ -11,7 +11,6 @@ uniform InstanceMatrices {
 uniform mat4 camera_matrix;
 uniform vec4 sway_data; // x: time, y: strength, z: mesh bottom y, w: mesh height
 out vec3 vertex_color_frag;
-out float fog_blend;
 
 float sway_hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -44,7 +43,5 @@ void main() {
         sway_noise(wind + vec2(17.3, 5.1))) * 2.0 - 1.0;
     world_position.xz += sway * sway_data.y * top;
     gl_Position = camera_matrix * world_position;
-    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW);
-    float fog_level = gl_Position.z * gl_Position.z;
-    fog_blend = zox_fog_blend(fog_level);
+    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW) * zox_sky_light(vertex_color.a);
 }

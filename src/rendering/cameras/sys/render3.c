@@ -35,7 +35,6 @@ void camera_render3_system(iter* it) {
         render_camera_position = position->value;
         renderer_fog_color = fog->value;
         render_underwater = zox_has(e, Underwater);
-        render_view_upload();
         // set render objects
         uint fbo = zox_has(e, FrameBufferLink) ?
             zox_getv(e, FrameBufferLink) :
@@ -50,6 +49,7 @@ void camera_render3_system(iter* it) {
             zox_gpu_bind_fbo(fbo);
         }
         zox_gpu_set_viewport(viewport_position, viewport_size);
+        render_view_upload(world, e, viewport_position, viewport_size);
         color clear_color = zox_has(e, Color) ?
             zox_getv(e, Color) :
             color_black;

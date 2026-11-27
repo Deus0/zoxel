@@ -40,3 +40,12 @@ static inline void zox_gpu_scissor(const int4* rect) {
     }
     vk_ctx->dynamic_dirty = 1;
 }
+
+// how a fragment's gl_FragCoord maps back to the viewport (shaders: (frag - xy) / zw is 0 to 1 across it, y up):
+//  the frame's image is drawn flipped (vulkan_set_dynamic), its y counts down from the top; a render texture's not
+static inline float4 zox_gpu_frag_viewport(float2 position, float2 size) {
+    if (vk_target_texture) {
+        return (float4) { position.x, position.y, size.x, size.y };
+    }
+    return (float4) { position.x, vk_target_extent.height - position.y, size.x, -size.y };
+}

@@ -2,7 +2,8 @@
 
 ## Post processing
 
-A render camera draws its 3D view into a render texture, and the canvas draws that texture through one pass
+A render camera (the game's, each split screen player's, each viewport camera's: doc/plans/hdr.md A5) draws its 3D
+view into a render texture, and the canvas draws that texture through one pass
 (res/shaders/render_texture_rgb.frag and _rgba.frag): outlines, blur, bloom, the tonemap, noise, under water tint,
 vignette and eyelids.
 
@@ -56,15 +57,37 @@ capsule.
 - No normals stored: a face is a triangle with its own 3 vertices, and the shader takes its normal from the screen
   (`dFdx`/`dFdy` of the world position), turned to face the camera so vulkan's flipped y can't flip it. Smooth meshes
   would need `MeshNormals`.
-- Light: `ambient + sun * max(0, n . sun)`, times the colour; glow (the alpha) is added unlit. The sun is three
-  settings ([light.c](../../src/rendering/set/light.c)): `render_sun_direction`, `render_sun_light`,
-  `render_ambient_light`.
+- Light: `(ambient + sun * max(0, n . sun)) * the sky's light`, times the colour; glow (the alpha) is added unlit.
+  Its sun is still three settings ([light.c](../../src/rendering/set/light.c)): `render_sun_direction` (the shader's
+  `lit_sun_direction`), `render_sun_light`, `render_ambient_light`, till it reads the realm's sun (doc/todo.md).
 - Spawning one: `spawn_lit_mesh(world, parent, position, vertices, indices, colors)` (prefab `lit_mesh`), or a
   variant of the prefab with an observer building its mesh, as [capsules](../../src/geometry/capsules/_.c) does:
   `spawn_capsule_mesh(world, parent, radius, height, color)`, its shape `RadiusFloat`, `HeightFloat`, `ColorRGB`,
   built again when it's given `Dirty`.
 - Tests: ui/render_textures/tst lit_mesh (gl and `--vulkan`, the same numbers), capsule_mesh, capsule_rebuild, zeland_walk,
   poly_views.
+
+## Sky, day and night, fog
+
+The camera's view, one uniform block every 3D shader gets as it loads ([view.glsl](../../res/shaders/view.glsl),
+[Shaders](../howto/shaders.md)), uploaded once a camera (`render_view_upload`, src/rendering/dat/camera_renderer.c).
+
+- **The sky's light:** each realm has a `Sun` (src/sky), a light source child of the realm, its day the realm's clock
+  (20 minutes, stopped while paused). `camera_sky_system` sets each camera's `SkyTint`, `SunDirection` and
+  `SunColor` from its realm's suns (doc/plans/day_night.md). World shaders multiply their colour by
+  `zox_sky_light(glow)`: glowing colours keep their own light, the 3D uis are unlit (`textured3D_unlit.vert`).
+- **The sky** ([skybox.frag](../../res/shaders/skybox.frag)): by direction, the biome's colours from the horizon up,
+  a square sun crossing it, a glow towards it low down in the realm's sunset colour (from its seed), stars at night.
+- **Fog** (view.glsl, `zox_fog`, the end of every 3D fragment shader): per pixel, from its depth back through the view.
+  - Its colour is the sky's horizon behind it, the sun's glow too, so far terrain melts into the sky, at sunset too.
+  - Height fog: thickest under `FOG_BASE` (16m), halving each `FOG_HEIGHT` (40m) up; `FOG_HAZE` a little up close.
+  - Under water (a thick fog: the camera's `Underwater`) it's the water's blue, no height or glow.
+  - XR's eyes fog with the camera's sky colour, as screen cameras do.
+- **Precision:** the block's members are `mediump` (gles: one precision in both stages); the fog's distances are
+  `highp` locals (far depths overflow a half float). Fragments write their output once from locals (vulkan,
+  lavapipe drew nothing reading it back). Not yet tried on the Mali (the Khadas).
+- Tests: sky/tst day_night (the sky's light through a day, paused), sky_day (screenshots at dawn, noon, dusk,
+  midnight and the dusk horizon), terrains underwater, the view tests (body_views, gpu_mesh_views, instance_views).
 
 ## Notes
 

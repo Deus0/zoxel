@@ -216,7 +216,7 @@ far_tests=(lod_light_flash)
 #   full run (all) a quick smoke run at tiny; a size passed (--far 16) wins
 perf_tests=(perf_terrain perf_stream perf_fly tables_stream perf_idle)
 # tests that screenshot the world, the hud hidden
-nohud_tests=(sky_clouds head_camera town_view held_item held_block held_view eat_swing)
+nohud_tests=(sky_clouds sky_day head_camera town_view held_item held_block held_view eat_swing)
 # README captures share framing settings and a seed. The town panorama needs far, tall terrain.
 aesthetic_tests=(aesthetic_town aesthetic_particles)
 # tests that compare pictures across a change: the same world every run (seed 666, zox_tst_seed overrides it), a

@@ -1,5 +1,5 @@
-entity shader_textured3D;
-entity material_textured3D;
+entity shader_textured3D;      // the world's textured meshes (terrain's tilemaps, textured cubes): in the sky's light
+entity material_element3;      // the 3D uis' (element3): textured3D unlit, the same at night
 
 typedef struct {
     gint vertex_position;
@@ -39,18 +39,22 @@ entity spawn_shader_textured3D(ecs *world) {
     return e;
 }
 
-entity spawn_material_textured3D(ecs *world) {
-    entity shader = spawn_shader_textured3D(world);
+// the 3D uis' material: textured3D's fragment, an unlit vertex (no sky light: they're not in the world)
+entity spawn_material_element3(ecs *world) {
+    const byte shader_index = get_new_shader_source_index();
+    shader_verts[shader_index] = get_shader_source(world, "textured3D_unlit.vert");
+    shader_frags[shader_index] = get_shader_source(world, "textured3D.frag");
+    entity shader = spawn_shader(world, shader_index);
     if (!shader) {
+        zox_loge("[shader_element3] failed to spawn")
         return 0;
     }
     guint material;
     entity e = spawn_material(world, shader, &material);
-    zox_set_unique_name(e, "material_textured3");
+    zox_set_unique_name(e, "material_element3");
     zox_link(world, e, ShaderLink, shader);
     MaterialTextured3D attributes = create_MaterialTextured3D(material);
     zox_set_data(e, MaterialTextured3D, attributes)
-    material_textured3D = e;
-    shader_textured3D = shader;
+    material_element3 = e;
     return e;
 }

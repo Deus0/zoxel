@@ -11,14 +11,11 @@ uniform InstanceMatrices {
 };
 uniform mat4 camera_matrix;
 out vec3 vertex_color_frag;
-out float fog_blend;
 
 void main() {
     mat4 model_matrix = matrices[gl_InstanceID];
     float instance_brightness = model_matrix[0][3];
     model_matrix[0][3] = 0.0;
     gl_Position = camera_matrix * (model_matrix * vec4(vertex_position, 1.0));
-    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW);
-    float fog_level = gl_Position.z * gl_Position.z;
-    fog_blend = zox_fog_blend(fog_level);
+    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW) * zox_sky_light(vertex_color.a);
 }
