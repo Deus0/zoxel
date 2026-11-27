@@ -295,6 +295,7 @@ void zox_tst_screenshot_check(ecs* world) {
 #include "touch_actions.c"
 #include "free_roam_pose.c"
 #include "third_person.c"
+#include "third_person_inputs.c"
 #include "move_feel.c"
 
 void zox_tsts_controllers(ecs* world) {
@@ -335,6 +336,8 @@ void zox_tsts_controllers(ecs* world) {
     zox_tst_add("touch_play", zox_tst_touch_play_ready, zox_tst_touch_play_check, 120);
     // the test level: no towns, it spawned at its home facing a wall now and then (walked [0.35])
     zox_tst_set_setup("touch_play", zox_tst_level_setup, 0);
+    zox_tst_add("third_person_inputs", zox_tst_third_person_inputs_ready, zox_tst_third_person_inputs_check, 120);
+    zox_tst_set_setup("third_person_inputs", zox_tst_level_setup, 0);
     zox_tst_add("touch_actions", zox_tst_touch_actions_ready, zox_tst_touch_actions_check, 90);
     zox_tst_add("tooltip_flick", zox_tst_tooltip_flick_ready, zox_tst_tooltip_flick_check, 90);
     zox_tst_add("free_roam_pose", zox_tst_free_roam_pose_ready, zox_tst_free_roam_pose_check, 60);
