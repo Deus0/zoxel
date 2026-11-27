@@ -116,12 +116,14 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
 - **Mesh colours are rgba** (`MeshColors`, was `MeshColorRGBs`): rgb as before, the alpha a vertex's glow (0 none).
   Every cpu mesher writes it (terrain, vox models, skeletons, poly terrain); uploads 4 bytes a vertex; vulkan's rgb8
   fallback is gone. Not see through: a slime's shell is its own mesh with an `alpha` uniform.
-- **Shaders**: `GLOW` 3: terrain (textured3D) `max(light, glow) * (1 + glow * 3)`, a glowing face lit at night too;
-  vox models, instances and bones `colour * (1 + glow * 3)`.
-- **Blocks**: a `BlockGlow` tag (glow stones). The cpu's smooth lights write 255 into its faces' alpha
-  (`get_block_glows`, a voxel value's table); the gpu's textured draw looks its voxel (in the vertex's w) up in a
-  `glows` uniform set from the same table, so the compute mesher is unchanged.
-- tst glow_view (gl: cpu meshes, vulkan: gpu meshes): a glow stone's middle clipped white; without the tag ~150 blue.
+- **Shaders**: `GLOW` 3: terrain (textured3D) `(glow > 0 ? 1 : light) * (1 + glow * 3)`, a glowing face lit at
+  night too; vox models, instances and bones `colour * (1 + glow * 3)`.
+- **Blocks**: `BlockGlow`, a byte a block (0 none, 255 4x white); glow stones 80 (~1.9x: its pale stone past
+  white, it blooms, its cracks show): at 255 the whole face clipped to flat white, its stone texture lost. The cpu's
+  smooth lights write it into its faces' alpha (`get_block_glows`, a voxel value's table); the gpu's textured draw
+  looks its voxel (in the vertex's w) up in a `glows` uniform set from the same table, the compute mesher unchanged.
+- tst glow_view (gl: cpu meshes, vulkan: gpu meshes): a glow stone's middle past white (255 255 253); without glow
+  (228 212 142).
 - **Vox palettes** (built, 2026-11-27): `ColorGlows`, a glow byte a palette colour (doc/tech/rendering.md); the
   street lamp's glass 255. tst lamp_views: its glass past white on gl and vulkan, ~200 blue with no glow.
 - Next: gravity cores (a blueprint node to set a colour's glow), combined models (characters: glowing eyes that

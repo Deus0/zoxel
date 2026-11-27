@@ -694,7 +694,7 @@ static const char* zox_gpu_mesh_textured_vertex_source =
 "layout(location = 2) in vec2 vertex_uv;\n"
 "uniform mat4 mvp_matrix;\n"
 "uniform vec4 transform;\n"
-"uniform vec4 glows[64];\n"     // each voxel value's glow, 0 or 1 (BlockGlow), 4 a vec4
+"uniform vec4 glows[64];\n"     // each voxel value's glow, 0 to 1 (BlockGlow), 4 a vec4
 "out float fog_level;\n"
 "out vec2 uv;\n"
 "out vec2 side;\n"
@@ -728,7 +728,7 @@ static const char* zox_gpu_mesh_textured_fragment_source =
 "        discard;\n"
 "    }\n"
 "    float light = mix(mix(corner_lights.x, corner_lights.y, side.x), mix(corner_lights.z, corner_lights.w, side.x), side.y);\n"
-"    vec3 color = texel.rgb * max(light, glow) * (1.0 + glow * GLOW) * shading.x;\n"
+"    vec3 color = texel.rgb * (glow > 0.0 ? 1.0 : light) * (1.0 + glow * GLOW) * shading.x;\n"
 "    float fog_blend = min(1.0, 1.1 - exp2(-fog_data.w * fog_level));\n"
 "    frag_color = vec4(mix(color, fog_data.xyz, fog_blend), texel.a);\n"
 "}\n";

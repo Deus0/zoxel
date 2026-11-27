@@ -4,7 +4,7 @@ zox_tag(BlockBaked);
 zox_tag(BlockVox);
 zox_tag(BlockDungeon);
 zox_tag(BlockInvinsible);
-zox_tag(BlockGlow);         // its faces drawn brighter than white, so they bloom (glow stones; doc/plans/hdr.md)
+zoxc_byte(BlockGlow);       // its faces lit fully and drawn past white by this much (255: 4x), they bloom (doc/plans/hdr.md)
 zox_tag(BlockCanGroup);
 zox_tag(SingleTextureBlock);
 zoxc_byte(BlockLightPass);   // 1 light passes it (water, minivoxes), 0 it stops light
@@ -54,7 +54,7 @@ void zox_components_blocks(ecs *world) {
     zoxd_tag(BlockVox);
     zoxd_tag(BlockDungeon);
     zoxd_tag(BlockInvinsible);
-    zoxd_tag(BlockGlow);
+    zoxd_byte(BlockGlow);
     zoxd_tag(BlockCanGroup);
     zoxd_tag(BlockSoundTrigger);
     zoxd_nf_tag(SingleTextureBlock);

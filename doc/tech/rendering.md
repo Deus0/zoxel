@@ -22,13 +22,13 @@ How a vertex's colour reaches the shaders, per mesh path (2026-11-27, block glow
 
 | Path | Per vertex | Glow from |
 |---|---|---|
-| CPU terrain (and water) | rgba bytes (`MeshColors`): rgb its light, all three the same | alpha: 255 on a `BlockGlow` block's faces (`get_block_glows`) |
+| CPU terrain (and water) | rgba bytes (`MeshColors`): rgb its light, all three the same | alpha: its block's `BlockGlow` value on its faces (`get_block_glows`; lit fully when above 0) |
 | CPU vox models, skeletons, poly terrain | rgba bytes: the palette colour, darkened at corners | alpha: its palette colour's `ColorGlows` byte (poly terrain 0) |
 | GPU meshed vox models | one 32 bit value: r, g, b and a 4th byte | the 4th byte: the palette uniform carries `ColorGlows` there, ao keeps it, greedy merges by it |
 | GPU meshed terrain | the face's 4 corner lights in a 32 bit value; the position's w packs the voxel | the draw shader looks the voxel up in a `glows` uniform table, the compute mesher unchanged |
 
 - Alpha is glow, not see through: a slime's shell is its own mesh with an `alpha` uniform.
-- Shaders: terrain `max(light, glow) * (1 + glow * 3)` (a glowing face is lit at night too), vox models, instances
+- Shaders: terrain `(glow > 0 ? 1 : light) * (1 + glow * 3)` (a glowing face is lit at night too), vox models, instances
   and bones `colour * (1 + glow * 3)`. Past 1 needs a render camera's half float target; bloom and the tonemap bring
   it back to the screen.
 - Glow is a value carried with the data, not a material or mesh of its own: new glowing things set a value (a block

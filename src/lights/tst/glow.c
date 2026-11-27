@@ -2,8 +2,8 @@
 //  colour alpha on the cpu (lights3 build_smooth), the draw's glows by voxel on the gpu (lights3 gpu_mesh)
 //  - a chunk3 parent's top middle chunk (chunk3_parent.c): a glow stone alone in the sky's air
 //  - a camera of its own straight to the screen, a voxel and a half in front of it, the game's view hidden
-//  - its warm colour (255 226 150): unlit by glow its blue is at most its texture's (~150); glowing it's past
-//    white, clipped: its middle's blue near 255
+//  - its warm colour (255 226 150): unlit by glow its blue is at most its texture's (~142); glowing (BlockGlow 80,
+//    ~1.9x) its red and green clip and its blue past ~200: past white, its stone's cracks still showing
 //  - run: bash bsh/tst.sh glow_view
 extern char zox_screenshot_request[256];
 byte zox_tst_gview_stage = 0;
@@ -73,5 +73,5 @@ void zox_tst_glow_view_check(ecs* world) {
     b /= count;
     zox_log("[tst] glow_view: the glow stone's middle [%i %i %i]", r, g, b);
     zox_tst_check(r > 200 && g > 180, "the glow stone isn't in view, or dark [%i %i %i]", r, g, b);
-    zox_tst_check(b > 220, "the glow stone's blue [%i]: not past white (its texture's is ~150 unglowing)", b);
+    zox_tst_check(b > 180, "the glow stone's blue [%i]: not past white (its texture's is ~142 unglowing)", b);
 }

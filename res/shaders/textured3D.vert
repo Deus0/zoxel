@@ -12,5 +12,6 @@ void main() {
     gl_Position = mvp_matrix * vec4(vertex_position, 1);
     fog_level = gl_Position.z * gl_Position.z;
     uv = vertex_uv;
-    vertex_color_frag = max(vertex_color.rgb, vec3(vertex_color.a)) * (1.0 + vertex_color.a * GLOW);
+    // a glowing face is lit fully (at night too), its glow how far past white
+    vertex_color_frag = (vertex_color.a > 0.0 ? vec3(1.0) : vertex_color.rgb) * (1.0 + vertex_color.a * GLOW);
 }
