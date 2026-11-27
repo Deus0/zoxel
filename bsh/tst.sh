@@ -221,7 +221,7 @@ nohud_tests=(sky_clouds head_camera town_view held_item held_block held_view eat
 aesthetic_tests=(aesthetic_town aesthetic_particles)
 # tests that compare pictures across a change: the same world every run (seed 666, zox_tst_seed overrides it), a
 #   random one gave them other weather and effects to differ by
-seeded_tests=(gpu_restore_game)
+seeded_tests=(gpu_restore_game move_feel)
 run_game() {
     local tst="$1"
     local log="$2"
