@@ -24,12 +24,6 @@ static FolderPath file_window_path(const char* path) {
     return folder;
 }
 
-static FolderPath file_window_saves(void) {
-    FolderPath saves = { 0 };
-    get_save_directory(game_name, saves.value, sizeof(saves.value));
-    return file_window_path(saves.value);
-}
-
 static const char* file_window_basename(const char* path) {
     const char* name = path;
     for (const char* c = path; *c; c++) {
@@ -42,9 +36,8 @@ static const char* file_window_basename(const char* path) {
 
 static FolderPath file_window_parent(FolderPath folder) {
     const FolderPath resources = file_window_path(resources_path);
-    const FolderPath saves = file_window_saves();
-    if (!strcmp(folder.value, resources.value) || !strcmp(folder.value, saves.value)) {
-        return (FolderPath) { 0 };
+    if (!strcmp(folder.value, resources.value)) {
+        return (FolderPath) { 0 };  // the top: the window stays in the resources
     }
     const size_t offset = file_window_basename(folder.value) - folder.value;
     if (offset == strlen(folder.value)) {

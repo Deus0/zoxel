@@ -1,4 +1,4 @@
-// An empty folder displays the two roots. The list's path holds the selected file.
+// Opens in folder, the game's resources if none. The list's path holds the selected file.
 entity spawn_window_files(ecs* world, entity canvas, entity player, const char* folder) {
     (void) player;
     const int2 canvas_size = zox_getv(canvas, LayoutSize);
@@ -8,7 +8,7 @@ entity spawn_window_files(ecs* world, entity canvas, entity player, const char* 
     zox_set_name_spawned(world, ui.x, "files");
     zox_add(ui.x, FileWindowUI);
     zox_setv(ui.x, ElementFontSize, font_size);
-    const FolderPath path = file_window_path(folder);
+    const FolderPath path = file_window_path(folder && folder[0] ? folder : resources_path);
     zox_set_ptr(ui.x, FolderPath, path);
     set_FolderPath(world, ui.w, "");
     // Queue the list refresh after the window, its links and the list are ready.

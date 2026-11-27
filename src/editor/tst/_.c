@@ -227,6 +227,8 @@ void zox_tsts_editor() {
     zox_tst_set_setup("hierarchy_roots", NULL, 1);
     zox_tst_add("file_window", zox_tst_file_window_ready, zox_tst_file_window_check, 20);
     zox_tst_set_setup("file_window", NULL, 1);
+    zox_tst_add("file_window_resources", zox_tst_file_window_resources_ready, zox_tst_file_window_resources_check, 20);
+    zox_tst_set_setup("file_window_resources", NULL, 1);
     zox_tst_add("hierarchy_search", zox_tst_hierarchy_search_ready, zox_tst_hierarchy_search_check, 20);
     zox_tst_set_setup("hierarchy_search", NULL, 1);
     zox_tst_add("files_search", zox_tst_files_search_ready, zox_tst_files_search_check, 20);

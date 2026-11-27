@@ -49,20 +49,18 @@ static byte file_window_search_match(DirectoryEntry entry, const char* search, b
 static void spawn_file_window_entries(ecs* world, entity list, byte font_size, FolderPath folder) {
     const ClickEvent open_folder = { click_file_window_folder };
     if (!folder.value[0]) {
-        const FolderPath resources = file_window_path(resources_path);
-        const FolderPath saves = file_window_saves();
-        spawn_file_window_row(world, list, font_size, 0, "Resources/", resources.value, open_folder);
-        spawn_file_window_row(world, list, font_size, 1, "Saves/", saves.value, open_folder);
-        return;
+        folder = file_window_path(resources_path);
     }
-
+    // up a folder, but not out of the resources
     const FolderPath parent = file_window_parent(folder);
-    spawn_file_window_row(world, list, font_size, 0, "..", parent.value, open_folder);
+    uint index = 0;
+    if (parent.value[0]) {
+        spawn_file_window_row(world, list, font_size, index++, "..", parent.value, open_folder);
+    }
     size_t count;
     DirectoryEntry* entries = get_directory_entries(folder.value, &count);
     // The shared list lays out at most this many rows. Leave room for file info.
     const uint entry_limit = layouts2_children_capacity - (count > layouts2_children_capacity - 2 ? 2 : 1);
-    uint index = 1;
     byte omitted = 0;
     char search[input_field_max_length + 2];
     byte search_type;

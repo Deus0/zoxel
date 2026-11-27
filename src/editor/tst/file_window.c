@@ -113,3 +113,43 @@ static void zox_tst_file_window_check(ecs* world) {
     }
     zox_tst_check(zox_log_errors_count == 0, "[%u] errors logged", zox_log_errors_count);
 }
+
+// tst: file_window_resources, the files window opened with no folder shows the game's resources, with no way up
+//  out of them (no ".." row at their top)
+static byte zox_tst_file_window_resources_ready(ecs* world) {
+    static entity window;
+    if (!window) {
+        const entity canvas = get_editor_canvas(world);
+        if (!canvas) {
+            zox_tst_waiting = "the editor canvas";
+            return 0;
+        }
+        zox_defer_begin();
+        window = spawn_window_files(world, canvas, 0, NULL);
+        zox_defer_end();
+        return 0;
+    }
+    zox_tst_waiting = "the resources' rows";
+    const entity list = zox_tst_editor_list(world, window);
+    if (!list || zox_has(list, Dirty) || !zox_get_children_count(world, list)) {
+        return 0;
+    }
+    const FolderPath resources = file_window_path(resources_path);
+    zox_tst_check(!strcmp(zox_get(window, FolderPath)->value, resources.value), "the window opened in [%s], not [%s]",
+        zox_get(window, FolderPath)->value, resources.value);
+    int up = 0;
+    iter children = zox_children(world, list);
+    while (zox_children_next(children)) {
+        for (int i = 0; i < children.count; i++) {
+            const entity text = zox_get_child_by_id(world, children.entities[i], zox_id(TextData));
+            up += text && is_zext((TextData*) zox_get(text, TextData), "..");
+        }
+    }
+    zox_tst_check(!up, "the resources' top has a [..] row out of them");
+    return 1;
+}
+
+static void zox_tst_file_window_resources_check(ecs* world) {
+    zox_tst_check(zox_log_errors_count == 0, "[%u] errors logged", zox_log_errors_count);
+    (void) world;
+}
