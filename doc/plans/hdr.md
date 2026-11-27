@@ -141,6 +141,11 @@ Viewport cameras (split screen, model_views), xr (two eyes), web's `viewport_dow
 - **B0, check first**: log every format and colour space `vulkan_pick_surface_format` gets on deusmini (GNOME 51
   on wayland; mesa exposes HDR spaces through `VK_EXT_swapchain_colorspace` with wayland colour management). Only
   `SRGB_NONLINEAR` back means B is blocked here; say so and stop.
+  - **Checked 2026-11-27** (deusmini, radv phoenix, GNOME on wayland, `bash bsh/tst.sh vulkan_clear --vulkan --visible
+    --verbose`): with `VK_EXT_swapchain_colorspace` on, every format (8 bit, `A2R10G10B10` / `A2B10G10R10`, 16 bit
+    unorm and float) comes in sRGB, Display P3, BT.709, BT.2020 linear, **HDR10 ST2084** and pass through; not scRGB
+    (extended sRGB linear). SDL's window reports hdr off (headroom 1.0): the monitor isn't in hdr mode (or can't).
+    So B can be built here, `A2B10G10R10` + `HDR10_ST2084`, but only seen with an hdr screen turned on in GNOME.
 - Pick `R16G16B16A16_SFLOAT` + `EXTENDED_SRGB_LINEAR` (scRGB) if offered, else `A2B10G10R10` + `HDR10_ST2084`.
 - **One encode pass at the end**, not every shader changed: the canvas (3D view, ui, viewport cameras) draws into
   an 8 bit or float target as now, a last fullscreen pass encodes to the swapchain: SDR content at paper white (SDL3

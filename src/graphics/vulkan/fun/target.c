@@ -19,6 +19,11 @@ VkSurfaceFormatKHR vulkan_pick_surface_format() {
     VkSurfaceFormatKHR* formats = malloc(sizeof(VkSurfaceFormatKHR) * count);
     vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical, vk_surface, &count, formats);
     VkSurfaceFormatKHR chosen = formats[0];
+    // what the screen offers (--verbose): hdr output needs a float or 10 bit format in an hdr colour space
+    //  (doc/plans/hdr.md B0): 1000104002 scrgb linear, 1000104008 hdr10 pq, 0 srgb
+    for (uint i = 0; i < count; i++) {
+        zox_logv("[vulkan] surface format [%i] colour space [%i]", formats[i].format, formats[i].colorSpace);
+    }
     for (uint i = 0; i < count; i++) {
         if (formats[i].format == VK_FORMAT_B8G8R8A8_UNORM || formats[i].format == VK_FORMAT_R8G8B8A8_UNORM) {
             chosen = formats[i];

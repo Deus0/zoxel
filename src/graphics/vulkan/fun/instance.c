@@ -38,6 +38,20 @@ byte vulkan_has_layer(const char* name) {
     return found;
 }
 
+// an instance extension the driver has
+byte vulkan_has_instance_extension(const char* name) {
+    uint count = 0;
+    vkEnumerateInstanceExtensionProperties(NULL, &count, NULL);
+    VkExtensionProperties* extensions = malloc(sizeof(VkExtensionProperties) * count);
+    vkEnumerateInstanceExtensionProperties(NULL, &count, extensions);
+    byte found = 0;
+    for (uint i = 0; i < count && !found; i++) {
+        found = strcmp(extensions[i].extensionName, name) == 0;
+    }
+    free(extensions);
+    return found;
+}
+
 // extensions: the window's (from sdl), none for an offscreen target
 //  - debug builds turn on the validation layer when it's installed (vulkan-validation-layers)
 byte vulkan_create_instance(const char* const* extensions, uint extensions_count) {
@@ -53,6 +67,10 @@ byte vulkan_create_instance(const char* const* extensions, uint extensions_count
     }
     if (validate) {
         all[count++] = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+    }
+    // a window's surface lists its hdr colour spaces only with this on (doc/plans/hdr.md B0), it changes nothing else
+    if (extensions_count && count < 16 && vulkan_has_instance_extension(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME)) {
+        all[count++] = VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME;
     }
     const VkApplicationInfo app = {
         .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,

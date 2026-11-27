@@ -113,6 +113,14 @@ SDL_Window *zox_sdl_create_window(
     if (window && (x != SDL_WINDOWPOS_UNDEFINED || y != SDL_WINDOWPOS_UNDEFINED)) {
         SDL_SetWindowPosition(window, x, y);
     }
+    if (window) {
+        // its screen in hdr (--verbose, doc/plans/hdr.md B0): headroom is how far past sdr white it goes
+        const SDL_PropertiesID props = SDL_GetWindowProperties(window);
+        zox_logv("[sdl] window hdr [%i] headroom [%.2f] sdr white [%.2f]",
+            SDL_GetBooleanProperty(props, SDL_PROP_WINDOW_HDR_ENABLED_BOOLEAN, false),
+            SDL_GetFloatProperty(props, SDL_PROP_WINDOW_HDR_HEADROOM_FLOAT, 1.0f),
+            SDL_GetFloatProperty(props, SDL_PROP_WINDOW_SDR_WHITE_LEVEL_FLOAT, 1.0f));
+    }
     return window;
 }
 
