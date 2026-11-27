@@ -98,6 +98,7 @@ void xr_hands_ik_system(iter* it) {
 
 void zox_systems_xr_hands(ecs* world) {
     // after physics moved the body, before the arms' ik (zoxp_layouts)
+    // main thread in zoxp_trails on purpose (as xr_room_walk_system, fun/body.c): xr only, before the transforms
     zox_system_1(xr_hands_ik_system, zoxp_trails, 0);
     zox_set_enabled_id(ecs_id(xr_hands_ik_system), 0);
 }

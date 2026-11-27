@@ -1,4 +1,5 @@
-// tst: sky_blend, the sky fades to a new colour (blend_sky_to: SkyBlend tweened, sky_blend_system), its fog with it:
+// tst: sky_blend, the sky fades to a new colour (SkyBlendStart's observer, blend_sky_to: SkyBlend tweened,
+//  sky_blend_system), its fog with it:
 //  walking into another biome it snapped
 //  - waits for the game to be playing and its sky to settle (on its target, no blend running), then blends it to a
 //      far colour (each channel to its other end)
@@ -51,7 +52,10 @@ byte zox_tst_sky_blend_ready(ecs* world) {
         zox_tst_sb_skybox = skybox;
         zox_tst_sb_from = now;
         zox_tst_sb_to = (color_rgb) { now.r < 128 ? 255 : 0, now.g < 128 ? 255 : 0, now.b < 128 ? 255 : 0 };
-        blend_sky_to(world, skybox, zox_tst_sb_to);
+        // as walking into another biome starts it (biome_link_system, a worker): its target and event, the observer
+        //  starts the tween on the main thread (sky_blend_start_event)
+        zox_setv(skybox, SkyColorTarget, zox_tst_sb_to);
+        zox_add(skybox, SkyBlendStart);
         zox_tst_sb_stage = 1;
         return 0;
     }

@@ -469,6 +469,8 @@ void xr_head_bone_system(iter* it) {
 
 void zox_systems_xr_body(ecs* world) {
     // after the stick's velocity (controllers, imported before), before physics
+    // main thread outside spawn/gpu_upload/render, on purpose (doc/engine/thread_safety.md): xr only (off otherwise), each
+    //  where its order needs it, direct writes to the player's bones; costs a merge pair in xr, not in play
     zox_system_1(xr_room_walk_system, zoxp_update, 0);
     zox_system_1(xr_head_bone_system, zoxp_post_update, 0);
     // off without a headset (xr_systems_boot): main thread systems between multi threaded ones add merges

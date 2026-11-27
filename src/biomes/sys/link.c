@@ -113,7 +113,9 @@ void biome_link_system(iter* it) {
             zox_loge("Game has no skybox [%s]", zox_getn(game));
             continue;
         }
-        blend_sky_to(world, skybox, sky_color);
+        // the blend's tween is an entity: started by its event's observer on the main thread (sky_blend_start_event)
+        zox_setv(skybox, SkyColorTarget, sky_color);
+        zox_add(skybox, SkyBlendStart);
     }
     zox_sys_on_end();
 } zoxd_system(biome_link_system);

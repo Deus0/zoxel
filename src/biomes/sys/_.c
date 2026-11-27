@@ -29,8 +29,9 @@ void zox_systems_biomes(ecs *world) {
         [in] tunks.BiomeMap,
         [none] tunks.Tunk
     );
-    // main thread (zoxp_pre_end, with the other main thread systems, after the tunks' biomes are linked): it starts the sky's blend (a tween, blend_sky_to)
-    zox_system_1(
+    // multi threaded, after the tunks' biomes are linked: the sky's blend (a tween, an entity) started by its event
+    //  (SkyBlendStart, weathers' observer on the main thread at the merge), so no main thread system
+    zox_system(
         biome_link_system,
         zoxp_pre_end,
         [in] streaming.StreamDirty,

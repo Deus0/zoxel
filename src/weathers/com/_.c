@@ -5,6 +5,7 @@ zoxc_color_rgb(SkyColorFrom);
 zoxc_color_rgb(SkyColorTarget);
 zoxc_float(SkyBlend);
 zox_tag(SkyBlendLink);
+zox_tag(SkyBlendStart);     // event: blend to its SkyColorTarget (a worker sets it, the observer starts the tween)
 
 void zox_components_weather(ecs* world) {
     zoxd_tag(Weather);
@@ -13,4 +14,5 @@ void zox_components_weather(ecs* world) {
     zoxd_color_rgb(SkyColorTarget);
     zoxd_float(SkyBlend);
     zoxd_nf_link(SkyBlendLink);
+    zoxd_nf_tag(SkyBlendStart);
 }
