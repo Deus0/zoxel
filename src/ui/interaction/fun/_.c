@@ -1,3 +1,9 @@
+// a disabled interactable (greyed: ClickDisabled): no click, press, drag or gamepad step reaches it
+static inline byte ui_disabled(ecs* world, entity e) {
+    (void) world;
+    return zox_valid(e) && zox_has(e, ClickDisabled) && zox_getv(e, ClickDisabled);
+}
+
 void on_element_clicked(
     ecs *world,
     entity player,
@@ -132,6 +138,9 @@ void set_element_dragged(
     entity e,
     byte drag_mode)
 {
+    if (ui_disabled(world, e)) {
+        return;     // greyed: not dragged (a disabled slider's handle), as it isn't clicked
+    }
     DraggableState* state = zox_get_mut(e, DraggableState);
     if (!state->value) {
         state->value = drag_mode;

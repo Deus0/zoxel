@@ -18,10 +18,16 @@ void app_initialize_post_processing(ecs* world, entity app) {
         zox_add(bloom, SettingUnsupported);
     }
     // the screen itself in hdr (fun/output.c): vulkan with an hdr screen; off on others shows the same
+    const byte hdr_supported = zox_gpu_hdr_output_supported() && !zox_xr_active;
+    zox_logv("[hdr] output supported [%i]", hdr_supported);
     const entity hdr = spawn_setting_byte(world, app, "HDR", zox_hdr_output_asked != zox_hdr_output_off);
     setting_tags(world, hdr, zox_id(SettingTabVideo), zox_id(SettingHdr));
-    if (!zox_gpu_hdr_output_supported() || zox_xr_active) {
+    if (!hdr_supported) {
         zox_add(hdr, SettingUnsupported);
+        // greyed means off: not asked for, whatever --hdr or the settings file said
+        if (zox_hdr_output_asked != zox_hdr_output_canvas) {
+            zox_gpu_set_hdr_output(zox_hdr_output_off);
+        }
     }
 }
 
@@ -41,7 +47,9 @@ void post_processing_settings_on_dirty(iter* it) {
         } else if (zox_has(e, SettingBloom)) {
             zox_set_bloom(world, value);
         } else if (zox_has(e, SettingHdr) && zox_hdr_output_asked != zox_hdr_output_canvas) {
-            zox_gpu_set_hdr_output(value ? zox_hdr_output_hdr10 : zox_hdr_output_off);
+            // unsupported (greyed): kept off, a saved or passed on value ignored
+            const byte supported = !zox_has(e, SettingUnsupported);
+            zox_gpu_set_hdr_output(value && supported ? zox_hdr_output_hdr10 : zox_hdr_output_off);
         }
     }
 }

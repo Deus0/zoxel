@@ -17,6 +17,9 @@ void app_gpu_end_system(iter* it) {
         zox_loge("[main_app] is has invalid SDLWindow");
         return;
     }
+    if (zox_hdr_output_end) {
+        zox_hdr_output_end(world);      // hdr output: its canvas encoded to the screen (graphics/dat/hdr_output.c)
+    }
     if (zox_screenshot_request[0]) {
         if (zox_gpu_save_screenshot(zox_screenshot_request, zox_getv(main_app, WindowSize))) {
             zox_log("+ saved screenshot [%s]", zox_screenshot_request);

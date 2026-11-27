@@ -13,6 +13,9 @@ void camera_render3_system(iter* it) {
     zox_gpu_enable_culling();
     zox_gpu_disable_blend();
     zox_sys_world();
+    if (zox_hdr_output_begin) {
+        zox_hdr_output_begin(world);    // hdr output: the frame into its canvas (graphics/dat/hdr_output.c)
+    }
     zox_sys_begin();
     zox_sys_in(ViewProjectionMatrix);
     zox_sys_in(Position3D);

@@ -87,9 +87,33 @@ static inline byte hdr_output_canvas(int2 size) {
 // before the cameras draw: the frame into the canvas (its render textures' passes back to it after)
 byte zox_hdr_output_was = zox_hdr_output_off;
 
-void hdr_output_begin_system(iter* it) {
-    zox_sys_on_begin();
-    zox_sys_world();
+// the HDR setting greyed while its screen isn't in hdr (zox_gpu_hdr_output_supported), as the window moves screens or
+//  hdr's turned on or off: off while greyed, its value back when it isn't (reopen options to see it change)
+static inline void hdr_output_sync_setting(ecs* world) {
+    const entity setting = zox_valid(main_app) ? zox_get_child_by_id(world, main_app, zox_id(SettingHdr)) : 0;
+    if (!zox_valid(setting) || zox_hdr_output_asked == zox_hdr_output_canvas) {
+        return;
+    }
+    const byte supported = zox_gpu_hdr_output_supported() && !zox_xr_active;
+    if (supported == !zox_has(setting, SettingUnsupported)) {
+        return;
+    }
+    if (supported) {
+        zox_remove(setting, SettingUnsupported);
+    } else {
+        zox_add(setting, SettingUnsupported);
+    }
+    zox_gpu_set_hdr_output(supported && zox_getv(setting, SettingByte) ? zox_hdr_output_hdr10 : zox_hdr_output_off);
+}
+
+// once a frame, before the first camera or canvas draws
+void hdr_output_begin(ecs* world) {
+    static uint done_frame = UINT32_MAX;
+    if (done_frame == ecs_run_count) {
+        return;
+    }
+    done_frame = ecs_run_count;
+    hdr_output_sync_setting(world);
     // the swapchain's hdr changed (the setting, a screen): render cameras' targets to half floats or back (fun/hdr.c)
     if (zox_hdr_output != zox_hdr_output_was) {
         zox_hdr_output_was = zox_hdr_output;
@@ -100,12 +124,10 @@ void hdr_output_begin_system(iter* it) {
         if (zox_hdr_canvas_fbo) {
             hdr_output_dispose_canvas();
         }
-        zox_sys_on_end();
         return;
     }
     const int2 size = zox_getv(main_app, WindowSize);
     if (size.x <= 0 || size.y <= 0 || !hdr_output_canvas(size)) {
-        zox_sys_on_end();
         return;
     }
     zox_gpu_default_fbo = zox_hdr_canvas_fbo;
@@ -113,15 +135,12 @@ void hdr_output_begin_system(iter* it) {
     zox_gpu_set_viewport(float2_zero, int2_to_float2(size));
     zox_gpu_set_clear_color(color_to_float4(viewport_clear_color));
     zox_gpu_clear_viewport();
-    zox_sys_on_end();
-} zoxd_system(hdr_output_begin_system);
+}
 
 // after everything's drawn, before the screenshot and present: the canvas encoded into the swapchain
-void hdr_output_end_system(iter* it) {
-    zox_sys_on_begin();
-    (void) it;
+void hdr_output_end(ecs* world) {
+    (void) world;
     if (!zox_hdr_canvas_fbo || !zox_gpu_default_fbo) {
-        zox_sys_on_end();
         return;
     }
     zox_gpu_default_fbo = 0;
@@ -133,8 +152,7 @@ void hdr_output_end_system(iter* it) {
     zox_gpu_program_float4(zox_hdr_encode_program, "encode", (float4) { mode, zox_hdr_paper_white, 0, 0 });
     zox_gpu_render_triangles(3);
     zox_disable_material();
-    zox_sys_on_end();
-} zoxd_system(hdr_output_end_system);
+}
 
 void gpu_dispose_hdr_output(ecs* world) {
     (void) world;

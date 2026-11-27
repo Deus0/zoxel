@@ -13,6 +13,12 @@ VkFormat vulkan_pick_depth_format() {
 }
 
 // the window's format: 8 bits a channel, not srgb (colors look as they do on gl)
+// a window on an hdr screen (sdl says, zox_hdr_screen) and the colour space extension: hdr10 or scrgb can be asked of
+//  it; a compositor offers hdr10 to an sdr screen's window too, not shown as hdr (tests ask offscreen)
+static inline byte zox_gpu_hdr_output_supported() {
+    return !vk_surface || (vk_hdr_colour_spaces && zox_hdr_screen);
+}
+
 VkSurfaceFormatKHR vulkan_pick_surface_format() {
     uint count = 0;
     vkGetPhysicalDeviceSurfaceFormatsKHR(vk_physical, vk_surface, &count, NULL);
@@ -24,9 +30,11 @@ VkSurfaceFormatKHR vulkan_pick_surface_format() {
     for (uint i = 0; i < count; i++) {
         zox_logv("[vulkan] surface format [%i] colour space [%i]", formats[i].format, formats[i].colorSpace);
     }
-    // hdr asked for (--hdr): hdr10 in 10 bits, else scrgb in half floats, else sdr (zox_hdr_output says which)
+    // hdr asked for (--hdr) on an hdr screen: hdr10 in 10 bits, else scrgb in half floats, else sdr (zox_hdr_output
+    //  says which); an sdr screen's window is offered hdr10 too (its compositor's), not taken
     zox_hdr_output = zox_hdr_output_asked == zox_hdr_output_canvas ? zox_hdr_output_canvas : zox_hdr_output_off;
-    for (uint i = 0; i < count && zox_hdr_output_asked == zox_hdr_output_hdr10; i++) {
+    const byte asked = zox_hdr_output_asked == zox_hdr_output_hdr10 && zox_gpu_hdr_output_supported();
+    for (uint i = 0; i < count && asked; i++) {
         if ((formats[i].format == VK_FORMAT_A2B10G10R10_UNORM_PACK32 || formats[i].format == VK_FORMAT_A2R10G10B10_UNORM_PACK32)
             && formats[i].colorSpace == VK_COLOR_SPACE_HDR10_ST2084_EXT)
         {
@@ -34,7 +42,7 @@ VkSurfaceFormatKHR vulkan_pick_surface_format() {
             chosen = formats[i];
         }
     }
-    for (uint i = 0; i < count && zox_hdr_output_asked == zox_hdr_output_hdr10 && !zox_hdr_output; i++) {
+    for (uint i = 0; i < count && asked && !zox_hdr_output; i++) {
         if (formats[i].format == VK_FORMAT_R16G16B16A16_SFLOAT && formats[i].colorSpace == VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT) {
             zox_hdr_output = zox_hdr_output_scrgb;
             chosen = formats[i];
@@ -46,7 +54,7 @@ VkSurfaceFormatKHR vulkan_pick_surface_format() {
         return chosen;
     }
     if (zox_hdr_output_asked == zox_hdr_output_hdr10) {
-        zox_log("- vulkan hdr output: the screen offers no hdr10 or scrgb, sdr");
+        zox_log("- vulkan hdr output: %s, sdr", asked ? "the screen offers no hdr10 or scrgb" : "the screen isn't in hdr");
     }
     for (uint i = 0; i < count; i++) {
         if (formats[i].format == VK_FORMAT_B8G8R8A8_UNORM || formats[i].format == VK_FORMAT_R8G8B8A8_UNORM) {
@@ -343,11 +351,6 @@ static inline void zox_gpu_set_hdr_output(byte asked) {
         zox_hdr_output_asked = asked;
         vk_resized = 1;
     }
-}
-
-// a window's surface and the colour space extension: hdr10 or scrgb can be asked of it (tests ask offscreen too)
-static inline byte zox_gpu_hdr_output_supported() {
-    return !vk_surface || vk_hdr_colour_spaces;
 }
 
 void vulkan_set_vsync(byte value) {

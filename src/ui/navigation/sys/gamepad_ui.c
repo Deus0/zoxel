@@ -56,7 +56,9 @@ static inline void navigation_slider_step(ecs* world, entity player, entity slid
             }
         }
     }
-    if (!zox_valid(handle) || !zox_has(handle, LayoutConstraints)) {
+    if (!zox_valid(handle) || !zox_has(handle, LayoutConstraints) || ui_disabled(world, slider) ||
+        ui_disabled(world, handle))
+    {
         return;
     }
     const float2 bounds = zox_getv(handle, SlideBounds);

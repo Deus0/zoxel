@@ -208,7 +208,37 @@ void zox_tst_hdr_output_switch_check(ecs* world) {
     zox_gpu_set_hdr_output(zox_hdr_output_off);
 }
 
+// tst: hdr_output_screen, HDR on a screen that isn't in hdr (sdl's window says, zox_hdr_screen): greyed and off,
+//  even asked for (--hdr), though a compositor offers hdr10 to its window; on an hdr screen, usable
+//  - run: bash bsh/tst.sh hdr_output_screen --vulkan --visible --hdr (offscreen there's no screen: it's always usable)
+int zox_tst_hdr_screen_frames = 0;
+
+byte zox_tst_hdr_output_screen_ready(ecs* world) {
+    (void) world;
+    zox_tst_waiting = "the settings applied";
+    return ++zox_tst_hdr_screen_frames > 30;
+}
+
+void zox_tst_hdr_output_screen_check(ecs* world) {
+    const entity setting = zox_get_child_by_id(world, main_app, zox_id(SettingHdr));
+    zox_tst_check(zox_valid(setting), "no HDR setting");
+    if (!zox_valid(setting)) {
+        return;
+    }
+    const byte supported = zox_gpu_hdr_output_supported();
+    zox_log("[tst] hdr_output_screen: screen hdr [%i], supported [%i], greyed [%i], output [%i]", zox_hdr_screen, supported,
+        zox_has(setting, SettingUnsupported), zox_hdr_output);
+    zox_tst_check(zox_has(setting, SettingUnsupported) == !supported, "HDR's greyed [%i] but it's supported [%i]",
+        zox_has(setting, SettingUnsupported), supported);
+    if (!supported) {
+        zox_tst_check(zox_hdr_output == zox_hdr_output_off && zox_hdr_output_asked == zox_hdr_output_off,
+            "greyed, hdr output is [%i] (asked [%i]): it's off on an sdr screen", zox_hdr_output, zox_hdr_output_asked);
+    }
+}
+
 void zox_tsts_render_textures_hdr(ecs* world) {
+    zox_tst_add("hdr_output_screen", zox_tst_hdr_output_screen_ready, zox_tst_hdr_output_screen_check, 30);
+    zox_tst_set_setup("hdr_output_screen", NULL, 1);
     zox_tst_add("hdr_output_switch", zox_tst_hdr_output_switch_ready, zox_tst_hdr_output_switch_check, 30);
     zox_tst_set_setup("hdr_output_switch", NULL, 1);
     zox_tst_add("hdr_output", zox_tst_hdr_output_ready, zox_tst_hdr_output_check, 30);

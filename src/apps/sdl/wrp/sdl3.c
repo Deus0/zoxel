@@ -110,6 +110,7 @@ void zox_sdl_read_hdr_headroom(SDL_Window* window) {
     const SDL_PropertiesID props = SDL_GetWindowProperties(window);
     const byte hdr = SDL_GetBooleanProperty(props, SDL_PROP_WINDOW_HDR_ENABLED_BOOLEAN, false);
     const float headroom = SDL_GetFloatProperty(props, SDL_PROP_WINDOW_HDR_HEADROOM_FLOAT, 1.0f);
+    zox_hdr_screen = hdr;
     if (hdr && headroom > 1) {
         zox_hdr_headroom = headroom;
     }

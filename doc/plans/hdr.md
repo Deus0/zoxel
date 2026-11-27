@@ -148,13 +148,16 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
 
 **Built, vulkan (2026-11-27)**, blind: this screen reports sdr, so how it looks is for an hdr screen to judge.
 
-- **Setting `HDR`** (video tab, `--hdr` / `--nohdr`, saved): off by default; greyed on gl, in xr, and where vulkan has
-  no `VK_EXT_swapchain_colorspace`. Switched as the game runs: the swapchain made again, the frame's two passes made
+- **Setting `HDR`** (video tab, `--hdr` / `--nohdr`, saved): off by default; greyed (and off, whatever was saved or
+  passed) on gl, in xr, where vulkan has no `VK_EXT_swapchain_colorspace`, and while the window's screen isn't in hdr
+  (sdl's `SDL_PROP_WINDOW_HDR_ENABLED_BOOLEAN`, `zox_hdr_screen`): a compositor offers hdr10 to an sdr screen's window
+  too. It follows the screen as the game runs (a window moved, hdr turned on or off). Switched as the game runs: the swapchain made again, the frame's two passes made
   again when its format changes, pipelines keyed by the frame's format (`vk_pipeline_key.frame_format`).
 - **Swapchain** (`vulkan_pick_surface_format`): `A2B10G10R10` / `A2R10G10B10` in `HDR10_ST2084`, else
   `R16G16B16A16_SFLOAT` in `EXTENDED_SRGB_LINEAR` (scrgb, windows'), else sdr as before; `zox_hdr_output` says which.
 - **The canvas** (rendering/cameras/post_processing/fun/output.c): on, the frame draws into a half float render
-  texture the window's size (bound before the cameras; `zox_gpu_reset_fbo` goes back to it, `zox_gpu_default_fbo`),
+  texture the window's size (bound as the first camera or canvas draws, hooks in their systems: new main thread
+  systems moved the frame's merges and broke tst tooltips; `zox_gpu_reset_fbo` goes back to it, `zox_gpu_default_fbo`),
   then one fullscreen triangle (`zox_gpu_render_triangles`) encodes it into the swapchain: the game's display values
   made linear (srgb's curve, carried on past 1), times paper white (203 nits), rec.709 to rec.2020, pq; scrgb linear
   over 80 nits. No other shader changed.
@@ -163,7 +166,7 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
   ~800 nits): clamp cuts at it, soft and filmic take the soft shoulder up to it. Render cameras' targets are half
   floats while it's on (`zox_camera_hdr`), so clamp keeps what's past 1.
 - **Read back** (screenshots, tests): 10 bit's top 8 bits, scrgb's halves clamped at 1: the encoded values.
-- **Tests**: `hdr_output` (hdr10 asked before boot, offscreen into a 10 bit image: the cube at 3 encodes past white,
+- **Tests**: `hdr_output_screen` (`--vulkan --visible --hdr` on an sdr screen: greyed and off), `hdr_output` (hdr10 asked before boot, offscreen into a 10 bit image: the cube at 3 encodes past white,
   381 to 573 of 765, pq ~800 nits), `hdr_output_switch` (switched on mid run, the same; `--visible` on the real gpu
   too), `--hdr-canvas` (the canvas over an 8 bit swapchain, passed through: hdr_bloom, model_views and others as off).
 - **To check on an hdr screen**: the ui at a comfortable white (paper white 203), the sky and glow past it, no

@@ -107,15 +107,20 @@ entity spawn_list(
                 child_parent_data,
                 child_element_data,
                 slider_data,
-                button_fill,
+                child_data.disabled ? button_fill_disabled : button_fill,
                 button_outline,
                 list_data.font_size,
-                button_font_fill,
+                child_data.disabled ? button_font_fill_disabled : button_font_fill,
                 button_font_outline);
             if (child_data.on_slide.value) {
                 zox_setv(e2.y, SlideEvent, child_data.on_slide.value);
             }
             child = e2.x;
+            // disabled: greyed, its bar and handle unclickable (no drag), a gamepad doesn't step it (ui_disabled)
+            if (child_data.disabled) {
+                zox_setv(e2.x, ClickDisabled, 1);
+                zox_setv(e2.y, ClickDisabled, 1);
+            }
         } else if (child_data.type == list_element_type_toggle) {
             // Why so many for a button...
             child_element_data.prefab = prefab_button;

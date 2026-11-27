@@ -22,7 +22,8 @@ void import_post_processing(ecs* world) {
     add_hook_terminal_command(process_arguments_post_processing);
     add_hook_gpu_dispose(gpu_dispose_hdr_output);
     add_hook_gpu_restore(gpu_restore_hdr_output);
-    // hdr output (fun/output.c): the frame into its canvas before the cameras, encoded after everything's drawn
-    zox_system_1(hdr_output_begin_system, zoxp_cameras, 0);
-    zox_system_1(hdr_output_end_system, zoxp_pre_end, 0);
+    // hdr output (fun/output.c): the frame into its canvas before the cameras, encoded after everything's drawn, run by
+    //  the camera and app systems (graphics/dat/hdr_output.c)
+    zox_hdr_output_begin = hdr_output_begin;
+    zox_hdr_output_end = hdr_output_end;
 }

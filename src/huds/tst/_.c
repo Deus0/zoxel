@@ -8,6 +8,7 @@
 #include "tooltip_blink.c"
 #include "options.c"
 #include "options_tabs.c"
+#include "options_disabled.c"
 #include "scroll.c"
 #include "exit.c"
 #include "list.c"
@@ -71,6 +72,8 @@ void zox_tsts_huds(ecs* world) {
     zox_tst_set_setup("options_tabs", NULL, 1);
     zox_tst_add("ui_layout", zox_tst_ui_layout_ready, zox_tst_ui_layout_check, 90);
     zox_tst_set_setup("ui_layout", NULL, 1);
+    zox_tst_add("options_disabled", zox_tst_options_disabled_ready, zox_tst_options_disabled_check, 60);
+    zox_tst_set_setup("options_disabled", NULL, 1);
     zox_tst_add("font_glyphs", zox_tst_font_glyphs_ready, zox_tst_font_glyphs_check, 60);
     zox_tst_set_setup("font_glyphs", NULL, 1);
     zox_tst_add("realm_info", zox_tst_realm_info_ready, zox_tst_realm_info_check, 60);

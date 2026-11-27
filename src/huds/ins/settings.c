@@ -11,6 +11,9 @@ void on_new_settings_toggle_toggled(
         zox_loge("UI Setting Linked to Invalid [%s]", zox_getn(e2));
         return;
     }
+    if (zox_has(e2, SettingUnsupported)) {
+        return;     // greyed: its toggle can't be used, this is in case it's reached another way
+    }
     zox_set(e2, SettingByte, { data->value });
     zox_add(e2, Dirty);
     zox_add(e2, Refresh);   // the save (setting_save_system on Update), once a frame
@@ -25,7 +28,7 @@ void on_settings_slide(
     entity slider = zox_get_parent(world, data->dragged);
     entity text = zox_get_child_by_id(world, slider, zox_id(Text));
     entity e2 = zox_getv(slider, SettingLink);
-    if (!zox_valid(e2) || !zox_valid(slider) || !zox_valid(text)) {
+    if (!zox_valid(e2) || !zox_valid(slider) || !zox_valid(text) || zox_has(e2, SettingUnsupported)) {
         return;
     }
     char new_text[128];
@@ -128,6 +131,8 @@ static inline byte menu_options_tab_elements(ecs* world, entity app, entity tab,
         const entity e2 = sorted[k].e;
         const ZoxName* name = zox_get(e2, ZoxName);
         options[k] = e2;
+        // unsupported here: greyed and unusable (a toggle shown off), its tooltip says why
+        const byte unsupported = zox_has(e2, SettingUnsupported);
         if (zox_has(e2, SettingByteSlider)) {
             const byte value = zox_getv(e2, SettingByte);
             snprintf(labels[k], 128, "%s [%i]", name->value, value);
@@ -136,11 +141,11 @@ static inline byte menu_options_tab_elements(ecs* world, entity app, entity tab,
                 .on_slide = { &on_settings_slide },
                 .text = labels[k],
                 .value = (float) value,
-                .value_bounds = byte2_to_float2(zox_getv(e2, SettingByteBounds))
+                .value_bounds = byte2_to_float2(zox_getv(e2, SettingByteBounds)),
+                .disabled = unsupported,
+                .tooltip = unsupported ? "Not supported on this device" : NULL,
             };
         } else if (zox_has(e2, SettingToggle)) {
-            // unsupported here: shown off and greyed, its tooltip says why
-            const byte unsupported = zox_has(e2, SettingUnsupported);
             elements[k] = (SpawnListElement) {
                 .type = list_element_type_toggle,
                 .on_toggle = { &on_new_settings_toggle_toggled },
@@ -157,7 +162,9 @@ static inline byte menu_options_tab_elements(ecs* world, entity app, entity tab,
                 .on_slide = { &on_settings_slide },
                 .text = labels[k],
                 .value = value,
-                .value_bounds = zox_getv(e2, SettingFloatBounds)
+                .value_bounds = zox_getv(e2, SettingFloatBounds),
+                .disabled = unsupported,
+                .tooltip = unsupported ? "Not supported on this device" : NULL,
             };
         }
     }
