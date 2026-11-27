@@ -1,31 +1,35 @@
-// tst: window_grid_resize, a grid window (an inventory's slots) resized: its columns fit its width, its rows follow,
-//  it grows to fit them, it stays on its canvas (sys/layout.c window_grid_fit, window_canvas_fit)
-//  - a window of 16 cells, 4 by 4, made narrow by its right handle: fewer columns, more rows, taller, every cell inside
-//      its body; then wide past the canvas: as wide as the canvas, more columns, every cell inside, the window on it
-//  - before: the grid kept 4 columns, its cells spilled out of a narrow window and drifted in a wide one, a window could
-//      grow off its canvas
-//  - antitests: without window_grid_fit it times out waiting for the narrow window's grid; without window_canvas_fit
-//      and drag.c's canvas limit, the widened window is 2120 wide on a 460 canvas
+// tst: window_grid_resize, a grid window (an inventory's slots) resized: its columns fit its width, its rows follow and
+//  scroll in its body, it stays on its canvas (sys/layout.c window_grid_fit, window_canvas_fit)
+//  - a window of 16 cells, 4 by 4, made narrow by its right handle: fewer columns, more rows, the same height, the
+//      rows that don't fit past its body (its Mask clips them); the fake mouse's wheel over it scrolls a row down
+//  - its bottom right corner dragged to the minimum (a window's, 120 x 80): one row shows; then wide past the canvas: as wide as the canvas,
+//      every row shown, the window on it
+//  - before: the window grew taller to fit its rows, round its centre, so it moved about as they reflowed (play test
+//      2026-11-27); before that its cells spilled out of a narrow window
 //  - run: bash bsh/tst.sh window_grid_resize
 #define zox_tst_grid_cells 16
 #define zox_tst_grid_cell 40
 
-// every cell inside its body, and the window inside its canvas
+// the shown rows' cells inside its body, the scrolled away ones past it, and the window inside its canvas
 static void zox_tst_grid_inside(ecs* world, entity canvas, entity window, entity body, const char* when) {
     const int2 body_size = zox_getv(body, LayoutSize);
-    int outside = 0, count = 0;
+    const byte2 grid = zox_getv(body, GridSize);
+    const int start = zox_getv(body, ListStart), visible = zox_getv(body, ListVisible);
+    int wrong = 0, count = 0;
     iter it = zox_children(world, body);
     while (zox_children_next(it)) {
         for (int i = 0; i < it.count; i++) {
             const int2 p = zox_getv(it.entities[i], LayoutPosition);
             const int2 s = zox_getv(it.entities[i], LayoutSize);
-            outside += abs(p.x) + s.x / 2 > body_size.x / 2 || abs(p.y) + s.y / 2 > body_size.y / 2;
+            const byte inside = abs(p.x) + s.x / 2 <= body_size.x / 2 && abs(p.y) + s.y / 2 <= body_size.y / 2;
+            const int row = count / int_max(1, grid.x);
+            const byte shown = row >= start && row < start + visible;
+            wrong += inside != shown;
             count++;
         }
     }
-    const byte2 grid = zox_getv(body, GridSize);
-    zox_tst_check(!outside && grid.x * grid.y >= count, "%s: [%i] of [%i] cells outside the [%ix%i] body, grid [%ix%i]",
-        when, outside, count, body_size.x, body_size.y, grid.x, grid.y);
+    zox_tst_check(!wrong && grid.x * grid.y >= count, "%s: [%i] of [%i] cells wrongly in or out of the [%ix%i] body, grid "
+        "[%ix%i], rows [%i] from [%i]", when, wrong, count, body_size.x, body_size.y, grid.x, grid.y, visible, start);
     const int2 canvas_size = zox_getv(canvas, LayoutSize);
     const int2 size = zox_getv(window, LayoutSize);
     const int2 position = zox_getv(window, LayoutPosition);
@@ -67,7 +71,7 @@ static byte zox_tst_window_grid_resize_ready(ecs* world) {
         case 1:
             zox_tst_waiting = "the window's handles and its grid";
             handle = zox_tst_window_resize_handle(world, window, (float2) { 1, 0.5f }, &count);
-            if (!handle || zox_get_children_count(world, body) < zox_tst_grid_cells) {
+            if (!handle || zox_get_children_count(world, body) < zox_tst_grid_cells || !zox_has(body, ListVisible)) {
                 return 0;
             }
             zox_tst_grid_inside(world, canvas, window, body, "spawned");
@@ -87,16 +91,55 @@ static byte zox_tst_window_grid_resize_ready(ecs* world) {
         case 3: {
             // a frame on: grid_system places the cells (Update)
             const byte2 grid = zox_getv(body, GridSize);
-            zox_tst_check(grid.y > grid_before.y && zox_getv(window, LayoutSize).y > before.y,
-                "narrowed: the grid is [%ix%i] and the window [%i] high, not more rows and taller than [%ix%i] and [%i]",
-                grid.x, grid.y, zox_getv(window, LayoutSize).y, grid_before.x, grid_before.y, before.y);
+            zox_tst_check(grid.y > grid_before.y && zox_getv(window, LayoutSize).y == before.y &&
+                zox_getv(body, ListVisible) < grid.y,
+                "narrowed: the grid is [%ix%i], [%i] rows shown, the window [%i] high, not more rows than [%ix%i] scrolling "
+                "in [%i]", grid.x, grid.y, zox_getv(body, ListVisible), zox_getv(window, LayoutSize).y, grid_before.x,
+                grid_before.y, before.y);
             zox_tst_grid_inside(world, canvas, window, body, "narrowed");
             grid_before = grid;
-            zox_setv(handle, DraggingDelta, ((int2) { 2000, 0 }));     // past the canvas
-            zox_setv(handle, DraggableState, 1);
+            // the fake mouse over its body, its wheel down a notch
+            int2 point;
+            if (!zox_tst_ui_pointer_position(world, canvas, body, &point)) {
+                return 0;
+            }
+            zox_tst_mouse(point, 0);
+            zox_tst_mouse_wheel(-1);
             break;
         }
         case 4:
+            zox_tst_waiting = "the wheel to scroll its rows";
+            zox_tst_mouse_wheel(0);
+            if (zox_getv(body, ListStart) != 1) {
+                return 0;
+            }
+            break;
+        case 5:
+            zox_tst_mouse_end();
+            zox_tst_grid_inside(world, canvas, window, body, "scrolled");
+            handle = zox_tst_window_resize_handle(world, window, (float2) { 1, 0 }, &count);   // bottom right
+            zox_setv(handle, DraggingDelta, ((int2) { -2000, 2000 }));     // to the minimum
+            zox_setv(handle, DraggableState, 1);
+            break;
+        case 6: {
+            zox_tst_waiting = "the smallest window's grid";
+            zox_setv(handle, DraggableState, 0);
+            zox_setv(handle, DraggingDelta, int2_zero);
+            if (zox_getv(body, ListVisible) != 1) {
+                return 0;
+            }
+            break;
+        }
+        case 7:
+            zox_tst_grid_inside(world, canvas, window, body, "smallest");
+            zox_tst_check(zox_getv(body, LayoutSize).y < 2 * zox_tst_grid_cell, "the smallest body is [%i] high, more than "
+                "a row", zox_getv(body, LayoutSize).y);
+            grid_before = zox_getv(body, GridSize);
+            handle = zox_tst_window_resize_handle(world, window, (float2) { 1, 0.5f }, &count);
+            zox_setv(handle, DraggingDelta, ((int2) { 2000, 0 }));     // past the canvas
+            zox_setv(handle, DraggableState, 1);
+            break;
+        case 8:
             zox_tst_waiting = "the wide window's grid";
             zox_setv(handle, DraggableState, 0);
             zox_setv(handle, DraggingDelta, int2_zero);
@@ -104,7 +147,7 @@ static byte zox_tst_window_grid_resize_ready(ecs* world) {
                 return 0;
             }
             break;
-        case 5:
+        case 9:
             zox_tst_check(zox_getv(window, LayoutSize).x == zox_getv(canvas, LayoutSize).x,
                 "widened past the canvas: the window is [%i] wide, its canvas [%i]", zox_getv(window, LayoutSize).x,
                 zox_getv(canvas, LayoutSize).x);

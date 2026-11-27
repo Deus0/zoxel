@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-27
+-x The inventory scrolls: a grid body is its own scroll area (a Scrollview without a list scrolls itself, a Mask clips
+  its rows, ListStart its first shown row), its window no longer grows taller to fit its rows (it moved about as they
+  reflowed), as small as a row; the wheel scrolls it (tst window_grid_resize, with the fake mouse's wheel)
 -x Resizing a window moved both its sides: the layout grew it back to fit its rows round its centre. It grows on the
   side being dragged now, the far side stays (window_grown_keeps_side), its position written in place (a deferred set
   was undone by window_canvas_fit) (tst window_resize_layout checks the far edges every drag)

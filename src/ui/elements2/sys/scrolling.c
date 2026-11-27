@@ -121,8 +121,8 @@ void scrollview_wheel_system(iter* it) {
                 if (!is_in_pointer_bounds(bounds, pointer->value)) {
                     continue;
                 }
-                const entity list = zox_get_link(world, e2, ListUILink);
-                const int layer = zox_valid(list) && zox_has(list, Layer) ? zox_getv(list, Layer) : 0;
+                const entity list = scrollview_list(world, e2);
+                const int layer = zox_has(list, Layer) ? zox_getv(list, Layer) : 0;
                 if (layer > top_layer) {
                     top_layer = layer;
                     scrollview = e2;
@@ -139,8 +139,8 @@ void scrollview_wheel_system(iter* it) {
         {
             continue;
         }
-        const entity list = zox_get_link(world, scrollview, ListUILink);
-        if (!zox_valid(list)) {
+        const entity list = scrollview_list(world, scrollview);
+        if (!zox_has(list, ListStart)) {
             continue;
         }
         if (zox_has(list, VirtualList)) {

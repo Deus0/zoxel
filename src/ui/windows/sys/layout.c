@@ -25,10 +25,16 @@ static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
     }
 }
 
-// a grid body (an inventory's slots): its columns fit its width, its rows follow, the window grows to fit them
+// a grid body (an inventory's slots): its columns fit its width, its rows follow, those that don't fit scroll
+//  - its own scroll area (elements2/pre/grid.c): a Mask clips the rows past its edges, the wheel scrolls it,
+//    ListStart its first shown row, ListVisible how many fit (grid_system places them from it)
+//  - the window is at least a cell, never grown to fit its rows (it moved about as they reflowed)
 //  - chrome: the window's height outside its body (header, footer, search bar)
 static void window_grid_fit(ecs* world, entity window, entity body, int2* size, int chrome) {
-    const entity cell = zox_has(body, GridSize) ? zox_get_child_by_id(world, body, zox_id(LayoutSize)) : 0;
+    if (!zox_has(body, GridSize)) {
+        return;
+    }
+    const entity cell = zox_get_child_by_id(world, body, zox_id(LayoutSize));
     if (!cell) {
         return;
     }
@@ -43,12 +49,20 @@ static void window_grid_fit(ecs* world, entity window, entity body, int2* size, 
     if (!byte2_equals(zox_getv(body, GridSize), grid)) {
         zox_setv(body, GridSize, grid);
     }
-    zox_add(body, Refresh);     // grid_system places its cells for its new size, next frame
-    const int2 least = { columns * (cell_size.x + gap) - gap + 2 * margins.x, chrome + rows * cell_size.y + 2 * margins.y };
+    // at least one cell
+    const int2 least = { cell_size.x + 2 * margins.x, chrome + cell_size.y + 2 * margins.y };
     if (size->x < least.x || size->y < least.y) {
         *size = (int2) { int_max(size->x, least.x), int_max(size->y, least.y) };
         zox_setv(window, LayoutSize, *size);
     }
+    // the rows that fit, its scroll kept in them
+    const int visible = int_clamp((size->y - chrome - 2 * margins.y) / int_max(1, cell_size.y), 1, int_max(1, rows));
+    zox_setv(body, ListVisible, visible);
+    const int start = int_min(zox_getv(body, ListStart), rows - visible);
+    if (start != zox_getv(body, ListStart)) {
+        zox_setv(body, ListStart, start);
+    }
+    zox_add(body, Refresh);     // grid_system places its cells for its new size, next frame
 }
 
 // a list's window (a game menu's) no narrower than its widest row, its margins and its scrollbar; a virtual list's rows

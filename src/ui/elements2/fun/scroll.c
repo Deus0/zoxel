@@ -20,12 +20,19 @@ static void layout_scrollbar_handle(ecs* world, entity handle, int2 size, int le
 //  - ListStart is the list's first shown element, ListVisible how many show at once
 //  - dragging the handle (scrollbar_system) and the mouse wheel (scrollview_wheel_system) set the start
 
+// a scrollview's list: its ListUILink, or itself without one (a grid scrolls itself)
+static inline entity scrollview_list(ecs* world, entity scrollview) {
+    const entity list = zox_get_link(world, scrollview, ListUILink);
+    return zox_valid(list) ? list : scrollview;
+}
+
 // the furthest the list can scroll, 0 if every element fits
 int get_scrollview_max_start(
     ecs* world,
     entity list)
 {
-    const int count = (int) zox_get_children_count(world, list);
+    // a grid (an inventory) scrolls by its rows
+    const int count = zox_has(list, GridSize) ? zox_getv(list, GridSize).y : (int) zox_get_children_count(world, list);
     const int visible = zox_getv(list, ListVisible);
     return count > visible ? count - visible : 0;
 }
@@ -88,7 +95,11 @@ byte set_list_start(
         return 0;
     }
     zox_setv(list, ListStart, (byte) start);
-    zox_add(list, ListPositionDirty);
+    if (zox_has(list, GridSize)) {
+        zox_add(list, Refresh);     // a grid: grid_system places its rows again (its cells are all shown, its Mask clips)
+    } else {
+        zox_add(list, ListPositionDirty);
+    }
     return 1;
 }
 
@@ -100,7 +111,7 @@ byte set_scrollview_start(
     int start,
     byte move_handle)
 {
-    const entity list = zox_get_link(world, scrollview, ListUILink);
+    const entity list = scrollview_list(world, scrollview);
     if (!set_list_start(world, list, start)) {
         return 0;
     }
