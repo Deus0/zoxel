@@ -97,6 +97,10 @@ void canvas_stack_system(iter* it) {
             world,
             e);
         byte layers_per_window = get_highest_window_layer(world, e);
+        // windows closed since the last stacking: the old count is stale, new windows would stack above this one
+        if (count->value >= windows_count && windows_count) {
+            count->value = windows_count - 1;
+        }
         // gett previous window layer of moving to top window
         // skip if: same window clicked as already on top
         if (windows_count == count->value && old_layer == windows_count) {

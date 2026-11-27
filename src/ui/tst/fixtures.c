@@ -9,13 +9,22 @@ static byte zox_tst_ui_click_at(int2 point, int* step) {
     return 0;
 }
 
-// Reuse the boot canvas and devices. An empty click activates mouse mode before clicking any fixture widget.
+// Reuse the boot canvas and devices. An empty click activates mouse mode first (on the start menu it opens the main
+//  menu, as any key does), then the canvas is cleared, so no boot menu covers the fixture's widgets.
 static entity zox_tst_ui_fixture_canvas(ecs* world) {
-    static byte cleared;
-    static int click_step;
+    static byte clicked, cleared;
+    static int click_step, settle;
     const entity canvas = zox_valid(dbg_player) ? zox_get_link(world, dbg_player, CanvasLink) : 0;
     CanvasViewport viewport;
     if (!get_canvas_viewport(world, canvas, &viewport) || !zox_tst_mouse_pointer(world, dbg_player)) {
+        return 0;
+    }
+    if (!clicked) {
+        clicked = zox_tst_ui_click_at(int2_add(viewport.position, (int2) { 8, 8 }), &click_step);
+        return 0;
+    }
+    if (settle < 4) {
+        settle++;   // what the click opened spawns
         return 0;
     }
     if (!cleared) {
@@ -31,8 +40,9 @@ static entity zox_tst_ui_fixture_canvas(ecs* world) {
         }
         zox_defer_end();
         cleared = 1;
+        return 0;
     }
-    return zox_tst_ui_click_at(int2_add(viewport.position, (int2) { 8, 8 }), &click_step) ? canvas : 0;
+    return canvas;
 }
 
 static void zox_tst_ui_fixture_check(ecs* world) {
