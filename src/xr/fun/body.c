@@ -5,13 +5,10 @@
 //    head's turn into the body's, the body fought the head)
 //  - the eyes: the character's facing (its +z the tracking space's -z), at its neck (the head bone's pivot), the
 //    head's turn swinging the eyes about it (the camera's offset from the head), the headset's pose on top
-//  - walking in the real room (the head's tracked x z) moves the character through physics, with collisions: each
-//    frame's step is its velocity for that frame (xr_room_walk_system, zoxp_update, before physics), so walls stop
-//    it in the frame it's taken; a step a wall stops is still used up, the view stays with the body (no seeing
-//    through walls, the room slides back instead)
-//  - friction kept: the stick and room velocities are scaled against this frame's drag (physics3_drag_compensation),
-//    so the body moves exactly as asked each frame; drag came and went with Grounded (it flickers on seams),
-//    spiking the walk's speed: bumps
+//  - walking in the real room (the head's tracked x z) moves the character by the move, as the stick's view does:
+//    each frame's step (the hips past the real neck's reach, xr_room_walk_system) is added to the view's lead on the
+//    body (xr_stick_lead), the move pushes the body after it (forces, never its velocity: doc/tech/physics.md), walls
+//    stop it, the lead's at most xr_stick_lead_max and never into a block
 //  - the head bone turns as the headset does (xr_head_bone_system), the voxel head matches and the camera on it
 //    (raycasts) looks where the head looks; its breathing bob is taken off (bobbing eyes sicken)
 //  - the spine follows the real neck (xr_spine_solve): the chest's line, hips to neck, turned at the neck
@@ -57,18 +54,15 @@ float3 xr_body_view_off = { 0, 0, 0 };  // the real neck past where the body's r
 //  (xr_stick_lead) is the stick's move less the body's, the body pushed toward it (movement.c player3_move_xr)
 //  - counted after physics: where the eyes are drawn (xr_body_frame_get) the lead's this frame's, so the view moves
 //    exactly the stick's speed; carried over at the next frame's start (xr_room_walk_system)
-//  - the body's moves by the room (its steps, xr_room_walk_system) aren't the stick's: what the body moved along its
-//    room step is the room's, the rest the stick's (a wall stopping a room step doesn't lead the view through it)
+//  - the room's steps (xr_room_walk_system) add to it: the body walks after the real neck as after the stick's view
 //  - at most xr_stick_lead_max: a body stopped by a wall stops the view that far on (inside the body's own width)
 #define xr_stick_lead_max 0.25f
 #define xr_stick_lead_clear 0.06f   // the near plane: the view's eyes kept this far from
                                     //  a solid block along its lead (a stopped body's lead took the eyes 21cm into a
                                     //  wall, tst xr_stick)
 static float3 xr_stick_body_from;       // the body's place at this frame's start
-static float3 xr_stick_room_step;       // this frame's room step (world)
 static float3 xr_stick_frame_velocity;  // this frame's stick velocity and dt (they're the next frame's by the eyes' draw)
 static float xr_stick_frame_dt = 0;
-static float3 xr_room_velocity_left;    // the room step's velocity left after last frame's drag (taken off this frame)
 static byte xr_stick_started = 0;
 
 static entity xr_body_head(ecs* world, entity camera);     // below: the camera's head bone
@@ -81,13 +75,6 @@ static inline float3 xr_stick_lead_now(ecs* world, entity character) {
     const float3 now = zox_getv(character, Position3D);
     float3 moved = float3_sub(now, xr_stick_body_from);
     moved.y = 0;
-    // the room's part: what it moved along its step, up to the step
-    const float step = float3_length(xr_stick_room_step);
-    if (step > 0) {
-        const float3 along = float3_scale(xr_stick_room_step, 1 / step);
-        const float room = float_max(0, float_min(step, float3_dot(moved, along)));
-        moved = float3_sub(moved, float3_scale(along, room));
-    }
     float3 lead = float3_add(xr_stick_lead, float3_sub(float3_scale(xr_stick_frame_velocity, xr_stick_frame_dt), moved));
     lead.y = 0;
     float length = float3_length(lead);
@@ -319,6 +306,9 @@ static float3 xr_spine_solve(float3 line, float3 neck, float crouch_max, float b
 void xr_room_walk_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
+    if (!it->count) {
+        return;
+    }
     const entity character = xr_body_character(world);
     if (!zox_xr_active || !zox_valid(character) || !xr_body_head(world, xr_camera)) {
         xr_body_room_started = 0;
@@ -326,7 +316,6 @@ void xr_room_walk_system(iter* it) {
         xr_body_room_turn = quaternion_identity;
         xr_stick_started = 0;
         xr_stick_lead = float3_zero;
-        xr_room_velocity_left = float3_zero;
         return;
     }
     // the stick's lead carried over (the body's where last frame's physics left it), this frame's begun
@@ -352,7 +341,6 @@ void xr_room_walk_system(iter* it) {
     xr_stick_body_from = zox_getv(character, Position3D);
     xr_stick_frame_velocity = xr_stick_velocity;
     xr_stick_frame_dt = (float) zox_delta_time;
-    xr_stick_room_step = float3_zero;
     const entity skeleton = get_skeleton(world, character);
     spine_bones spine;
     if (!zox_valid(skeleton) || !spine_bones_find(world, skeleton, &spine)) {
@@ -423,20 +411,9 @@ void xr_room_walk_system(iter* it) {
         zox_setv(skeleton, SpineLean, lean);
         zox_setv(skeleton, HipsShift, shift);
     }
-    const float dt = zox_delta_time;
-    Velocity3D* velocity = zox_getm(character, Velocity3D);
-    // last frame's room step taken off what's left of it (the stick set the velocity each frame once, now the move
-    //  only pushes: a step's velocity left on would carry the body on past it)
-    velocity->value.x -= xr_room_velocity_left.x;
-    velocity->value.z -= xr_room_velocity_left.z;
-    xr_room_velocity_left = float3_zero;
-    if (dt > 0 && (step.x != 0 || step.z != 0) && !zox_has(character, DisableMovement)) {
-        const float compensation = physics3_drag_compensation(world, character) / dt;
-        const float3 added = { step.x * compensation, 0, step.z * compensation };
-        velocity->value.x += added.x;
-        velocity->value.z += added.z;
-        xr_room_velocity_left = float3_scale(added, character3_step(world, character).keep);
-        xr_stick_room_step = (float3) { step.x, 0, step.z };
+    // the step leads the view, the move walks the body after it (movement.c player3_move_xr)
+    if (!zox_has(character, DisableMovement)) {
+        xr_stick_lead = float3_add(xr_stick_lead, (float3) { step.x, 0, step.z });
     }
     zox_sys_on_end();
 } zoxd_system(xr_room_walk_system);
@@ -449,7 +426,7 @@ void xr_room_walk_system(iter* it) {
 //  - after the head's own systems (zoxp_update: head_look eases it to ahead), before the hierarchy
 // multi threaded, the xr camera its one entity (one worker runs it): the head's rotation set, head_look_system leaving
 //  it (HeadHeld: they raced, zoxp_update and physics have no barrier), spine_twist_system turning it after (zoxp_trails,
-//  after the barrier); the lean read was written by xr_room_walk_system (main thread, before)
+//  after the barrier); the lean read is the last frame's walk (xr_room_walk_system, zoxp_layouts), as the spine's
 void xr_head_bone_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -474,13 +451,14 @@ void xr_head_bone_system(iter* it) {
 } zoxd_system(xr_head_bone_system);
 
 void zox_systems_xr_body(ecs* world) {
-    // after the stick's velocity (controllers, imported before), before physics
-    // main thread outside spawn/gpu_upload/render, on purpose (doc/engine/thread_safety.md): xr only (off otherwise); it
-    //  adds to the character's Velocity3D in place, which movement writes in zoxp_update and physics reads right after
-    //  with no barrier between: its merges keep that order. Costs a merge pair in xr, not in play
-    zox_system_1(xr_room_walk_system, zoxp_update, 0);
+    // multi threaded, the xr camera its one entity (one worker runs it), after physics and the trails barrier: it
+    //  leads the view (xr_stick_lead, read by the move next frame), turns the body (the hierarchy after its barrier
+    //  places it), leans the spine (SpineLean, HipsShift: the head, spine, feet and hands read it next frame, all
+    //  the same frame's); a frame late, the body catching up anyway. In zoxp_update it raced the move (Rotation3D),
+    //  the stick (xr_stick_lead) and the mouse turn (xr_stick_turn)
+    zox_system(xr_room_walk_system, zoxp_layouts, [none] cameras.XrCamera);
     zox_system(xr_head_bone_system, zoxp_post_update, [none] cameras.XrCamera);
-    // off without a headset (xr_systems_boot): main thread systems between multi threaded ones add merges
+    // off without a headset (xr_systems_boot)
     zox_set_enabled_id(ecs_id(xr_room_walk_system), 0);
     zox_set_enabled_id(ecs_id(xr_head_bone_system), 0);
 }

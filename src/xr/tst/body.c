@@ -299,7 +299,8 @@ byte zox_tst_xr_body_ready(ecs* world) {
     }
     // bending down: the neck 0.3m ahead (the room's -z) and 0.5m lower
     if (f == 640) {
-        zox_tst_xr_body_from = zox_getv(character, Position3D);
+        // less what it still owed the lean back (xr_stick_lead: room steps are lead, the move walks it after)
+        zox_tst_xr_body_from = float3_add(zox_getv(character, Position3D), xr_stick_lead);
         xr_sim_head_euler = (float3) { -0.8f, 0, 0 };   // looking down
         xr_sim_script_head_position = (float3) { 0, -0.5f, -0.3f };
     }

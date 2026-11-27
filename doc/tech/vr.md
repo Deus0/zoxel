@@ -29,8 +29,10 @@ The body walks by the move like every character; the view doesn't (2026-11-27):
   metre it's behind; a push past the walk's top speed is allowed to half again, so it catches up walking
 - **the lead** (`xr_stick_lead`, xr/fun/body.c): how far the view is ahead of the body, the stick's move less the
   body's each frame, counted after physics where the eyes are drawn, at most 0.25m (a body a wall stops stops the
-  view that far on, inside its own width). The body's room steps aren't counted (a wall stopping a room step doesn't
-  lead the view through it)
+  view that far on, inside its own width). Room walking adds to it too: each room step (the hips past the real
+  neck's reach, `xr_room_walk_system`) is lead, the move walks the body after it, no velocity set (doc/tech/physics.md)
+- **the room walk runs after physics** (`zoxp_layouts`, multi threaded on the xr camera): a frame late, the body
+  catching up anyway; its lean (`SpineLean`, `HipsShift`) is read next frame by the head, spine, feet and hands alike
 - **never into a block**: the lead is shortened till the eyes (the camera) led, and 6cm past them its way (the near
   plane), are in the air (`xr_stick_lead_clear`). Without it a body stopped at a wall led the eyes 21cm into it
 - **turning by the right stick turns the view about the head**: rotation.c turns the body about its middle, the eyes

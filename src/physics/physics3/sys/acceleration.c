@@ -69,16 +69,3 @@ void friction3_system(iter* it) {
     zox_physics_profile_end();
     zox_sys_on_end();
 } zoxd_system(friction3_system);
-
-// the scale a velocity needs to move v * dt this frame under the drag it gets (friction3_system: ground drag when
-//  Grounded, air drag when not; no drag without Frictioned and Grounded), for movement that sets a velocity (XR
-//  walking): drag that changes as Grounded flickers (block seams) no longer changes how far it moves, no bumps
-//  - read before zoxp_physics, the same Grounded and zox_delta_time the step uses this frame
-static inline float physics3_drag_compensation(ecs* world, entity e) {
-    const float dt = (float) zox_delta_time;
-    if (!(dt > 0) || !zox_has(e, Frictioned) || !zox_has(e, Grounded) || !zox_has(e, Acceleration3D)) {
-        return 1;
-    }
-    const physics_step step = physics_step_new(zox_getv(e, Grounded) ? ground_friction3 : air_friction3, dt);
-    return step.g > 0 ? dt / step.g : 1;
-}
