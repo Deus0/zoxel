@@ -2,6 +2,7 @@
 #include "children.c"
 #include "debug_types.c"
 #include "realm.c"
+#include "light.c"
 
 void zox_systems_characters3(ecs *world) {
     // Spawns render children
@@ -11,6 +12,13 @@ void zox_systems_characters3(ecs *world) {
         [in] characters.GenerateCharacter,
         [in] rendering.RenderDepth,
         [none] Character3,
+    );
+    zox_system(
+        character_light_system,
+        zoxp_update,
+        [in] transforms3.Position3D,
+        [out] rendering.Brightness,
+        [none] Character3
     );
     zox_system(
         character_save_system,

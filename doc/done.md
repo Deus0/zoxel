@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-28
+-x Light character models from the environment, like minivoxes (2026-11-28): each character's Brightness is the light
+  at its head in its chunk's light octree, eased; its skeleton drawn by it, the sky's light on top (tst character_light)
 -x Docked editor windows: the inspector couldn't shrink, window_rows_fit grew a docked window to its widest row
   (a docked window's rows are masked and scroll sideways now, tst inspector_shrink); the header buttons (close, undock,
   search) sit right to left from the close button's real width (window_header_fit), the undock button overlapped it;

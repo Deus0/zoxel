@@ -61,12 +61,14 @@ void skeleton3_render_system(iter* it) {
             }*/
             zox_gpu_material(material_link);
             // zox_gpu_float4x4(material_attributes->camera_matrix, render_camera_matrix);
-            zox_gpu_float(material_attributes->brightness, 1);
             zox_gpu_float(material_attributes->paint_weights, paint_weights);
             if (!transparent_meshes) {  // bonet.frag writes no mask
                 outline_mask_begin(material_attributes->outline);
             }
         }
+        // its character's light (characters3/sys/light.c), 1 without one
+        const entity owner = zox_get_parent(world, skeleton);
+        zox_gpu_float(material_attributes->brightness, zox_valid(owner) && zox_has(owner, Brightness) ? zox_getv(owner, Brightness) : 1);
         // get local bone matrix, local to transform
         // Cache bone data to send to GPU
         float4x4 inverse = float4x4_inverse(matrix->value);

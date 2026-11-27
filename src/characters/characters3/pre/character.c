@@ -17,6 +17,7 @@ entity spawn_prefab_character3(ecs *world) {
     zox_setv(e, ClockDelta, 0);
     // Render State, children follow these
     zox_setv(e, RenderDisabled, 0);
+    zox_setv(e, Brightness, 1);     // the light round it (sys/light.c), its skeleton drawn by it
     zox_setv(e, RenderDepth, 0);
     zox_setv(e, MaxRenderDepth, 0);
     zox_setv(e, RenderDepthDirty, zox_dirty_none);

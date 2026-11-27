@@ -12,6 +12,7 @@
 #include "footsteps.c"
 #include "swim.c"
 #include "doorway.c"
+#include "character_light.c"
 #include "step_gap.c"
 #include "poly_character.c"
 
@@ -29,6 +30,7 @@ void zox_tsts_characters(ecs* world) {
     zox_tsts_footsteps(world);
     zox_tsts_swim(world);
     zox_tsts_doorway(world);
+    zox_tsts_character_light(world);
     zox_tsts_step_gap(world);
     zox_tsts_poly_character(world);
 }

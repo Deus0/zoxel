@@ -87,6 +87,8 @@ Failing tests from full runs, worked through slowly; making tests smaller and fa
 section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what's known.
 - 2026-11-24 full runs: 391 of 395 pass (the rest pass alone, flaky under load: stream_seams, tables_stream,
   punch_wind_up, map_pixel, door_save, town_furniture)
+- town_view (2026-11-28, solo, some seeds, i.e. 619665966 and 723353684): "no town in the player's region"; HEAD
+  before the day and night work fails seed 619665966 too, its towns' generation, not rendering
 - water_flow (2026-11-27, solo, every run, before the day's glow work too: 37e8e5106^): "the water's mesh draws levels
   [0x0] at their heights, not 1 to 6"; no see through mesh vertex sits at a flowing level's height
 - outline_views on vulkan (2026-11-27, every run, before the day's hdr work too): "few pixels outlined [3747]"; gl passes
@@ -1341,11 +1343,6 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 	  doc/engine/metrics.md); its draw is every chunk's indirect draw from the main thread: fewer triangles (merging
 	  faces), or one multi draw indirect per terrain, then default it on (--gpu_meshing to try it)
 	-x after: a lost gpu context (android gl) remakes gpu meshes, water on the gpu, vox models and skeletons
-- Light character models from the environment (like minivoxes)
-	- sample the LightOctree at the character's voxel position (get_block_vox_light in vodes3/fun/lights.c), set Brightness
-	- update when the character moves to a new voxel, or its chunk's LightOctreeDirty goes active
-	- pass Brightness to the skeleton/character shaders (uniform, like vox_render)
-	- tst: character walks from sunlight into a dark area and gets darker
 - Lights: Add smooth lights for terrain faces, so the corners are darkened
 - Smooth Lighting for terrain lights - smoothed edges
 - Add slight directional light over the AO on colored voxes

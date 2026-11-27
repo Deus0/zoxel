@@ -48,9 +48,10 @@ Done (2026-11-27), res/shaders/skybox.frag and view.glsl (doc/howto/shaders.md, 
 
 ## Characters
 
-The todo item "Light character models from the environment": sample the `LightOctree` at the character's voxel
-(`get_block_vox_light`, vodes3/fun/lights.c), set its `Brightness` when it moves to another voxel or its chunk's
-light changes, and the skeleton and character shaders take `Brightness` times the tint.
+Done (2026-11-28): `character_light_system` (characters3/sys/light.c) samples its chunk's light octree at its head
+(`chunk_light_at`, lights3/fun/sample.c, under the chunk's `LightLock`), its `Brightness` easing to it; the
+skeleton render draws each mesh with its character's `Brightness`, and the sky's light on top (bone.vert).
+tst `character_light`: bright in the open, dark under the ground, bright again.
 
 ## Splitting light: open, measure first
 
@@ -77,7 +78,7 @@ light only near the player).
 1. Done: `Sun` and the time of day from the realm clock, the tint, the sky, the fog. tsts `day_night`, `sky_day`.
    The realm's clock is saved in its realm.txt (`time`) as the game ends, set again as it's continued (tsts
    realm_info, load_games).
-2. Characters lit: tst a character walks from sunlight into a dark cave and gets darker, and dims at night.
+2. Done: characters lit by the light octree and the sky. tst `character_light`.
 3. Measure the split (above), decide.
 4. If split: `BlockLightOctree` beside `LightOctree` (which stays, as sky light), mesh colours rgba, the shader max.
 5. Coloured lights (rgb, its own task), then moons with phases, more suns for alien realms, face shading by the sun's

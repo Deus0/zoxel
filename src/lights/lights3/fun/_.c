@@ -8,6 +8,7 @@
 #include "smooth_grid.c"
 #include "gpu.c"
 #include "relight.c"
+#include "sample.c"
 
 byte zox_chunk_mesh_lighting_busy(ecs* world, entity e) {
     if (zox_no_lights) {
