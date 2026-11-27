@@ -30,6 +30,7 @@ const zox_tst_hdr_view zox_tst_hdr_bloom_views[4] = {
 byte zox_tst_hdr_stage = 0;
 int zox_tst_hdr_frames = 0;
 entity zox_tst_hdr_cube = 0;
+byte zox_tst_hdr_viewport = 0;      // seen through a viewport camera over the whole screen (hdr_viewport_bloom)
 
 // background: the clear's grey (the void's is 200)
 byte zox_tst_hdr_views_ready(ecs* world, const zox_tst_hdr_view* views, byte background) {
@@ -48,6 +49,13 @@ byte zox_tst_hdr_views_ready(ecs* world, const zox_tst_hdr_view* views, byte bac
         const float3 position = move_along_direction(eye, zox_getv(camera, Rotation3D), -1);
         zox_tst_hdr_cube = spawn_cube(world, prefab_cube, position, 0.5f);
         zox_setv(zox_tst_hdr_cube, Color, ((color) { 200, 200, 200, 255 }));
+        if (zox_tst_hdr_viewport) {
+            // its own view in its own texture over the game view's, the background its; the game view's light grey
+            const entity viewport = spawn_viewport_camera(world, main_app, eye, zox_getv(camera, Rotation3D),
+                zox_getv(camera, FieldOfView), single_screen_to_canvas);
+            zox_setv(viewport, Color, ((color) { background, background, background, 255 }));
+            zox_setv(camera, Color, ((color) { 200, 200, 200, 255 }));
+        }
     }
     zox_tst_waiting = "the screen fader to fade out";
     byte fading = 0;
@@ -135,9 +143,28 @@ void zox_tst_bloom_check(ecs* world) {
     zox_tst_check(v[3] - v[2] >= 10, "bloom on, the brighter cube didn't glow onto the background [%i %i]", v[2], v[3]);
 }
 
+// tst: hdr_viewport_bloom, hdr_bloom through a viewport camera (spawn_viewport_camera, doc/plans/hdr.md A5): its
+//  screen texture drawn through the post pass, bloom and all; its background dark, the game view's under it grey
+byte zox_tst_viewport_bloom_ready(ecs* world) {
+    zox_tst_hdr_viewport = 1;
+    return zox_tst_hdr_views_ready(world, zox_tst_hdr_bloom_views, 40);
+}
+
+void zox_tst_viewport_bloom_check(ecs* world) {
+    int corner[4] = { 0 };
+    if (!zox_tst_hdr_reads(zox_tst_hdr_bloom_views, 0.1f, 0.9f, corner)) {
+        return;
+    }
+    zox_log("[tst] viewport bloom: its corner [%i] (its background ~120 of 765, the game view's ~600)", corner[0]);
+    zox_tst_check(corner[0] < 300, "the viewport camera's view isn't on top: its corner [%i] is the game view's grey", corner[0]);
+    zox_tst_bloom_check(world);
+}
+
 void zox_tsts_render_textures_hdr(ecs* world) {
     zox_tst_add("hdr_target", zox_tst_hdr_ready, zox_tst_hdr_check, 30);
     zox_tst_set_setup("hdr_target", NULL, 1);
     zox_tst_add("hdr_bloom", zox_tst_bloom_ready, zox_tst_bloom_check, 30);
     zox_tst_set_setup("hdr_bloom", NULL, 1);
+    zox_tst_add("hdr_viewport_bloom", zox_tst_viewport_bloom_ready, zox_tst_viewport_bloom_check, 30);
+    zox_tst_set_setup("hdr_viewport_bloom", NULL, 1);
 }

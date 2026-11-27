@@ -13,7 +13,9 @@ entity spawn_viewport_camera(
     const int2 window_size = zox_valid(app) && zox_has(app, WindowSize) ?
         zox_getv(app, WindowSize) :
         int2_zero;
-    const int2 size = screen_to_canvas_size(window_size, screen_to_canvas);
+    // a render camera's (its screen texture's) downscaled as the game view's (camera_viewport_size)
+    const int2 cell_size = screen_to_canvas_size(window_size, screen_to_canvas);
+    const int2 size = zox_disable_post_processing ? cell_size : scale_viewport(cell_size);
     const int2 screen_position = screen_to_canvas_position(window_size, screen_to_canvas);
     entity e = spawn_camera(
         world,

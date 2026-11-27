@@ -295,6 +295,7 @@ zox_tag(GpuLightViews);
 extern char zox_screenshot_request[256];
 extern byte nohud;
 byte zox_tst_gpu_light_views_stage = 0;
+int zox_tst_gpu_light_views_frames = 0;
 GpuMesher zox_tst_gpu_light_mesher;
 uint zox_tst_gpu_light_program = 0;
 const float3 zox_tst_gpu_light_spot = { 0, 1000, 0 };  // the void, past the menu's sky
@@ -358,8 +359,12 @@ byte zox_tst_gpu_light_views_ready(ecs* world) {
         return 0;
     }
     if (zox_tst_gpu_light_views_stage == 1) {
-        // drawn once its cameras are placed: the screenshot is taken at the end of a frame they drew in
+        // drawn a few frames after its cameras are placed: their screen textures are made on their first (doc/plans/hdr.md
+        //  A5), then the screenshot at the end of a frame they drew in
         zox_tst_waiting = "the light views drawn";
+        if (++zox_tst_gpu_light_views_frames < 5) {
+            return 0;
+        }
         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("gpu_light_views.ppm"));
         zox_tst_gpu_light_views_stage = 2;
         return 0;

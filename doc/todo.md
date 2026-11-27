@@ -34,7 +34,6 @@
 - Outline Rendering on Vox Models, dark outline (doc/plans/outlines.md)
 - outlines in xr: its eyes draw straight to their swapchains (xr/fun/eye_render.c), they need a render target with
   depth and mask and the pass before the swapchain; the setting shows greyed (unsupported) there till then
-- outlines on viewport cameras (spawn_viewport_camera: model_views, some tests): no frame buffer, no pass
 - experiment: the outline pass on terrain too (blocks have outlines baked into their textures now), see if it reads
   better or replaces them (doc/plans/outlines.md)
 - Day Night Cycle

@@ -10,5 +10,6 @@ void spawn_prefabs_rendering_cameras(ecs *world) {
     if (!zox_disable_post_processing) {
         add_prefab_render_camera(world, prefab_camera3);
         add_prefab_render_camera(world, prefab_camera_game);
+        add_prefab_render_camera(world, prefab_camera_viewport);    // its screen texture's (ui/render_textures/sys/screen.c)
     }
 }

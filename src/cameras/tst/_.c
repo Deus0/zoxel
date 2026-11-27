@@ -3,10 +3,11 @@
 //  - camera_projection: the perspective matrix puts the fov's edges on the viewport's edges
 //  - camera_look_at: camera_look_at turns a camera so its target lands in the middle of its view, y up
 //  - camera_viewport_spawn: spawn_viewport_camera in a 2x2 grid, sized, projected, resized with
-//      the window, and forgotten by the app once deleted
+//      the window, a screen texture each (doc/plans/hdr.md A5), forgotten by the app and their textures gone once deleted
 //  - camera_orthographic: the orthographic projection, a unit high view, no perspective
 //  - camera_split_screen: --splitscreen's second player has no screen on the menus (one camera, the window's)
-//  - camera_downscale: viewport_downscale 4 (web), render cameras at a quarter, screen cameras full size
+//  - camera_downscale: viewport_downscale 4 (web), render cameras at a quarter, viewport cameras too (their screen
+//      textures stretch them back)
 //  - camera_frustum (src/streaming/tst/frustum.c): which boxes a camera sees, the chunk culling check
 //  - camera_filter (src/geometry/tst/filter.c): CameraFilter / CameraRenderer, who draws what
 //  - run: bash bsh/tst.sh camera_viewports (pure logic ones are quick, on the main menu)
@@ -195,6 +196,7 @@ void zox_tst_camera_look_at_check(ecs* world) {
 // tst: camera_viewport_spawn
 #define zox_tst_viewports 4
 entity zox_tst_viewport_cameras[zox_tst_viewports];
+entity zox_tst_viewport_textures[zox_tst_viewports];   // their screen textures, gone with them
 byte zox_tst_viewport_stage = 0;
 int zox_tst_viewport_frames = 0;
 int2 zox_tst_viewport_window = { 0, 0 };
@@ -261,8 +263,9 @@ byte zox_tst_camera_viewport_spawn_ready(ecs* world) {
                 return 1;
             }
             zox_tst_check(zox_is_linked(world, app, ViewportCamera, camera), "viewport camera [%i] isn't linked to the app", i);
-            zox_tst_check(!zox_has(camera, RenderCamera),
-                "viewport camera [%i] draws to a texture, not the screen", i);
+            // a render camera with its own screen texture, drawn through the post pass (doc/plans/hdr.md A5)
+            zox_tst_check(zox_has(camera, RenderCamera) && zox_valid(zox_get_link(world, camera, RenderTextureLink)),
+                "viewport camera [%i] has no screen texture", i);
             zox_tst_check(zox_has(camera, Camera3) && zox_has(camera, Perspective), "viewport camera [%i] isn't a 3D perspective camera", i);
             // its view projection put a point in front of it in the middle of its view
             const float4 seen = camera_project_point(zox_getv(camera, ViewProjectionMatrix), (float3) { 0, 0, 0 });
@@ -309,6 +312,7 @@ byte zox_tst_camera_viewport_spawn_ready(ecs* world) {
         zox_set(app, WindowSize, { zox_tst_viewport_window });
         zox_add(app, WindowSizeDirty);
         for (int i = 0; i < zox_tst_viewports; i++) {
+            zox_tst_viewport_textures[i] = zox_get_link(world, zox_tst_viewport_cameras[i], RenderTextureLink);
             zox_delete(zox_tst_viewport_cameras[i]);
         }
         zox_tst_viewport_stage = 3;
@@ -326,6 +330,12 @@ void zox_tst_camera_viewport_spawn_check(ecs* world) {
         deleted += !zox_valid(zox_tst_viewport_cameras[i]);
     }
     zox_tst_check(deleted == zox_tst_viewports, "only [%i] of [%i] viewport cameras were deleted", deleted, zox_tst_viewports);
+    // their screen textures went with them (UIHolderLink), their materials with those
+    int textures_left = 0;
+    for (int i = 0; i < zox_tst_viewports; i++) {
+        textures_left += zox_tst_viewport_textures[i] && zox_valid(zox_tst_viewport_textures[i]);
+    }
+    zox_tst_check(!textures_left, "[%i] viewport cameras' screen textures outlived them", textures_left);
     // the app's viewport links are only its own cameras again
     uint links = 0;
     while (zox_get_link_index(world, app, ViewportCamera, links)) {
@@ -461,7 +471,9 @@ byte zox_tst_camera_downscale_ready(ecs* world) {
         }
         zox_tst_camera_in_cell(world, zox_tst_downscale_camera, zox_tst_downscale_window, single_screen_to_canvas, "spawned");
         const int2 size = zox_getv(zox_tst_downscale_camera, PixelSize);
-        zox_tst_check(int2_equals(size, zox_tst_downscale_window), "a screen camera [%ix%i] isn't the window's size", size.x, size.y);
+        const int2 quarter = int2_scale1(zox_tst_downscale_window, 0.25f);
+        zox_tst_check(int2_equals(size, quarter), "a viewport camera [%ix%i] isn't a quarter of the window [%ix%i]", size.x,
+            size.y, zox_tst_downscale_window.x, zox_tst_downscale_window.y);
         zox_tst_camera_resize_window(world, (int2) { 800, 400 });
         zox_tst_downscale_stage = 2;
         zox_tst_downscale_frames = 0;
@@ -474,7 +486,7 @@ byte zox_tst_camera_downscale_ready(ecs* world) {
     const int2 game_size = zox_getv(game_camera, PixelSize);
     const int2 screen_size = zox_getv(zox_tst_downscale_camera, PixelSize);
     zox_tst_check(int2_equals(game_size, ((int2) { 200, 100 })), "resized game camera [%ix%i], expected [200x100]", game_size.x, game_size.y);
-    zox_tst_check(int2_equals(screen_size, ((int2) { 800, 400 })), "resized screen camera [%ix%i], expected [800x400]", screen_size.x, screen_size.y);
+    zox_tst_check(int2_equals(screen_size, ((int2) { 200, 100 })), "resized viewport camera [%ix%i], expected [200x100]", screen_size.x, screen_size.y);
     zox_tst_camera_resize_window(world, zox_tst_downscale_window);
     zox_delete(zox_tst_downscale_camera);
     return 1;

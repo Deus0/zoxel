@@ -132,9 +132,17 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
 - Next: gravity cores (a blueprint node to set a colour's glow), combined models (characters: glowing eyes that
   animate, todo.md), fireflies round street lamps (an emitter, Brightness past 1).
 
-### A5. Later, as outlines did
+### A5. Viewport cameras and xr
 
-Viewport cameras (split screen, model_views), xr (two eyes), web's `viewport_downscale`.
+- **Split screen** had it already: each player's canvas has its own screen texture and pass (huds/fun/game_ui.c).
+- **Viewport cameras** (built, 2026-11-27): `spawn_viewport_camera`'s views are render cameras (`CameraViewport`
+  tag), each its screen texture made when its cell is set (ui/render_textures/sys/screen.c): on the game view's
+  canvas in its cell, a layer over it, its own material, held by its camera (`UIHolderLink`, gone with it). So model
+  views and test views get the tonemap, bloom and outlines (no vignette, blur or lids, its camera has none), the
+  pass's noise, and web's `viewport_downscale`. Without post processing, a screen (no game view) or in xr, one draws
+  straight to its part of the screen as before. Its texture is made on its first frame: a new view's first frame or
+  two are black (tst gpu_light_views waits for it). tst hdr_viewport_bloom: hdr_bloom through one, the same numbers.
+- **xr** (two eyes): not yet, its eyes draw straight to their swapchains (xr/fun/eye_render.c).
 
 ## Stage B: HDR output (vulkan first)
 
@@ -184,7 +192,7 @@ After realm colour generation is redone (the user, 2026-11-27):
 2. A4 bloom (built, v1), then A3.1: glow stones past 1 (built), vox palette glow (built), particles' glow (built).
 3. A3.2 to A3.4 as lighting and sky work land.
 4. B0 check, then B on vulkan if the driver offers it.
-5. A5: viewport cameras, xr.
+5. A5: viewport cameras (built), xr.
 
 ## Who does what
 

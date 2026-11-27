@@ -29,6 +29,7 @@ zox_tag(CameraRenderer);   // entity -> the only camera allowed to render it
 zox_tag(ViewportCamera);
 // Render Cameras
 zox_tag(RenderCamera);
+zox_tag(CameraViewport);     // an extra view in its part of the screen (spawn_viewport_camera): its own screen texture
 zox_tag(RenderTexture);
 zox_tag(RenderTextureLink);    // camera -> the render texture it draws to
 zoxc_float3(SkyTint);       // the light of its realm's sky on it: its suns summed, a night floor (sky/sys/camera_sky.c)
@@ -72,6 +73,7 @@ void zox_components_cameras(ecs *world) {
     zox_define_component_array(CameraPlanes);
     // render cameras
     zoxd_tag(RenderCamera);
+    zoxd_tag(CameraViewport);
     zoxd_tag(RenderTexture);
     zoxd_nf_link(RenderTextureLink);
     zoxd_float(OrbitDistance);
