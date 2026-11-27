@@ -3,7 +3,7 @@
 //    spawns, MenuPlayTouch)
 //  - a finger down on the left half spawns a virtual joystick there, dragged up its stick points up, held the
 //    character walks forward; let go, the joystick goes and its stick is zero
-//  - a finger down on the right half, dragged right: the character turns (its Euler y)
+//  - a finger down on the right half, dragged right: the character turns (its yaw)
 //  - run: bash bsh/tst.sh touch_play
 int zox_tst_tp_stage = 0;
 int zox_tst_tp_frames = 0;
@@ -107,13 +107,13 @@ byte zox_tst_touch_play_ready(ecs* world) {
         // the right half, held still a moment, then dragged right: it turns
         zox_tst_waiting = "turning";
         if (zox_tst_tp_frames == 1) {
-            zox_tst_tp_yaw = zox_getv(character, Euler).y;
+            zox_tst_tp_yaw = quaternion_to_euler_y2(zox_getv(character, Rotation3D));
         }
         zox_tst_tp_touch(zox_tst_tp_frames < 5 ? 0.75f : 0.9f, 0.6f, 1);
         if (zox_tst_tp_frames < 40) {
             return 0;
         }
-        zox_tst_tp_turned = fabsf(zox_getv(character, Euler).y - zox_tst_tp_yaw);
+        zox_tst_tp_turned = fabsf(remainderf(quaternion_to_euler_y2(zox_getv(character, Rotation3D)) - zox_tst_tp_yaw, 2 * M_PI));
         zox_tst_tp_next(6);
     }
     zox_tst_waiting = "letting go";

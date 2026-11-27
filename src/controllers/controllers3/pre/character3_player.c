@@ -6,8 +6,6 @@ entity spawn_prefab_character3_player(
     zox_prefab_name("character3_player");
     zox_add(e, PlayerCharacter);
     zox_add(e, GizmoOwner); // raycast gizmos
-    // Transform
-    zox_setv(e, Euler, float3_zero);
     // disable until loaded terrain
     // zox_add(e, DisableMovement);
     zox_setv(e, FlyMode, 0);

@@ -15,7 +15,7 @@ void dialogue_face_system(iter* it) {
             continue;
         }
         const entity character = zox_get_link(world, e, CharacterLink);
-        if (!zox_valid(character) || !zox_has(character, Euler)) {
+        if (!zox_valid(character) || !zox_has(character, Rotation3D)) {
             continue;
         }
         const entity target = looking_at(world, character);

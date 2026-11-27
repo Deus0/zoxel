@@ -24,7 +24,7 @@ uint zox_dbg_label_character_links(
         return index;
     }
     float3 position = zox_getv(e, Position3D);
-    float3 euler = zox_getv(e, Euler);
+    const float yaw = quaternion_to_euler_y2(zox_getv(e, Rotation3D)) * radians_to_degrees;
     entity camera = zox_get_link(world, e, CameraLink);
     entity chunk = zox_get_link(world, e, ChunkLink);
     entity tunk = zox_valid(chunk) ?
@@ -39,7 +39,7 @@ uint zox_dbg_label_character_links(
     index += snprintf(buffer + index, size - index,
         " - Position [%.1fx%.1fx%.1f]\n", position.x, position.y, position.z);
     index += snprintf(buffer + index, size - index,
-        " - Euler [%.1fx%.1fx%.1f]\n", euler.x, euler.y, euler.z);
+        " - Yaw [%.1f]\n", yaw);
     index += snprintf(buffer + index, size - index,
         " - Region [%s]\n", zox_getn(region));
     index += snprintf(buffer + index, size - index,

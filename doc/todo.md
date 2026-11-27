@@ -311,9 +311,6 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 - Physics adds forces, never sets velocity or rotation (doc/tech/physics.md, the rule, 2026-11-28):
   - knockback (skills/fun/damage.c) and the pounce's leap (skills/sys/pounce.c) as one frame's push (`dv / g`),
     from a system that owns the body's forces, not an in place write on another body
-  - characters' `Euler` goes: it's a second copy of the rotation that drifts (torque turns never updated it, saves
-    now read `Rotation3D`). Writers: player3_rotate_system (mouse), xr_body_turn_by, dialogue (gone); readers turn
-    a quaternion about the body's up instead (`quaternion_from_axis_angle`, as rotation.c already does)
   - XR's body following the head (`xr_body_turn_by`) by a torque, keeping the view still (`xr_body_room_turn`)
   - mouse look by torque: the option is in (setting "Physics Turn", tst physics_turn), the user to play test it
 - Third person camera orbits more naturally (the user, 2026-11-28), as Mario Odyssey's: it swings round behind the

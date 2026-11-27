@@ -166,7 +166,7 @@ A terrain chunk has a `GravityOctree` beside its voxels, as its `LightOctree`: w
 - **Standing on it**: `gravity_upright_system` turns a `TerrainGravity` body's up toward its gravity's, the shortest
   arc at 9 radians a second (a flip in a third of a second), right over it rolls about its forward so it faces the
   way it did; not while `DisableMovement` (laid on a bed). The first person camera rides its head, so it turns too.
-- **Moving on it**: the player turns about its own up (`player3_rotate_system`; saves keep its heading from `Rotation3D`), walks
+- **Moving on it**: the player turns about its own up (`player3_rotate_system`, its `Rotation3D` alone: characters have no `Euler`), walks
   flat against its up (`physics3_flatten`, character3_move_system), auto jumps over blocks along its up
   (`physics3_up_block`), swims up its up, and its lower body (`InsideBlock`, water) is down its up.
 - **Debug**: the gizmos' Gravity button draws every node that doesn't pull down, coloured by direction, in the

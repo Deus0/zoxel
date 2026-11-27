@@ -149,16 +149,15 @@ static inline float4 xr_body_head_local(float4 head_rotation) {
 
 // the body turned about its up, the room turned back on it: the view still
 static void xr_body_turn_by(ecs* world, entity character, float turn) {
-    Euler* euler = zox_getm(character, Euler);
-    euler->value.y += turn;
-    zox_getm(character, Rotation3D)->value = quaternion_from_euler(euler->value);
+    Rotation3D* rotation = zox_getm(character, Rotation3D);
+    rotation->value = float4_normalize(quaternion_rotate(rotation->value, quaternion_from_axis_angle(float3_up, turn)));
     xr_body_room_turn = quaternion_normalize2(quaternion_rotate(quaternion_from_euler((float3) { 0, -turn, 0 }), xr_body_room_turn));
 }
 
 // the body turns after the head (the player turning round in the room): easing after it past xr_body_follow_start,
 //  at once past xr_body_follow_angle; it never turned (the head bone twisted round alone), then only past 57 degrees
 static void xr_body_follow(ecs* world, entity character, float delta) {
-    if (!zox_has(character, Euler)) {
+    if (!zox_has(character, Rotation3D)) {
         return;
     }
     if (xr_recentred) {

@@ -21,12 +21,8 @@ void player3_rotate_system(iter* it) {
             zox_loge("Character [%s] Invalid Type");
             continue;
         }
-        if (!zox_has(character, Euler)) {
-            zox_loge("Character [%s] has no Euler");
-            continue;
-        }
         if (!zox_has(character, Rotation3D)) {
-            zox_loge("Character [%s] has no Euler");
+            zox_loge("Character [%s] has no Rotation3D");
             continue;
         }
 #endif
@@ -113,10 +109,7 @@ void player3_rotate_system(iter* it) {
             zox_setv(character, FaceDirection, face);
             euler.y = 0;
         }
-        // effect characters euler
-        zox_muter(character, Euler, character_euler);
         zox_muter(character, Rotation3D, character_rotation);
-        character_euler->value.y += euler.y;   // its heading, saved (characters3 saving)
         if (zox_xr_active) {
             xr_stick_turn += euler.y;
         }

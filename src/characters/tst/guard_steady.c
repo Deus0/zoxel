@@ -57,11 +57,9 @@ byte zox_tst_guard_steady_ready(ecs* world) {
     }
     // turned as a mouse would (controllers3/sys/rotation.c): the body's yaw, the camera's pitch
     const int f = zox_tst_guard_steady_frames++;
-    float3 euler = zox_getv(character, Euler);
-    euler.y += 0.05f;
-    zox_setv(character, Euler, euler);
-    zox_setv(character, Rotation3D, quaternion_from_euler(euler));
-    const float3 ahead = float4_rotate_float3(quaternion_from_euler(euler), (float3) { 0, 0, 2 });
+    const float4 turned = float4_normalize(quaternion_rotate(zox_getv(character, Rotation3D), quaternion_from_axis_angle(float3_up, 0.05f)));
+    zox_setv(character, Rotation3D, turned);
+    const float3 ahead = float4_rotate_float3(turned, (float3) { 0, 0, 2 });
     Velocity3D* velocity = zox_getm(character, Velocity3D);
     velocity->value.x = ahead.x;
     velocity->value.z = ahead.z;

@@ -56,11 +56,8 @@ byte zox_tst_dialogue_aim_ready(ecs* world) {
     }
     // the body faced to the npc and the camera level, as dialogue_face_system has it in a dialogue
     const float3 toward = float3_sub(zox_getv(zox_tst_daim_npc, Position3D), zox_getv(character, Position3D));
-    if (zox_has(character, Euler) && toward.x * toward.x + toward.z * toward.z > 0.0001f) {
-        float3 euler = zox_getv(character, Euler);
-        euler.y = atan2f(toward.x, toward.z);
-        zox_setv(character, Euler, euler);
-        zox_setv(character, Rotation3D, quaternion_from_euler(euler));
+    if (toward.x * toward.x + toward.z * toward.z > 0.0001f) {
+        zox_setv(character, Rotation3D, quaternion_from_axis_angle(float3_up, atan2f(toward.x, toward.z)));
     }
     zox_setv(camera, LocalRotation3D, euler_to_quaternion((float3) { 0, is_camera_positive_z ? M_PI : 0, 0 }));
     if (zox_current_time - zox_tst_daim_time < 3) {
