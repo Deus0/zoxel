@@ -321,6 +321,21 @@ static int zox_tst_profile_compare(const void* a, const void* b) {
     return x < y ? 1 : x > y ? -1 : 0;
 }
 
+// the systems whose names have word in them, their time summed over the profiled frames (i.e. "light": the lights')
+void zox_tst_profile_log_matching(ecs* world, const char* name, const char* word) {
+    double total = 0;
+    for (int i = 0; i < zox_tst_profile_systems_count; i++) {
+        const ZoxTstProfileSystem* s = &zox_tst_profile_systems[i];
+        const char* system_name = zox_get_name(s->system);
+        if (!system_name || !strstr(system_name, word) || s->sum_ms <= 0) {
+            continue;
+        }
+        total += s->sum_ms;
+        zox_log("[tst] [metric] %s %s systems: %s [%.1fms]", name, word, system_name, s->sum_ms);
+    }
+    zox_log("[tst] [metric] %s %s systems total [%.1fms] over [%i] frames", name, word, total, zox_tst_profile_frame_index);
+}
+
 void zox_tst_profile_log(ecs* world, const char* name) {
     zox_log("[tst] [metric] %s frames [%i], workers [%i], slowest frame of systems [%.1fms] (real time, est)", name,
         zox_tst_profile_frame_index, zox_worker_count(world), zox_tst_profile_ecs_worst_ms);

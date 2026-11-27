@@ -1,5 +1,6 @@
 void prefab_add_lights3(ecs* world, entity e, byte depth) {
     zox_set(e, LightOctree, { .value = darklight });
+    zox_set(e, BlockLightOctree, { .value = darklight });     // one closed node till a block lights it
     zox_setv(e, LightOctreeDepth, depth);
     // Queues
     zox_setv(e, SunlightQueue, 0);

@@ -11,11 +11,13 @@ void light_voxel_opened(ecs* world, entity chunk, byte3 position) {
     const int length = octree_size(depth);
     LightQueue* sides[6];
     fetch_neightbor_propogation_queues(world, zox_get(chunk, ChunkNeighbors), sides);
-    for (byte d = 0; d < 6; d++) {
-        const sbyte3 o = neighbor_offsets[d];
-        emitter_queue_light(zox_getm(chunk, LightQueue), sides,
-            (int3) { position.x + o.x, position.y + o.y, position.z + o.z }, length,
-            (LightUpdate) { .light = darklight, .depth = depth, .distance = light_propogation_distance });
+    for (byte channel = zox_light_sky; channel <= zox_light_block; channel++) {
+        for (byte d = 0; d < 6; d++) {
+            const sbyte3 o = neighbor_offsets[d];
+            emitter_queue_light(zox_getm(chunk, LightQueue), sides,
+                (int3) { position.x + o.x, position.y + o.y, position.z + o.z }, length,
+                (LightUpdate) { .light = darklight, .depth = depth, .distance = light_propogation_distance, .channel = channel });
+        }
     }
 }
 
@@ -26,16 +28,19 @@ void light_voxel_shut(ecs* world, entity chunk, byte3 position) {
     }
     const byte depth = zox_getv(chunk, NodeDepth);
     spinlock* lock = &zox_getm(chunk, LightLock)->value;
-    spin_lock(lock);
-    const byte light = getv_LightOctree(zox_get(chunk, LightOctree), depth, position);
-    spin_unlock(lock);
-    if (light <= darklight) {
-        return;
+    for (byte channel = zox_light_sky; channel <= zox_light_block; channel++) {
+        spin_lock(lock);
+        const byte light = getv_LightOctree(chunk_lights(world, chunk, channel), depth, position);
+        spin_unlock(lock);
+        if (light <= darklight) {
+            continue;
+        }
+        emitter_queue_dark(zox_getm(chunk, DarkQueue), NULL, byte3_to_int3(position), octree_size(depth), (DarkUpdate) {
+            .type = zox_light_type_flood,
+            .depth = depth,
+            .light = light,
+            .distance = darklight_propogation_distance,
+            .channel = channel
+        });
     }
-    emitter_queue_dark(zox_getm(chunk, DarkQueue), NULL, byte3_to_int3(position), octree_size(depth), (DarkUpdate) {
-        .type = zox_light_type_flood,
-        .depth = depth,
-        .light = light,
-        .distance = darklight_propogation_distance
-    });
 }

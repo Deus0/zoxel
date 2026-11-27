@@ -62,14 +62,15 @@ void chunk_relight_from_neighbors(ecs* world, entity chunk) {
         }
         spin_unlock(&sunlight_queue->lock);
     }
-    // floods from each side: its border voxels, this chunk's at its depth
+    // floods from each side: its border voxels, this chunk's at its depth, the sky's and blocks' light
     LightQueue* light_queue = zox_get_mut(chunk, LightQueue);
+    for (byte channel = zox_light_sky; channel <= zox_light_block; channel++)
     for (byte d = 0; d < 6; d++) {
         const entity neighbor = neighbors->value[d];
-        if (!zox_valid(neighbor) || !zox_has(neighbor, LightOctree) || !zox_has(neighbor, NodeDepth)) {
+        const LightOctree* lights = chunk_lights(world, neighbor, channel);
+        if (!lights || !zox_has(neighbor, NodeDepth)) {
             continue;
         }
-        const LightOctree* lights = zox_get(neighbor, LightOctree);
         const byte their_depth = zox_getv(neighbor, NodeDepth);
         const int3 dir = get_direction_int3(d);
         const byte axis = dir.x ? 0 : dir.y ? 1 : 2;
@@ -100,7 +101,8 @@ void chunk_relight_from_neighbors(ecs* world, entity chunk) {
                     .light = light - light_air_decay,
                     .pos = (byte3) { mine[0], mine[1], mine[2] },
                     .depth = depth,
-                    .distance = light_propogation_distance
+                    .distance = light_propogation_distance,
+                    .channel = channel
                 });
             }
         }

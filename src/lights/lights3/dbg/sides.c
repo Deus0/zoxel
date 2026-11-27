@@ -58,7 +58,7 @@ void light3_build_system(iter* it) {
         zox_sys_i(MeshColors, colors);
         entity terrain = zox_get_parent(world, e);
         const LightOctree *nnodesl[6];
-        fetch_neightbor_light_nodes(world, neighbors, nnodesl);
+        fetch_neightbor_light_nodes(world, neighbors, nnodesl, zox_light_sky);
         entity realm = zox_get_link(world, vox_link->value, RealmLink);
         const BlockLinks* blocks = zox_get(realm, BlockLinks);
         byte solidity[blocks->length];

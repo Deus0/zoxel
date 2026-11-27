@@ -36,7 +36,7 @@ void zox_tst_dark_last_step_check(ecs* world) {
     spinlock lock;
     spinlock_init(&lock);
     dark_flood_light(&lock, &voxels, NULL, &lights, n_voxels, n_actives, n_lights, n_light_queues, &light_queue,
-        n_dark_queues, &dark_queue, depth, under, sunlight, 0, darklight, light_air_decay, solidity, glows);
+        n_dark_queues, &dark_queue, depth, under, sunlight, 0, darklight, light_air_decay, solidity, glows, zox_light_block);
     byte relit = 0;
     for (size_t i = 0; i < light_queue.count; i++) {
         const LightUpdate update = light_queue.ptr[i];

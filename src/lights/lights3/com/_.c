@@ -1,6 +1,7 @@
 zox_tag(SunnyChunk);
 zox_tag(BottomChunk);
 zoxc_octree_basic(LightOctree, byte, darklight);
+zoxc_octree_basic(BlockLightOctree, byte, darklight);  // blocks' light (dat/_.c), under the same LightLock
 
 create_octree_setters(LightOctree);
 create_octree_accessors(LightOctree);
@@ -26,6 +27,7 @@ void zox_components_lights3(ecs *world) {
     // Property
     zoxd_nf_tag(BottomChunk);
     zoxd_octree(LightOctree); // zoxd_node
+    zoxd_octree(BlockLightOctree);
     zoxd_byte(LightOctreeDepth);
     zoxd_state(LightOctreeDirty);
     zoxd_queue(SunlightQueue);

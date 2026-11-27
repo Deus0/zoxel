@@ -41,7 +41,7 @@ uint debug_ui_raycasted_light(ecs *world, entity player, char *buffer, uint size
         byte face = normal_to_direction(data->normal);
         const ChunkNeighbors* neighbors = zox_get(data->chunk, ChunkNeighbors);
         const LightOctree* neighbor_light_octrees[6];
-        fetch_neightbor_light_nodes(world, neighbors, neighbor_light_octrees);
+        fetch_neightbor_light_nodes(world, neighbors, neighbor_light_octrees, zox_light_sky);
         if (!neighbor_light_octrees[0]) {
             entity n = neighbors->value[0];
             zox_loge("Null Neighbor, weirdness: %s", zox_valid(n) ? zox_get_name(n) : "invalid");

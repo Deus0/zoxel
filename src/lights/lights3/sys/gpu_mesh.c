@@ -152,6 +152,9 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
             __atomic_add_fetch(&zox_chunk_gpu_meshes_baked_dark, 1, __ATOMIC_RELAXED);
         }
         smooth_grid grid = { 0 };
+        const LightOctree* block_lights[27];
+        fetch_nearby_block_lights(world, nearby_chunks, block_lights);
+        grid.block_lights = block_lights;
         smooth_grid_drawn_depths(world, &grid, nearby_chunks);
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
             const entity manager = zox_get_link(world, chunk, BlockManagerLink);

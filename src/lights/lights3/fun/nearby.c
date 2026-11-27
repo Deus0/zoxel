@@ -91,6 +91,13 @@ static inline void fetch_nearby_lights(
     }
 }
 
+// the 27 chunks' blocks' light (smooth_grid's block_lights), under their LightLock as the sky's
+static inline void fetch_nearby_block_lights(ecs* world, const entity* chunks, const LightOctree** lights) {
+    for (byte i = 0; i < 27; i++) {
+        lights[i] = chunk_lights(world, chunks[i], zox_light_block);
+    }
+}
+
 // NOTE: Grabs neighbors and corners
 /*void fetch_neightbor_lights(
     ecs* world,

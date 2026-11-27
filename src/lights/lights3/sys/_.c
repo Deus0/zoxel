@@ -87,6 +87,7 @@ void zox_systems_lights3(ecs* world) {
         [out] lights.LightLock,
         [out] lights3.LightQueue,
         [out] lights3.LightOctree,
+        [out] lights3.BlockLightOctree,
         [out] lights3.LightOctreeDirty,
         [none] chunks3.Chunk3,
         // [none] !chunks.GenerateChunk,
@@ -99,6 +100,7 @@ void zox_systems_lights3(ecs* world) {
         [out] lights.LightLock,
         [out] lights3.LightOctreeDepth,
         [out] lights3.LightOctree,
+        [out] lights3.BlockLightOctree,
         [out] lights3.DarkQueue,
         [out] lights3.LightQueue,
         [out] lights3.LightOctreeDirty,
@@ -117,6 +119,7 @@ void zox_systems_lights3(ecs* world) {
         [out] lights3.LightQueue,
         [out] lights3.DarkQueue,
         [out] lights3.LightOctree,
+        [out] lights3.BlockLightOctree,
         [out] lights3.LightOctreeDirty,
         [none] chunks3.Chunk3,
         // [none] !chunks.GenerateChunk,
@@ -128,6 +131,7 @@ void zox_systems_lights3(ecs* world) {
         [in] lights3.LightOctreeDirty,
         [out] lights.LightLock,
         [out] lights3.LightOctree,
+        [out] lights3.BlockLightOctree,
         [none] chunks3.Chunk3,
     );
     zox_system(

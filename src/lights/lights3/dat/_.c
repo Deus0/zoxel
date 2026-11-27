@@ -4,10 +4,16 @@
 #define zox_light_type_dim_start 3     // water placed at pos: its beam relit dimmed
 #define zox_light_type_dim 4           // continued from the chunk above, relit dimmed
 
+// two lights a voxel, never mixed (doc/plans/day_night.md): the sky's (sunbeams and their floods: LightOctree), and
+//  blocks' (glow stones, lamps: BlockLightOctree); updates carry their channel, so one queue a chunk holds both
+#define zox_light_sky 0
+#define zox_light_block 1
+
 typedef struct {
     void* ptr;
     byte value;
 } LightOctree;
+typedef LightOctree BlockLightOctree;   // the same tree, its own component
 
 // beams queued
 typedef struct {
@@ -24,6 +30,7 @@ typedef struct {
     byte3 pos;
     byte depth;
     byte distance;
+    byte channel;   // zox_light_sky or zox_light_block
 } LightUpdate;
 
 typedef struct {
@@ -33,4 +40,5 @@ typedef struct {
     byte depth;
     byte light;
     byte distance;
+    byte channel;   // zox_light_sky or zox_light_block
 } DarkUpdate;

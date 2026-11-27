@@ -18,6 +18,7 @@ void print_help_menu(const char* arg0) {
         "        --background        hidden window, no sound (used by tests)\n"
         "        --1080p             a 1920x1080 window (tests: screenshots at the game's size)\n"
         "        --nohud             the ui isn't drawn (tests: screenshots of the world)\n"
+        "        --noemitters        glow stones and lamps don't light (measuring their light's cost)\n"
         "    -z  --headless          no window\n"
         "        --vsync             vsync on (--enablevsync)\n"
         "        --novsync           vsync off (--disablevsync)\n"

@@ -264,6 +264,9 @@ void build_smooth_lights_system(iter* it) {
         update_light_solidity(world, zox_get_link(world, chunk, BlockManagerLink), &realm, solidity);
         uint ccount = 0;
         smooth_grid grid = { 0 };
+        const LightOctree* block_lights[27];
+        fetch_nearby_block_lights(world, nearby_chunks, block_lights);
+        grid.block_lights = block_lights;
         const byte has_grid = smooth_grid_fill(&grid, lights, lights_locks, voxels, voxels_locks, depth->value);
         const entity manager = zox_get_link(world, chunk, BlockManagerLink);
         const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;

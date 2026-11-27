@@ -387,7 +387,7 @@ void zox_tst_home_glow_check(ecs* world) {
                 const entity chunk = int3_hashmap_get(chunks->value, chunk_position);
                 if (zox_valid(chunk) && zox_has(chunk, LightOctree)) {
                     const byte3 local = { above.x - chunk_position.x * length, above.y - chunk_position.y * length, above.z - chunk_position.z * length };
-                    const byte light = getv_LightOctree(zox_get(chunk, LightOctree), depth, local);
+                    const byte light = chunk_light_brightest(world, chunk, depth, local);
                     lit += light > darklight + 50;
                 }
                 break;
@@ -418,7 +418,7 @@ static inline void zox_tst_glow_set(ecs* world, entity chunk, byte3 position, by
 static inline void zox_tst_glow_read(ecs* world, entity chunk, byte* lights) {
     const byte depth = zox_getv(chunk, NodeDepth);
     for (byte i = 0; i < 8; i++) {
-        lights[i] = getv_LightOctree(zox_get(chunk, LightOctree), depth, (byte3) { 4 + i, 8, 8 });
+        lights[i] = chunk_light_brightest(world, chunk, depth, (byte3) { 4 + i, 8, 8 });
     }
 }
 

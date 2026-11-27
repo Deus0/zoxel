@@ -144,7 +144,7 @@ static inline int zox_tst_ll_light(ecs* world, entity terrain, int3 block) {
     if (!zox_valid(chunk) || !zox_has(chunk, LightOctree)) {
         return -1;
     }
-    return getv_LightOctree(zox_get(chunk, LightOctree), depth, (byte3) { block.x - c.x * length, block.y - c.y * length, block.z - c.z * length });
+    return chunk_light_brightest(world, chunk, depth, (byte3) { block.x - c.x * length, block.y - c.y * length, block.z - c.z * length });
 }
 
 static inline byte zox_tst_ll_set(ecs* world, entity terrain, int3 block, byte value, byte data) {

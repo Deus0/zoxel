@@ -41,6 +41,11 @@ void chunk_lod_system(iter* it) {
                 spin_lock(&lock->value);
                 lights->value = darklight;
                 collapse_LightOctree(lights);
+                if (zox_has(e, BlockLightOctree)) {     // blocks' light too: its emitters light it again generated
+                    zox_muter(e, BlockLightOctree, block_lights);
+                    block_lights->value = darklight;
+                    collapse_BlockLightOctree(block_lights);
+                }
                 spin_unlock(&lock->value);
                 if (zox_has(e, SunnyChunk)) {
                     zox_add(zox_get_parent(world, e), GenerateSunlight);

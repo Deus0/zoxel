@@ -1,4 +1,4 @@
-// the light at a point in a chunk, 0 to 1 (light / 255, as terrain vertex colours): its voxel's, under the chunk's
+// the light at a point in a chunk (the brighter of the sky's and blocks'), 0 to 1 (light / 255, as terrain vertex colours): its voxel's, under the chunk's
 //  light lock (flood passes write it on threads); under 0 if it has none there (no lights, the point outside it)
 static inline float chunk_light_at(ecs* world, entity chunk, float3 position) {
     if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, LightOctree) || !zox_has(chunk, LightLock)) {
@@ -18,7 +18,20 @@ static inline float chunk_light_at(ecs* world, entity chunk, float3 position) {
     }
     LightLock* lock = zox_mut(chunk, LightLock);
     spin_lock(&lock->value);
-    const byte light = getv_LightOctree(zox_get(chunk, LightOctree), depth, (byte3) { local.x, local.y, local.z });
+    const byte3 at = { local.x, local.y, local.z };
+    const byte light = getv_LightOctree(zox_get(chunk, LightOctree), depth, at);
+    const LightOctree* block = chunk_lights(world, chunk, zox_light_block);
+    const byte glow = block ? getv_LightOctree(block, depth, at) : 0;     // blocks' light: the brighter
     spin_unlock(&lock->value);
-    return light / 255.0f;
+    return (glow > light ? glow : light) / 255.0f;
+}
+
+// the brighter of a chunk's sky and blocks' light at a voxel, at its depth (no lock: the main thread, tests); 0
+//  without lights. One tree held both before the split (doc/plans/day_night.md), so it reads as that did
+static inline byte chunk_light_brightest(ecs* world, entity chunk, byte depth, byte3 position) {
+    const LightOctree* sky = chunk_lights(world, chunk, zox_light_sky);
+    const LightOctree* block = chunk_lights(world, chunk, zox_light_block);
+    const byte light = sky ? getv_LightOctree(sky, depth, position) : 0;
+    const byte glow = block ? getv_LightOctree(block, depth, position) : 0;
+    return glow > light ? glow : light;
 }

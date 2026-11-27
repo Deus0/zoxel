@@ -34,6 +34,9 @@ static inline int emitter_chunk_side(int3* p, int length) {
 // a light or dark update at a position from this chunk, in it or the chunk a side over (a lamp's head, an emitter's
 //  side past its edge), locked: other chunks' floods write these queues too
 static inline void emitter_queue_light(LightQueue* own, LightQueue** sides, int3 p, int length, LightUpdate update) {
+    if (zox_no_emitters) {
+        return;
+    }
     const int side = emitter_chunk_side(&p, length);
     LightQueue* queue = side == -1 ? own : side >= 0 && sides ? sides[side] : NULL;
     if (!queue) {
@@ -43,6 +46,7 @@ static inline void emitter_queue_light(LightQueue* own, LightQueue** sides, int3
     spin_lock(&queue->lock);
     a_LightQueue(queue, update);
     spin_unlock(&queue->lock);
+    __atomic_add_fetch(&light_emitter_queued, 1, __ATOMIC_RELAXED);
 }
 
 static inline void emitter_queue_dark(DarkQueue* own, DarkQueue** sides, int3 p, int length, DarkUpdate update) {
@@ -73,7 +77,8 @@ static inline void emitter_light_sides(LightQueue* own, LightQueue** sides, byte
         emitter_queue_light(own, sides, (int3) { at.x + o.x, at.y + o.y, at.z + o.z }, length, (LightUpdate) {
             .depth = depth,
             .light = emitter_side_light(emitted),
-            .distance = light_propogation_distance });
+            .distance = light_propogation_distance,
+            .channel = zox_light_block });      // blocks' light, its own tree
     }
 }
 

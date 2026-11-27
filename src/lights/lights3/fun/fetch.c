@@ -9,17 +9,25 @@ void fetch_neightbor_voxel_nodes(
     }
 }
 
+// a chunk's lights of a channel (zox_light_sky, zox_light_block), NULL without
+static inline const LightOctree* chunk_lights(ecs* world, entity e, byte channel) {
+    if (!zox_valid(e)) {
+        return NULL;
+    }
+    if (channel == zox_light_block) {
+        return zox_has(e, BlockLightOctree) ? zox_get(e, BlockLightOctree) : NULL;
+    }
+    return zox_has(e, LightOctree) ? zox_get(e, LightOctree) : NULL;
+}
+
 void fetch_neightbor_light_nodes(
     ecs* world,
     const ChunkNeighbors* neighbors,
-    const LightOctree** nodes
+    const LightOctree** nodes,
+    byte channel
 ) {
     for (int i = 0; i < 6; i++) {
-        entity e = neighbors->value[i];
-        nodes[i] = zox_valid(e) &&
-            zox_has(e, LightOctree) ?
-                zox_get(e, LightOctree) :
-                NULL;
+        nodes[i] = chunk_lights(world, neighbors->value[i], channel);
     }
 }
 

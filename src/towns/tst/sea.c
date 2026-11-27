@@ -359,7 +359,7 @@ static inline int zox_tst_lake_light(ecs* world, entity terrain, int3 block) {
     if (!zox_has(chunk, LightOctree)) {
         return -1;
     }
-    return getv_LightOctree(zox_get(chunk, LightOctree), depth, get_positionl_byte3(block, byte3_single(length)));
+    return chunk_light_brightest(world, chunk, depth, get_positionl_byte3(block, byte3_single(length)));
 }
 
 void zox_tst_lakes_check(ecs* world) {

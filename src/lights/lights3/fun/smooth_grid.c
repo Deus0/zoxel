@@ -10,7 +10,14 @@ typedef struct {
     byte voxels_present[27];    // which have voxels, a missing one is air (gpu meshing culls faces into it)
     byte use_neighbor_depths;
     byte voxel_depths[27];      // a neighbour can draw just its root (depth 0)
+    const LightOctree** block_lights;   // the 27's blocks' light (fetch_nearby_block_lights), NULL none: the
+                                        //  brighter of it and the sky's (under the same locks)
 } smooth_grid;
+
+// a tree with light in it: not one closed node at darklight (blocks' light in a chunk without emitters)
+static inline byte smooth_grid_lit(const LightOctree* lights) {
+    return lights && (lights->ptr || lights->value > darklight);
+}
 
 #define smooth_grid_depth_max 5
 
@@ -47,6 +54,21 @@ static inline byte smooth_grid_fill(
             spin_lock(lights_locks[i]);
             octree_fill_grid(lights[i], sizeof(LightOctree), octree_type_offset_LightOctree, 0, depth, int3_zero, origin,
                 grid->lights, grid->length, 1);
+            // blocks' light: the brighter, its own grid then the max (only chunks with some)
+            const LightOctree* glow = grid->block_lights ? grid->block_lights[i] : NULL;
+            if (smooth_grid_lit(glow)) {
+                byte* block = calloc(padded, 1);
+                if (block) {
+                    octree_fill_grid(glow, sizeof(LightOctree), octree_type_offset_LightOctree, 0, depth, int3_zero, origin,
+                        block, grid->length, 1);
+                    for (size_t c = 0; c < cells; c++) {
+                        if (block[c] > grid->lights[c]) {
+                            grid->lights[c] = block[c];
+                        }
+                    }
+                    free(block);
+                }
+            }
             spin_unlock(lights_locks[i]);
         }
         grid->voxels_present[i] = voxels[i] && voxels_locks[i];

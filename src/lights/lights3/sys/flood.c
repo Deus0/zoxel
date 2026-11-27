@@ -25,7 +25,8 @@ static inline byte flood_light(
     byte air_decay,
     const byte* solidity,
     const byte* liquids,
-    uint* flooded)
+    uint* flooded,
+    byte channel)       // its light's: zox_light_sky or zox_light_block, the trees given are its
 {
     byte dirty = 0;
     if (!voxels || !lights || distance == 0 || light <= min_light) {
@@ -88,7 +89,8 @@ static inline byte flood_light(
                     .light = decayed_light,
                     .pos = pos,
                     .depth = depth,
-                    .distance = distance - 1
+                    .distance = distance - 1,
+                    .channel = channel
                 });
             spin_unlock(&nqueue->lock);
             continue;
@@ -136,7 +138,8 @@ static inline byte flood_light(
             air_decay,
             solidity,
             liquids,
-            flooded);
+            flooded,
+            channel);
     }
     return dirty;
 }
@@ -155,6 +158,7 @@ void light_flood_system(iter* it) {
     zox_sys_out(LightLock);
     zox_sys_out(LightQueue);
     zox_sys_out(LightOctree);
+    zox_sys_out(BlockLightOctree);
     zox_sys_out(LightOctreeDirty);
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
@@ -171,7 +175,8 @@ void light_flood_system(iter* it) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightLock, lightlock);
         zox_sys_o(LightQueue, light_queue);
-        zox_sys_o(LightOctree, root_lnode);
+        zox_sys_o(LightOctree, sky_lnode);
+        zox_sys_o(BlockLightOctree, block_lnode);
         zox_sys_o(LightOctreeDirty, light_node_dirty);
         spin_lock(&light_queue->lock);
         byte has_light = light_queue->count != 0;
@@ -187,16 +192,14 @@ void light_flood_system(iter* it) {
             solidity);
         update_light_liquids(world, zox_get_link(world, e, BlockManagerLink), &liquids_realm, liquids);
         const VoxelNode* neighbor_voxels[6];
-        const LightOctree* neighbor_lights[6];
+        const LightOctree* neighbor_lights_of[2][6];     // each channel's
         spinlock* neighbor_locks[6];
         fetch_neightbor_voxel_nodes(
             world,
             neighbors,
             neighbor_voxels);
-        fetch_neightbor_light_nodes(
-            world,
-            neighbors,
-            neighbor_lights);
+        fetch_neightbor_light_nodes(world, neighbors, neighbor_lights_of[zox_light_sky], zox_light_sky);
+        fetch_neightbor_light_nodes(world, neighbors, neighbor_lights_of[zox_light_block], zox_light_block);
         fetch_neighbors_light_locks(
             world,
             neighbors->value,
@@ -250,6 +253,9 @@ void light_flood_system(iter* it) {
                 }
                 continue;
             }
+            // its channel's trees: the sky's or blocks'
+            LightOctree* root_lnode = update.channel == zox_light_block ? block_lnode : sky_lnode;
+            const LightOctree** neighbor_lights = neighbor_lights_of[update.channel == zox_light_block];
             byte current_light = getv_LightOctree(root_lnode, update.depth, update.pos);
             byte spread_light = update.light;
             if (dbg_log) {
@@ -287,7 +293,8 @@ void light_flood_system(iter* it) {
                 light_air_decay,
                 solidity,
                 liquids,
-                &flooded))
+                &flooded,
+                update.channel))
             {
                 dirty = 1;
             }
@@ -298,5 +305,6 @@ void light_flood_system(iter* it) {
         }
         zox_sys_increment();
     }
+    __atomic_add_fetch(&light_flood_steps, flooded, __ATOMIC_RELAXED);
     zox_sys_on_end();
 } zoxd_system(light_flood_system);

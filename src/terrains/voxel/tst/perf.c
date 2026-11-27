@@ -24,6 +24,7 @@ uintptr_t* zox_tst_perf_tables_before = NULL;  // tables when the step began
 int zox_tst_perf_tables_before_count = 0;
 
 int zox_tst_perf_queued = 0;       // tunk updates waiting in the stream queue
+uint zox_tst_perf_flood_start = 0, zox_tst_perf_dark_start = 0;  // the lights' steps as stepping began
 
 static inline int zox_tst_stream_queued(ecs* world) {
     return zox_valid(local_terrain) ? (int) zox_get(local_terrain, TerrainSpawnQueue)->count : 0;
@@ -99,6 +100,10 @@ byte zox_tst_perf_stream_ready(ecs* world) {
             return 0;
         }
         zox_log("[tst] [metric] perf_stream spawn_tables [%i]", zox_get_tables_count(world));
+        zox_log("[tst] [metric] perf_stream lights on spawning: flood steps [%u] dark steps [%u] emitter sides lit [%u]",
+            light_flood_steps, light_dark_steps, light_emitter_queued);
+        zox_tst_perf_flood_start = light_flood_steps;
+        zox_tst_perf_dark_start = light_dark_steps;
         zox_tst_perf_step = 0;
         zox_tst_perf_step_time = 0;
     }
@@ -184,6 +189,12 @@ byte zox_tst_perf_stream_ready(ecs* world) {
             zox_tst_frames_log(&zox_tst_perf_frames, "perf_stream");
             zox_tst_frames_dispose(&zox_tst_perf_frames);
             zox_tst_profile_log(world, "perf_stream");
+            // lighting's share, to weigh splitting sky and block light (doc/plans/day_night.md): its systems' time,
+            //  its flood and dark steps; --noemitters runs it without glow stones and lamps
+            zox_tst_profile_log_matching(world, "perf_stream", "light");
+            zox_log("[tst] [metric] perf_stream lights stepping: flood steps [%u] dark steps [%u] emitters [%s], emitter sides lit since boot [%u]",
+                light_flood_steps - zox_tst_perf_flood_start, light_dark_steps - zox_tst_perf_dark_start, zox_no_emitters ? "off" : "on",
+                light_emitter_queued);
             return 1;
         }
     }

@@ -2,6 +2,24 @@
 // for now: check above voxel, if sun, create beam
 // TODO: Convert local position to terrain position (positionv)
 // Shouuld we use VoxelNodeDepth here? since we are removing/adding at that depth
+
+// the brightest light on a voxel's sides in a tree (its own channel's neighbours past its edges), up skipped or not
+static inline byte edit_side_light(const LightOctree* lights, const LightOctree* neighbors[6], byte3 position, byte depth,
+    byte skip_up)
+{
+    byte brightest = 0;
+    for (byte dir = 0; dir < 6; dir++) {
+        if (skip_up && dir == direction_up) {
+            continue;
+        }
+        const LightOctree* side = get_neighbor_LightOctree(lights, neighbors, dir, position, depth);
+        if (side && side->value > brightest) {
+            brightest = side->value;
+        }
+    }
+    return brightest;
+}
+
 void voxel_light_system(iter* it) {
     zox_sys_on_begin();
     byte dbg_log = 0;
@@ -15,6 +33,7 @@ void voxel_light_system(iter* it) {
     zox_sys_out(LightQueue);
     zox_sys_out(DarkQueue);
     zox_sys_out(LightOctree);
+    zox_sys_out(BlockLightOctree);
     zox_sys_out(LightOctreeDirty);
     entity realm = 0;
     byte solidity[zox_light_solidity_length];
@@ -36,6 +55,7 @@ void voxel_light_system(iter* it) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightLock, lightlock);
         zox_sys_o(LightOctree, root_lnode);
+        zox_sys_o(BlockLightOctree, block_lnode);
         zox_sys_o(SunlightQueue, sun_queue);
         zox_sys_o(LightQueue, light_queue);
         zox_sys_o(DarkQueue, dark_queue);
@@ -52,7 +72,9 @@ void voxel_light_system(iter* it) {
         update_light_emission(world, zox_get_link(world, e, BlockManagerLink), &emission_realm, emission, emission_offset);
         update_light_liquids(world, zox_get_link(world, e, BlockManagerLink), &liquids_realm, liquids);
         const LightOctree* nnodesl[6];
-        fetch_neightbor_light_nodes(world, neighbors, nnodesl);
+        fetch_neightbor_light_nodes(world, neighbors, nnodesl, zox_light_sky);
+        const LightOctree* nnodesl_block[6];
+        fetch_neightbor_light_nodes(world, neighbors, nnodesl_block, zox_light_block);
         const VoxelNode* nnodesv[6];
         fetch_neightbor_voxel_nodes(world, neighbors, nnodesv);
         const VoxelNode* root_vnode = zox_get(e, VoxelNode);
@@ -84,7 +106,8 @@ void voxel_light_system(iter* it) {
                         .type = zox_light_type_flood,
                         .depth = depth->value,
                         .light = emitted,
-                        .distance = darklight_propogation_distance
+                        .distance = darklight_propogation_distance,
+                        .channel = zox_light_block
                     });
                 }
                 const LightOctree* above = get_neighbor_LightOctree(root_lnode, nnodesl, direction_up, update.position, depth->value);
@@ -110,21 +133,9 @@ void voxel_light_system(iter* it) {
                     // set_LightOctree(root_lnode, depth->value, update.position, sunlight, 0);
                 } else if (!emitted) {
                     byte max_nlight = light_above;
-                    for (byte dir = 0; dir < 6; dir++) {
-                        if (dir == direction_up) {
-                            continue;
-                        }
-                        const LightOctree* lnnode = get_neighbor_LightOctree(
-                            root_lnode,
-                            nnodesl,
-                            dir,
-                            update.position,
-                            depth->value
-                        );
-                        byte nlight = lnnode ? lnnode->value : 0;
-                        if (nlight > max_nlight) {
-                            max_nlight = nlight;
-                        }
+                    const byte sides = edit_side_light(root_lnode, nnodesl, update.position, depth->value, 1);
+                    if (sides > max_nlight) {
+                        max_nlight = sides;
                     }
                     byte decayed_light = (max_nlight > light_air_decay) ? (byte) (max_nlight - light_air_decay) : darklight;
                     if (dbg_log) {
@@ -143,6 +154,17 @@ void voxel_light_system(iter* it) {
                             .depth = depth->value,
                             .light = decayed_light,
                             .distance = light_propogation_distance
+                    });
+                }
+                // blocks' light floods in from its sides too (not a removed emitter's: its dark refills them)
+                const byte block_sides = emitted ? 0 : edit_side_light(block_lnode, nnodesl_block, update.position, depth->value, 0);
+                if (block_sides > darklight + light_air_decay) {
+                    a_LightQueue(light_queue, (LightUpdate) {
+                        .pos = update.position,
+                        .depth = depth->value,
+                        .light = block_sides - light_air_decay,
+                        .distance = light_propogation_distance,
+                        .channel = zox_light_block
                     });
                 }
             }
@@ -221,10 +243,23 @@ void voxel_light_system(iter* it) {
                             .light = was_liquid ? light_dim(placed_beam, darklight) : placed_beam
                         });
                 }
+                // blocks' light it took: dark from it in theirs too
+                const byte removed_block = getv_LightOctree(block_lnode, depth->value, update.position);
+                if (removed_block > darklight) {
+                    a_DarkQueue(dark_queue, (DarkUpdate) {
+                        .type = zox_light_type_flood,
+                        .pos = update.position,
+                        .depth = depth->value,
+                        .light = removed_block,
+                        .distance = darklight_propogation_distance,
+                        .channel = zox_light_block
+                    });
+                }
                 // set dark light, as it was filled up
                 // TODO: Move this to the light system itself
                 spin_lock(&lightlock->value);
                 set_LightOctree(root_lnode, depth->value, update.position, darklight);
+                set_LightOctree(block_lnode, depth->value, update.position, darklight);
                 spin_unlock(&lightlock->value);
                 light_node_dirty->value = zox_dirty_trigger;
             }

@@ -89,7 +89,7 @@ static inline byte zox_tst_room_settled(ecs* world, entity chunk, int* frames) {
 }
 
 static inline byte zox_tst_room_light(ecs* world, entity chunk, byte3 position) {
-    return getv_LightOctree(zox_get(chunk, LightOctree), zox_getv(chunk, NodeDepth), position);
+    return chunk_light_brightest(world, chunk, zox_getv(chunk, NodeDepth), position);
 }
 
 static inline void zox_tst_relight_read(ecs* world, byte* lights) {
@@ -157,11 +157,13 @@ byte zox_tst_glow_relight_ready(ecs* world) {
         // loaded: a loaded chunk's light starts dark, its emitters light it (the tunnel and the hole's shaft)
         spinlock* lock = &zox_getm(chunk, LightLock)->value;
         spin_lock(lock);
-        LightOctree* lights = zox_getm(chunk, LightOctree);
-        for (byte i = 0; i < zox_tst_room_tunnel; i++) {
-            set_LightOctree(lights, zox_getv(chunk, NodeDepth), (byte3) { at.x + i, at.y, at.z }, darklight);
+        LightOctree* trees[2] = { zox_getm(chunk, LightOctree), zox_getm(chunk, BlockLightOctree) };    // both dark
+        for (byte t = 0; t < 2; t++) {
+            for (byte i = 0; i < zox_tst_room_tunnel; i++) {
+                set_LightOctree(trees[t], zox_getv(chunk, NodeDepth), (byte3) { at.x + i, at.y, at.z }, darklight);
+            }
+            set_LightOctree(trees[t], zox_getv(chunk, NodeDepth), (byte3) { at.x, at.y + 1, at.z }, darklight);
         }
-        set_LightOctree(lights, zox_getv(chunk, NodeDepth), (byte3) { at.x, at.y + 1, at.z }, darklight);
         spin_unlock(lock);
         zox_add(chunk, GenerateEmitterLight);
         zox_tst_relight_settled = 0;

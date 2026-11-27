@@ -1,7 +1,7 @@
 // an emitter the dark meets beside the voxel it darkened (position) lights it again: its light came from the
 //  emitter, the dark took it (a hole over it covered, the sun's dark flooding the room), and nothing else lit it back
 static inline void dark_relight_emitter(LightQueue* light_queue, const byte* glows, byte voxel, byte3 position, byte depth) {
-    if (!light_queue || !voxel || !glows[voxel - 1]) {
+    if (zox_no_emitters || !light_queue || !glows || !voxel || !glows[voxel - 1]) {
         return;
     }
     spin_lock(&light_queue->lock);
@@ -9,7 +9,8 @@ static inline void dark_relight_emitter(LightQueue* light_queue, const byte* glo
         .light = emitter_side_light(glows[voxel - 1]),
         .distance = light_propogation_distance,
         .pos = position,
-        .depth = depth
+        .depth = depth,
+        .channel = zox_light_block
     });
     spin_unlock(&light_queue->lock);
 }
@@ -34,9 +35,14 @@ static inline byte dark_flood_light(
     byte min_light,
     byte air_decay,
     const byte* solidity,
-    const byte* glows)
+    const byte* glows,
+    byte channel)       // the light going dark: zox_light_sky or zox_light_block, the trees given are its
 {
     byte dirty = 0;
+    // only blocks' light came from emitters: the sky's dark relights none
+    if (channel != zox_light_block) {
+        glows = NULL;
+    }
     // a voxel at the end of its distance still looks round it (an emitter beside it relights it, lit sides flood back
     //  into it), it only darkens no further: it returned at once, dark, so a room whose glow stone had one side in it
     //  stayed dark once a long dark (a door shut) reached that side on its last step (tst dark_last_step; in the game
@@ -89,7 +95,8 @@ static inline byte dark_flood_light(
                         .light = old_light,
                         .distance = distance - 1,
                         .pos   = pos,
-                        .depth = depth
+                        .depth = depth,
+                        .channel = channel
                     });
                     spin_unlock(&nqueue->lock);
                 }
@@ -101,7 +108,8 @@ static inline byte dark_flood_light(
                         .light = darklight,     // floods from its own light then, not this (it may be dark by then)
                         .distance = light_propogation_distance,
                         .pos   = pos,
-                        .depth = depth
+                        .depth = depth,
+                        .channel = channel
                     });
                     spin_unlock(&nqueue->lock);
                 }
@@ -153,7 +161,8 @@ static inline byte dark_flood_light(
                 min_light,
                 air_decay,
                 solidity,
-                glows
+                glows,
+                channel
             );
         } else {
             if (light_queue) {
@@ -174,7 +183,8 @@ static inline byte dark_flood_light(
                     .light = darklight,     // floods from its own light then: a beam beside it can go dark first (a roof placed at once), its stale light relit the room
                     .distance = light_propogation_distance,
                     .pos   = pos,
-                    .depth = depth
+                    .depth = depth,
+                    .channel = channel
                 });
                 spin_unlock(&light_queue->lock);
             }
@@ -285,7 +295,8 @@ byte dark_sunbeam(
             min_light,
             air_decay,
             solidity,
-            glows))
+            glows,
+            zox_light_sky))
         {
             dirty = 1;
         }
@@ -328,6 +339,7 @@ byte dark_sunbeam(
 // NOTE: We need to account for depth differences
 void dark_light_system(iter* it) {
     zox_sys_on_begin();
+    uint darkened = 0;
     byte dbg_log = 0;
     zox_sys_world();
     zox_sys_begin();
@@ -336,6 +348,7 @@ void dark_light_system(iter* it) {
     zox_sys_out(LightLock);
     zox_sys_out(LightOctreeDepth);
     zox_sys_out(LightOctree);
+    zox_sys_out(BlockLightOctree);
     zox_sys_out(DarkQueue);
     zox_sys_out(LightQueue);
     zox_sys_out(LightOctreeDirty);
@@ -357,7 +370,8 @@ void dark_light_system(iter* it) {
         zox_sys_i(ChunkNeighbors, neighbors);
         zox_sys_o(LightLock, lightlock);
         zox_sys_o(LightOctreeDepth, depthl);
-        zox_sys_o(LightOctree, root_lnode);
+        zox_sys_o(LightOctree, sky_lnode);
+        zox_sys_o(BlockLightOctree, block_lnode);
         zox_sys_o(DarkQueue, dark_queue);
         zox_sys_o(LightQueue, light_queue);
         zox_sys_o(LightOctreeDirty, light_node_dirty);
@@ -381,8 +395,9 @@ void dark_light_system(iter* it) {
         const ActiveOctree* actives = zox_has(e, ActiveOctree) ? zox_get(e, ActiveOctree) : NULL;
         const ActiveOctree* nactives[6];
         fetch_neighbor_actives(world, neighbors, nactives);
-        const LightOctree* nnodesl[6];
-        fetch_neightbor_light_nodes(world, neighbors, nnodesl);
+        const LightOctree* nnodesl_of[2][6];     // each channel's
+        fetch_neightbor_light_nodes(world, neighbors, nnodesl_of[zox_light_sky], zox_light_sky);
+        fetch_neightbor_light_nodes(world, neighbors, nnodesl_of[zox_light_block], zox_light_block);
         LightQueue* n_light_queues[6];
         fetch_neightbor_propogation_queues(world, neighbors, n_light_queues);
         DarkQueue* n_dark_queues[6];
@@ -392,11 +407,16 @@ void dark_light_system(iter* it) {
         DarkQueue* dark_queued = zox_valid(chunkd) ? zox_gett_mut(chunkd, DarkQueue) : NULL;
         while (dark_queue->count) {
             DarkUpdate update = remove_DarkQueue(dark_queue);
+            darkened++;
             if (depthl->value < update.depth) {
                 depthl->value = update.depth;
             }
             // if (depthl->value != update.depth) continue;   // for now
-            if (update.type == zox_light_type_flood) {
+            // its channel's trees; blocks' light has no beams, its dark only floods
+            const byte block = update.channel == zox_light_block;
+            LightOctree* root_lnode = block ? block_lnode : sky_lnode;
+            const LightOctree** nnodesl = nnodesl_of[block];
+            if (update.type == zox_light_type_flood || block) {
                 if (dbg_log) {
                     zox_log("[%s] Begin Dark Flooding [%ix%ix%i] l[%i] distance [%i] q [%i]",
                         zox_sys_e_name,
@@ -437,7 +457,8 @@ void dark_light_system(iter* it) {
                     darklight,
                     light_air_decay,
                     solidity,
-                    glows))
+                    glows,
+                    update.channel))
                 {
                     dirty = 1;
                 }
@@ -486,6 +507,7 @@ void dark_light_system(iter* it) {
              *            zox_log("DarkSystem %s - %i", zox_get_name(e), count);*/
         }
     }
+    __atomic_add_fetch(&light_dark_steps, darkened, __ATOMIC_RELAXED);
     zox_sys_on_end();
 } zoxd_system(dark_light_system);
 

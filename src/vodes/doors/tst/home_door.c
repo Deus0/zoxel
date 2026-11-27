@@ -31,7 +31,7 @@ static inline byte zox_tst_hdoor_light(ecs* world, entity terrain, int3 block) {
     }
     const byte3 local = { block.x - chunk_position.x * length, block.y - chunk_position.y * length,
         block.z - chunk_position.z * length };
-    return getv_LightOctree(zox_get(chunk, LightOctree), depth, local);
+    return chunk_light_brightest(world, chunk, depth, local);
 }
 
 static inline void zox_tst_hdoor_read(ecs* world, entity terrain, zox_tst_hdoor_home* home, byte* lights) {

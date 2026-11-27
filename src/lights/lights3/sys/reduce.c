@@ -66,10 +66,12 @@ void light_node_reduce_system(iter* it) {
     zox_sys_in(LightOctreeDirty);
     zox_sys_out(LightLock);
     zox_sys_out(LightOctree);
+    zox_sys_out(BlockLightOctree);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(LightOctreeDirty, dirty);
         zox_sys_o(LightLock, lightlock);
         zox_sys_o(LightOctree, lights);
+        zox_sys_o(BlockLightOctree, block_lights);
         if (dirty->value == zox_dirty_active) {
             if (locks_enabled) {
                 spin_lock(&lightlock->value);
@@ -78,6 +80,7 @@ void light_node_reduce_system(iter* it) {
                 lights,
                 sizeof(LightOctree),
                 offsetof(LightOctree, value));
+            reduce_max_octree_node(block_lights, sizeof(BlockLightOctree), offsetof(BlockLightOctree, value));
             if (locks_enabled) {
                 spin_unlock(&lightlock->value);
             }
