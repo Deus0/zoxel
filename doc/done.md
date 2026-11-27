@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-27
+-x A list placed its rows again only when one resized if it scrolled sideways (ListScrollX): a row sized after the
+  list's one layout stayed where it spawned, the main menu's buttons on top of each other. Any list places its rows
+  again as one resizes (list_element_position_system) (tst list_layout)
 -x Walking 2.5x as fast in release: the player's speed stat skipped npc_stat_start, its max unset, release kept
   mana's and spawned it as a state at mana's base (4); the move scales by it. max starts at 0. The speed stat curves
   now (speed_stat_curve: up to 2x, stat 2 is 1.5x) rather than adding (tst move_feel checks the stat and curve)

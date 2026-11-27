@@ -1,4 +1,4 @@
-// Reposition the List Element when it resizes so it matches alignment
+// Reposition the List Element when it resizes so it matches alignment, and its list places its rows again
 void list_element_position_system(iter* it) {
     zox_sys_on_begin();
     zox_sys_world();
@@ -16,7 +16,9 @@ void list_element_position_system(iter* it) {
             !zox_has(parent, LayoutSize)) {
             continue;
         }
-        if (zox_has(parent, ListScrollX)) {
+        // its list places its rows again: their heights set where each sits (a row sized after the list's first layout
+        //  stayed where it spawned, a main menu's buttons on top of each other)
+        if (zox_has(parent, ListStart)) {
             zox_add(parent, ListPositionDirty);
         }
         byte alignment = zox_getv(parent, ListAlignment);
