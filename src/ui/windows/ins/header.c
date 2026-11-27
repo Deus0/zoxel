@@ -31,7 +31,8 @@ entity spawn_header(
     zox_link(world, e, DraggedLink, parent);
     zox_link(world, parent, DockDragLink, e);
     {
-        spawn_text(
+        // its title fits the header (window_header_fit keeps its width as the window resizes)
+        const entity text_e = spawn_text(
             world,
             prefab_text,
             e,
@@ -43,6 +44,9 @@ entity spawn_header(
             text,
             header_font_fill,
             header_font_outline);
+        zox_add(text_e, TextFit);
+        zox_setv(text_e, TextFitFontSize, font_size);
+        zox_setv(text_e, TextFitWidth, size.x);
     }
     if (is_close_button) {
         // Just do spawn_button

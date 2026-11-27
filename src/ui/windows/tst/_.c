@@ -4,6 +4,7 @@
 #include "resize.c"
 #include "grid.c"
 #include "resize_layout.c"
+#include "title.c"
 
 static void zox_tsts_windows(void) {
     zox_tst_add("window_search", zox_tst_window_search_ready, zox_tst_ui_fixture_check, 20);
@@ -14,6 +15,8 @@ static void zox_tsts_windows(void) {
     zox_tst_set_setup("window_grid_resize", NULL, 1);
     zox_tst_add("window_resize_layout", zox_tst_window_resize_layout_ready, zox_tst_ui_fixture_check, 60);
     zox_tst_set_setup("window_resize_layout", NULL, 1);
+    zox_tst_add("window_title_fit", zox_tst_window_title_fit_ready, zox_tst_ui_fixture_check, 20);
+    zox_tst_set_setup("window_title_fit", NULL, 1);
     zox_tst_add("window_stack_input", zox_tst_window_stack_ready, zox_tst_ui_fixture_check, 30);
     zox_tst_set_setup("window_stack_input", NULL, 1);
     zox_tst_add("scrollview_overlap", zox_tst_scroll_overlap_ready, zox_tst_ui_fixture_check, 30);

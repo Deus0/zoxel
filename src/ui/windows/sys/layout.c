@@ -72,6 +72,30 @@ static void window_rows_fit(ecs* world, entity window, entity scrollview, int2* 
     }
 }
 
+// its title fits its header beside its buttons (close, undock): a centred title keeps clear of them on both sides
+static void window_header_fit(ecs* world, entity header, int width) {
+    const entity text = zox_get_child_by_id(world, header, zox_id(TextFit));
+    if (!text) {
+        return;
+    }
+    int buttons = 0;
+    iter it = zox_children(world, header);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity button = it.entities[i];
+            const byte hidden = zox_has(button, RenderDisabled) && zox_getv(button, RenderDisabled);
+            if (button != text && zox_has(button, LayoutSize) && !hidden) {
+                buttons = int_max(buttons, -zox_getv(button, LayoutPosition).x + zox_getv(button, LayoutSize).x);
+            }
+        }
+    }
+    const byte centred = zox_getv(text, Anchor).x == 0.5f;
+    const int fit = int_max(1, width - buttons * (centred ? 2 : 1));
+    if (zox_getv(text, TextFitWidth) != fit) {
+        zox_setv(text, TextFitWidth, fit);
+    }
+}
+
 // a floating window stays on its canvas: no larger than it, its edges on it
 static void window_canvas_fit(ecs* world, entity window, int2* size) {
     const entity canvas = zox_get_parent_by_id(world, window, zox_id(Canvas));
@@ -122,6 +146,7 @@ static void window_layout(ecs* world, entity window, int2 size) {
         return;     // already fits, its scroll view too
     }
     zox_setv(header, LayoutSize, header_size);
+    window_header_fit(world, header, header_size.x);
     if (search) {
         zox_setv(search, LayoutSize, ((int2) { size.x, search_height }));
         zox_setv(search, LayoutPosition, ((int2) { 0, -header_size.y - search_height / 2 }));

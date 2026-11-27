@@ -72,6 +72,7 @@ entity spawn_list(
                 const int canvas_width = canvas_data.size.x * 3 / 4;
                 const int fit_width = list_width > 0 ? list_width : canvas_width;
                 zox_add(button.y, TextFit);
+                zox_add(button.y, TextFitParent);
                 zox_setv(button.y, TextFitFontSize, list_data.font_size);
                 zox_setv(button.y, TextFitWidth, fit_width);
             }

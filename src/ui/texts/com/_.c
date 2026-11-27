@@ -11,9 +11,10 @@ zoxc_double(AnimateText);
 zoxc_text(TextData)
 // zox_tag(TextDirty);
 zox_tag(TextWrap);
-// fits a text in a width (text_fit_system): its parent (an input field) sized to it, its font shrunk from
-//  TextFitFontSize when it would be wider than TextFitWidth (a long realm name ran off the screen)
+// fits a text in a width (text_fit_system): its font shrunk from TextFitFontSize when it would be wider than
+//  TextFitWidth (a long realm name ran off the screen, a window's title past its header)
 zox_tag(TextFit);
+zox_tag(TextFitParent);             // and its parent sized to it (an input field), not kept (a header)
 zoxc_int(TextFitFontSize);
 zoxc_int(TextFitWidth);            // lines wrap to its LayoutSize (text_wrap, text_columns), i.e. dialogue: a fixed box, not sized to its text
 zoxc_entity(GlyphPrefab);
@@ -36,6 +37,7 @@ void zox_components_texts(ecs *world) {
     zoxd_byte2(TextPadding);
     zoxd_tag(TextWrap);
     zoxd_tag(TextFit);
+    zoxd_tag(TextFitParent);
     zoxd_int(TextFitFontSize);
     zoxd_int(TextFitWidth);
     zoxd_int(TextFontSize);

@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-27
+-x Window titles fit their headers: a header's text is TextFit, its width kept by the window's layout beside its
+  buttons (window_header_fit), its font smaller as the window narrows, a left title keeps its left edge; a TextFit
+  text sizes its parent only with TextFitParent (input fields) (tst window_title_fit)
 -x A list placed its rows again only when one resized if it scrolled sideways (ListScrollX): a row sized after the
   list's one layout stayed where it spawned, the main menu's buttons on top of each other. Any list places its rows
   again as one resizes (list_element_position_system) (tst list_layout)

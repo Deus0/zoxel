@@ -1,5 +1,6 @@
-// fits a TextFit text in its TextFitWidth: the font is TextFitFontSize, smaller when the text would be wider, and its
-//  parent (an input field's button) is sized to it, as typing changes it
+// fits a TextFit text in its TextFitWidth: the font is TextFitFontSize, smaller when the text would be wider
+//  - TextFitParent: its parent (an input field's button) is sized to it, as typing changes it
+//  - a text on its parent's side (anchored left or right, a window's title) keeps that edge as its font changes
 //  - a new font size respawns its glyphs (glyph_spawn_system), they're sized as they spawn
 void text_fit_system(iter* it) {
     zox_sys_on_begin();
@@ -29,6 +30,14 @@ void text_fit_system(iter* it) {
             }
         }
         if (fits != font_size->value) {
+            const float anchor = zox_has(e, Anchor) ? zox_getv(e, Anchor).x : 0.5f;
+            if (anchor != 0.5f && zox_has(e, LayoutPosition)) {
+                const int before = calculate_zext_size(text->value, text->length, font_size->value, padding->value, default_line_padding).x;
+                const int after = calculate_zext_size(text->value, text->length, fits, padding->value, default_line_padding).x;
+                zox_muter(e, LayoutPosition, position);
+                position->value.x += (anchor < 0.5f ? 1 : -1) * (after - before) / 2;
+                zox_add(e, LayoutSizeDirty);
+            }
             font_size->value = fits;
             // its glyphs again, at the new size
             iter it2 = zox_children(world, e);
@@ -42,7 +51,7 @@ void text_fit_system(iter* it) {
         }
         // its parent fits it
         const entity parent = zox_get_parent(world, e);
-        if (zox_valid(parent) && zox_has(parent, LayoutSize)) {
+        if (zox_has(e, TextFitParent) && zox_valid(parent) && zox_has(parent, LayoutSize)) {
             const int2 size = calculate_zext_size(text->value, text->length, fits, padding->value, default_line_padding);
             if (!int2_equals(size, zox_getv(parent, LayoutSize))) {
                 zox_setv(parent, LayoutSize, size);
