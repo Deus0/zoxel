@@ -9,16 +9,18 @@ uniform vec3 sky_top_color;
 uniform vec3 sky_bottom_color;
 
 // a hash without sin: fract(sin(big)) lost its precision as time grew, the sky's noise turned to streaks
-float rand(vec2 p) {
-    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+float rand(vec3 p) {
+    vec3 p3 = fract(p * 0.1031);
     p3 += dot(p3, p3.yzx + 33.33);
     return fract((p3.x + p3.y) * p3.z);
 }
 
-// the animated noise, per pixel on screen, shifted each frame, its input kept small
+// the animated noise, by direction (cells of about 0.1 degrees), shifted each frame, its input kept small
+//  - it was per pixel on screen (gl_FragCoord): in a headset it stayed on the view, the sky seemed to turn with
+//      the head, and each eye's differed
 //  - mesh_pos.xy was flat on the cube's x faces (only y changes there): rows of one value, streaks
 float sky_noise() {
-    return rand(gl_FragCoord.xy + floor(fract(time * 0.37) * 1024.0));
+    return rand(floor(normalize(mesh_pos) * 600.0) + floor(fract(time * 0.37) * 1024.0));
 }
 
 vec3 sky_gradient(vec3 color) {
