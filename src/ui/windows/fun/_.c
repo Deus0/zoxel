@@ -1,3 +1,11 @@
+// a window that docks by its header (an editor's): dragged to a canvas's edge it docks there (ui/docks); game
+//  windows float, they don't link it
+static inline void window_dockable(ecs* world, entity window, entity header) {
+    if (zox_valid(window) && zox_valid(header)) {
+        zox_link(world, window, DockDragLink, header);
+    }
+}
+
 void raycaster_select_window_children(ecs *world, entity e, entity window) {
     iter it2 = zox_children(world, e);
     while (zox_children_next(it2)) {

@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-27
+-x Game windows no longer dock: docking by the header (DockDragLink) is opt in, window_dockable, the editor's windows
+  and its profiler call it (tst window_docks checks a game window has no link)
 -x Window titles fit their headers: a header's text is TextFit, its width kept by the window's layout beside its
   buttons (window_header_fit), its font smaller as the window narrows, a left title keeps its left edge; a TextFit
   text sizes its parent only with TextFitParent (input fields) (tst window_title_fit)

@@ -36,15 +36,17 @@ static void zox_tst_dock_geometry(ecs* world, entity canvas, entity camera, enti
 }
 
 static entity zox_tst_spawn_dock_window(ecs* world, entity canvas, const char* title, float2 anchor, int2 size) {
-    return spawn_window_list_at(world, prefab_window, canvas, int2_zero, size, zox_alignment_left,
-        anchor, title, 18, 12, byte2_single(2), 6, 1, (ClickEvent) { button_event_close_window }).x;
+    const entity4 e4 = spawn_window_list_at(world, prefab_window, canvas, int2_zero, size, zox_alignment_left,
+        anchor, title, 18, 12, byte2_single(2), 6, 1, (ClickEvent) { button_event_close_window });
+    window_dockable(world, e4.x, e4.y);
+    return e4.x;
 }
 
 static byte zox_tst_docks_ready(ecs* world) {
     static int step, original_left;
     static int2 resized, floating_position, floating_size, start, drop, swap_position;
     static float2 swap_anchor;
-    static entity canvas, floating, handle, header, top;
+    static entity canvas, floating, handle, header, top, game;
     static entity3 windows;
     zox_tst_progress(step);
     if (!canvas) {
@@ -61,13 +63,19 @@ static byte zox_tst_docks_ready(ecs* world) {
             floating_size = (int2) { 180, 100 };
             floating = zox_tst_spawn_dock_window(world, canvas, "Floating", dock_left, floating_size);
             floating_position = zox_getv(floating, LayoutPosition);
+            // a game's window floats: it doesn't dock by its header (no window_dockable)
+            game = spawn_window_list_at(world, prefab_window, canvas, int2_zero, floating_size, zox_alignment_left,
+                float2_half, "Game", 18, 12, byte2_single(2), 6, 1, (ClickEvent) { button_event_close_window }).x;
             zox_add(canvas, Dirty);
             break;
         case 1:
             zox_tst_check(!docks.x && int2_equals(zox_getv(floating, LayoutPosition), floating_position) &&
                 int2_equals(zox_getv(floating, LayoutSize), floating_size), "layout moved an untagged window");
             zox_tst_dock_view(world, camera, size, int2_zero, size);
+            zox_tst_check(zox_get_link(world, floating, DockDragLink) && !zox_get_link(world, game, DockDragLink),
+                "a dockable window has no dock link, or a game window has one");
             zox_delete(floating);
+            zox_delete(game);
             zox_defer_begin();
             windows.x = zox_tst_spawn_dock_window(world, canvas, "Left", dock_left,
                 dock_default_size(size, dock_left));

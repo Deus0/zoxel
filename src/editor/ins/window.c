@@ -34,6 +34,7 @@ entity4 spawn_editor_window(
     zox_setv(header, ElementFillColor, editor_header_fill);
     zox_setv(header, ElementOutlineColor, editor_header_outline);
     zox_add(e4.x, Docked);
+    window_dockable(world, e4.x, header);
     // tighter rows than a game menu's: more fit in the editor's windows
     const entity list = e4.w;
     zox_setv(list, TextPadding, ((byte2) { 3 * ui_scale, 1 * ui_scale }));

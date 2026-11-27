@@ -42,6 +42,7 @@ entity spawn_profiler(
     entity header = e2.y;
     entity body = e2.z;
     zox_add(e, Profiler);
+    window_dockable(world, e, header);
     set_editor_window(world, e);
     zox_setv(body, FillColor, editor_window_fill);
     zox_setv(body, OutlineColor, editor_window_outline);
