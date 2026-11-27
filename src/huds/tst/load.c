@@ -3,11 +3,13 @@
 //      - makes more saves than the load list holds (it used to overflow and crash on continue)
 //      - each save has its own seed, and a newer modified time than the one before
 //  - clicks continue on the main menu, checks the load list keeps the newest saves
-//  - clicks the newest save, checks its realm is spawned with that save's seed and path
+//  - clicks the newest save, checks its realm is spawned with that save's seed and path, its clock where it was
+//    left (its time of day)
 //  - run: bash bsh/tst.sh load_games
 #define zox_tst_load_saves (huds_max_list_elements + 12)
 #define zox_tst_load_seed 5000
 #define zox_tst_load_settle_frames 5
+#define zox_tst_load_time 777.0          // each save's clock (realm.txt time)
 char zox_tst_load_saves_path[512];
 int zox_tst_load_stage = 0;
 int zox_tst_load_frames = 0;
@@ -50,7 +52,7 @@ void zox_tst_load_games_setup() {
         snprintf(folder, sizeof(folder), "%s/realm_%03i", zox_tst_load_saves_path, i);
         zox_mkdir(folder);
         // higher index is newer (last played)
-        RealmInfo info = { .seed = zox_tst_load_seed + i, .last = now - 10000 + i };
+        RealmInfo info = { .seed = zox_tst_load_seed + i, .last = now - 10000 + i, .time = zox_tst_load_time };
         snprintf(info.name, sizeof(info.name), "realm %i", i);
         save_realm_info(folder, &info);
     }
@@ -169,6 +171,10 @@ byte zox_tst_load_games_ready(ecs* world) {
     const char* real_save = getenv("zox_tst_save");
     zox_tst_check((real_save && real_save[0]) || seed == zox_tst_load_seed + zox_tst_load_saves - 1, "loaded seed [%u], expected [%i]", seed, zox_tst_load_seed + zox_tst_load_saves - 1);
     zox_tst_check(!zox_valid(zox_get_child_by_id(world, canvas, zox_id(MenuLoad))), "load menu wasn't closed");
+    // its clock where it was left: the saved time, and the few frames since
+    const double clock = zox_getv(realm, ClockTime);
+    zox_tst_check((real_save && real_save[0]) || (clock >= zox_tst_load_time && clock < zox_tst_load_time + 30),
+        "loaded realm's clock [%.1f], expected its saved [%.1f]", clock, zox_tst_load_time);
     return 1;
 }
 

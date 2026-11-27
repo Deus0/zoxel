@@ -72,7 +72,8 @@ light only near the player).
 ## Steps
 
 1. Done: `Sun` and the time of day from the realm clock, the tint, the sky, the fog. tsts `day_night`, `sky_day`.
-   Next in it: the time of day saved with the realm (it starts at the morning again on load).
+   The realm's clock is saved in its realm.txt (`time`) as the game ends, set again as it's continued (tsts
+   realm_info, load_games).
 2. Characters lit: tst a character walks from sunlight into a dark cave and gets darker, and dims at night.
 3. Measure the split (above), decide.
 4. If split: `BlockLightOctree` beside `LightOctree` (which stays, as sky light), mesh colours rgba, the shader max.

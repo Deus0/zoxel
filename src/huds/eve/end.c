@@ -55,9 +55,9 @@ void game_state_end_huds(
         zox_loge("[game_state_end_huds] Invalid [realm]");
         return;
     }
-    // its time played this session, and last played now (realm.txt)
+    // its time played this session, last played now, and its clock (its time of day) (realm.txt)
     if (zox_has(realm, FolderPath) && zox_get(realm, FolderPath)->value[0]) {
-        realm_info_played(zox_get(realm, FolderPath)->value, zox_current_time);
+        realm_info_played(zox_get(realm, FolderPath)->value, zox_current_time, zox_has(realm, ClockTime) ? zox_getv(realm, ClockTime) : -1);
     }
     realm_played_since = 0;
     play_menu_music(world, game);

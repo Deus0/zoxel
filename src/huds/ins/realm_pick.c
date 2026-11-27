@@ -42,13 +42,14 @@ void button_event_load_confirm(
     load_realm_info(path->value, &info);
     // played from now, and last played now (realm.txt)
     realm_played_since = 0;
-    realm_info_played(path->value, zox_current_time);
+    realm_info_played(path->value, zox_current_time, -1);
     // TODO: Spawn a realm here and window for it
     entity realm = spawn_realm(
         world,
         game,
         info.seed);
     zox_set_ptr(realm, FolderPath, path_copy);
+    zox_setv(realm, ClockTime, info.time);     // its time of day where it was left
     delay_event(world, &delay_spawn_menu_realm, player, 0.01);     // 3D on 3D huds (spawn_window_list)
 }
 

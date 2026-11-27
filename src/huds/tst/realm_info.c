@@ -1,5 +1,5 @@
 // tst: realm_info, realms keep a name, seed, time played and when last played (realm.txt, saves/fun/realm_info.c)
-//  - realm.txt saved and loaded back
+//  - realm.txt saved and loaded back, its clock (time of day) too
 //  - a seed from text: digits its number, other text hashed
 //  - time played as text (under a minute, 5m, 2h 5m)
 //  - the load menu: three realms, its buttons their names, last played first, each one's tooltip its seed and time
@@ -47,15 +47,15 @@ byte zox_tst_realm_info_ready(ecs* world) {
         zox_tst_check(zox_mkdirs(saves), "couldn't make [%s]", saves);
         // saved and loaded back
         const long now = (long) time(NULL);
-        zox_tst_realm_info_make(saves, "a", (RealmInfo) { .seed = 11, .name = "Old Lands", .played = 7500, .last = now - 300 });
+        zox_tst_realm_info_make(saves, "a", (RealmInfo) { .seed = 11, .name = "Old Lands", .played = 7500, .last = now - 300, .time = 4321.5 });
         zox_tst_realm_info_make(saves, "b", (RealmInfo) { .seed = 22, .name = "Newest", .played = 300, .last = now - 10 });
         zox_tst_realm_info_make(saves, "c", (RealmInfo) { .seed = 33, .name = "Middle", .played = 20, .last = now - 100 });
         char folder[520];
         snprintf(folder, sizeof(folder), "%s/a", saves);
         RealmInfo info;
         zox_tst_check(load_realm_info(folder, &info), "realm.txt in [%s] didn't load", folder);
-        zox_tst_check(info.seed == 11 && !strcmp(info.name, "Old Lands") && info.played == 7500 && info.last == now - 300,
-            "realm.txt loaded back seed [%u] name [%s] played [%u] last [%ld]", info.seed, info.name, info.played, info.last);
+        zox_tst_check(info.seed == 11 && !strcmp(info.name, "Old Lands") && info.played == 7500 && info.last == now - 300 && info.time == 4321.5,
+            "realm.txt loaded back seed [%u] name [%s] played [%u] last [%ld] time [%.2f]", info.seed, info.name, info.played, info.last, info.time);
         // a seed from text: digits its number, text hashed, the same text the same seed
         zox_tst_check(realm_seed_from_text("12345") == 12345, "the seed \"12345\" is [%u]", realm_seed_from_text("12345"));
         zox_tst_check(realm_seed_from_text("zox lands") == realm_seed_from_text("zox lands") &&

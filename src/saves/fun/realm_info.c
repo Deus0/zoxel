@@ -1,4 +1,5 @@
-// a realm's info, realm.txt in its save folder: its seed, name, seconds played, when last played (unix time)
+// a realm's info, realm.txt in its save folder: its seed, name, seconds played, when last played (unix time), its
+//  clock (ClockTime: its time of day, its suns' days)
 //  - lines of "key value"
 #define realm_name_length 32
 typedef struct {
@@ -6,6 +7,7 @@ typedef struct {
     char name[realm_name_length];
     uint played;
     long last;
+    double time;
 } RealmInfo;
 
 byte load_realm_info(const char* folder, RealmInfo* info) {
@@ -27,6 +29,8 @@ byte load_realm_info(const char* folder, RealmInfo* info) {
             info->played = (uint) strtoul(line + 7, NULL, 10);
         } else if (!strncmp(line, "last ", 5)) {
             info->last = strtol(line + 5, NULL, 10);
+        } else if (!strncmp(line, "time ", 5)) {
+            info->time = strtod(line + 5, NULL);
         }
     }
     fclose(file);
@@ -40,7 +44,7 @@ byte save_realm_info(const char* folder, const RealmInfo* info) {
     if (!file) {
         return 0;
     }
-    fprintf(file, "seed %u\nname %s\nplayed %u\nlast %ld\n", info->seed, info->name, info->played, info->last);
+    fprintf(file, "seed %u\nname %s\nplayed %u\nlast %ld\ntime %.2f\n", info->seed, info->name, info->played, info->last, info->time);
     fclose(file);
     return 1;
 }
@@ -75,10 +79,14 @@ void realm_default_name(uint seed, char* name, int size) {
 // when this session's realm was entered, its played time adds the time since (realm_info_played)
 double realm_played_since = 0;
 
-// adds the time played since the realm was entered to its info, marks it last played now
-void realm_info_played(const char* folder, double now) {
+// adds the time played since the realm was entered to its info, marks it last played now; its clock's time too
+//  (realm_time, under 0 keeps the saved one)
+void realm_info_played(const char* folder, double now, double realm_time) {
     RealmInfo info;
     load_realm_info(folder, &info);
+    if (realm_time >= 0) {
+        info.time = realm_time;
+    }
     if (realm_played_since > 0 && now > realm_played_since) {
         info.played += (uint) (now - realm_played_since);
     }
