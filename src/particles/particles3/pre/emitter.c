@@ -11,6 +11,7 @@ entity spawn_prefab_particle3D_emitter(ecs *world) {
     // zox_set(e, LocalRotation3D, { quaternion_identity });
     zox_set(e, Bounds3D, { 0 });
     zox_set(e, Color, { color_white });
+    zox_setv(e, Brightness, 1);    // its particles': past 1 they glow (bloom)
     return e;
 }
 

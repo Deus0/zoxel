@@ -126,8 +126,11 @@ tried and dropped: one brightness for all, no glowing liquids, a mesh and a syst
   (228 212 142).
 - **Vox palettes** (built, 2026-11-27): `ColorGlows`, a glow byte a palette colour (doc/tech/rendering.md); the
   street lamp's glass 255. tst lamp_views: its glass past white on gl and vulkan, ~200 blue with no glow.
+- **Particles** (built, 2026-11-27): a particle's `Brightness` (1 default) multiplies its rgb in particle3D.vert, its
+  alpha still its see through and fade; an emitter's `Brightness` is given to what it spawns (emit and stream
+  systems). Burn's flames 2. tst particle_glow (gl and vulkan): brightness 3's particles ~1.6x brightness 1's.
 - Next: gravity cores (a blueprint node to set a colour's glow), combined models (characters: glowing eyes that
-  animate, todo.md), particles' glow.
+  animate, todo.md), fireflies round street lamps (an emitter, Brightness past 1).
 
 ### A5. Later, as outlines did
 
@@ -173,7 +176,7 @@ After realm colour generation is redone (the user, 2026-11-27):
 ## Order, each step working and tested
 
 1. A1 + A2: float target and the tonemap setting, gl then vulkan. Nothing looks different at clamp (built).
-2. A4 bloom (built, v1), then A3.1: glow stones past 1 (built), vox palette glow (built), particles' glow.
+2. A4 bloom (built, v1), then A3.1: glow stones past 1 (built), vox palette glow (built), particles' glow (built).
 3. A3.2 to A3.4 as lighting and sky work land.
 4. B0 check, then B on vulkan if the driver offers it.
 5. A5: viewport cameras, xr.

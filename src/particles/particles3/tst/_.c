@@ -3,6 +3,7 @@ static byte zox_tst_particle_prefabs_ready(ecs* world) {
 }
 
 #include "particles_render.c"
+#include "glow.c"
 #include "spawn_particles.c"
 #include "burst.c"
 #include "emit.c"
@@ -19,5 +20,7 @@ void zox_tsts_particles3(ecs* world) {
     zox_tst_add("particle_lifetime", zox_tst_particle_lifetime_ready, zox_tst_particle_lifetime_check, 30);
     zox_tst_set_setup("particle_lifetime", NULL, 1);
     zox_tst_add("particles_render", zox_tst_particles_render_ready, zox_tst_particles_render_check, 120);
+    zox_tst_add("particle_glow", zox_tst_particle_glow_ready, zox_tst_particle_glow_check, 60);
+    zox_tst_set_setup("particle_glow", NULL, 1);
     zox_tst_add("spawn_particles", zox_tst_spawn_particles_ready, zox_tst_spawn_particles_check, 120);
 }

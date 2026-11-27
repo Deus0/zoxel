@@ -13,6 +13,7 @@ entity spawn_prefab_burn(ecs *world) {
     zox_setv(e, Position3D, float3_zero);
     zox_setv(e, Rotation3D, quaternion_identity);
     zox_setv(e, Color, color_white);
-    add_prefab_particle3_streamer(world, e, 24, 0.6f, float3_single(0.3f), 3);
+    const entity flames = add_prefab_particle3_streamer(world, e, 24, 0.6f, float3_single(0.3f), 3);
+    zox_setv(flames, Brightness, 2);    // flames glow, past white they bloom
     return e;
 }

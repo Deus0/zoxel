@@ -18,6 +18,7 @@ void zox_systems_particles3(ecs* world) {
         [in] particles.ParticleEmitRate,
         [in] particles3.ParticleLife,
         [in] physics3.Gravity3D,
+        [in] rendering.Brightness,
         [none] particles3.ParticleStreamer
     );
     zox_system_1(
@@ -27,6 +28,7 @@ void zox_systems_particles3(ecs* world) {
         [in] particles.ParticleEmitRate,
         [in] transforms3.Bounds3D,
         [in] colorz.Color,
+        [in] rendering.Brightness,
         [none] Particle3DEmitter,
         [none] !particles3.ParticleStreamer
     );
@@ -37,6 +39,7 @@ void zox_systems_particles3(ecs* world) {
         [in] colorz.Color,
         [in] rendering.Alpha,
         [in] transforms.Scale1,
+        [in] rendering.Brightness,
         [none] Particle3D
     );
 }

@@ -3,6 +3,7 @@ typedef struct {
     gint position;
     gint color;
     gint size;
+    gint brightness;
     gint camera_matrix;
     gint thickness;
 } MaterialParticle3D;
@@ -13,6 +14,7 @@ MaterialParticle3D create_MaterialParticle3D(guint material) {
         .position = zox_gpu_get_material_attribute(material, "position"),
         .color = zox_gpu_get_material_attribute(material, "color"),
         .size = zox_gpu_get_material_attribute(material, "size"),
+        .brightness = zox_gpu_get_material_attribute(material, "brightness"),
         .camera_matrix = zox_gpu_get_material_property(material, "camera_matrix"),
         .thickness = zox_gpu_get_material_property(material, "thickness")
     };
@@ -23,6 +25,7 @@ entity material_particle3D = 0;
 guint particle3D_instanced_position_buffer;
 guint particle3D_instanced_color_buffer;
 guint particle3D_instanced_size_buffer;
+guint particle3D_instanced_brightness_buffer;
 
 void spawn_particle3D_buffers(ecs* world) {
     (void) world;
@@ -36,6 +39,9 @@ void spawn_particle3D_buffers(ecs* world) {
     particle3D_instanced_size_buffer = zox_gpu_create_buffer();
     zox_gpu_bind_buffer_array(particle3D_instanced_size_buffer);
     zox_gpu_set_buffer_array(NULL, sizeof(Scale1) * zox_max_particles3D);
+    particle3D_instanced_brightness_buffer = zox_gpu_create_buffer();
+    zox_gpu_bind_buffer_array(particle3D_instanced_brightness_buffer);
+    zox_gpu_set_buffer_array(NULL, sizeof(Brightness) * zox_max_particles3D);
     zox_gpu_bind_buffer_array(0);
 #endif
 }
@@ -45,7 +51,9 @@ void dispose_particle3D_buffers(ecs* world) {
     zox_gpu_dispose_buffer(particle3D_instanced_position_buffer);
     zox_gpu_dispose_buffer(particle3D_instanced_color_buffer);
     zox_gpu_dispose_buffer(particle3D_instanced_size_buffer);
+    zox_gpu_dispose_buffer(particle3D_instanced_brightness_buffer);
     particle3D_instanced_position_buffer = particle3D_instanced_color_buffer = particle3D_instanced_size_buffer = 0;
+    particle3D_instanced_brightness_buffer = 0;
 }
 
 void initialize_shader_particle3D(ecs *world) {

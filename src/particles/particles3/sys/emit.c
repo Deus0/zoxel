@@ -4,6 +4,7 @@ void emit_particle3Ds_slow(
     float3 bounds,
     int spawn_count,
     color colorr,
+    float brightness,
     uint seed)
 {
     // const float3 spawn_bounds = { 0.4f, 0.8, 0.4f };
@@ -29,11 +30,12 @@ void emit_particle3Ds_slow(
         // particle_color.w += -0.2f + (zox_rand() % 100) * 0.01f * 0.2f;
         particle_color.w += seed_rangef(seed, -0.2f, 0.0f);
         seed += 1;
-        spawn_particle3(
+        const entity particle = spawn_particle3(
             world,
             position,
             acceleration,
             float4_to_color(particle_color));
+        zox_setv(particle, Brightness, brightness);
     }
 }
 
@@ -117,11 +119,13 @@ void particle3d_emit_system(iter* it) {
     zox_sys_in(ParticleEmitRate);
     zox_sys_in(Bounds3D);
     zox_sys_in(Color);
+    zox_sys_in(Brightness);
     for (int i = 0; i < it->count; i++) {
         zox_sys_i(Position3D, position);
         zox_sys_i(ParticleEmitRate, spawn);
         zox_sys_i(Bounds3D, bounds);
         zox_sys_i(Color, colorr);
+        zox_sys_i(Brightness, brightness);
         const uint seed = seed_rand(
             base_seed ^ (uint)i * 0x9E3779B1u);
         if (is_bulk_spawn) {
@@ -133,6 +137,7 @@ void particle3d_emit_system(iter* it) {
                 bounds->value,
                 spawn->value,
                 colorr->value,
+                brightness->value,
                 seed);
         }
     }
