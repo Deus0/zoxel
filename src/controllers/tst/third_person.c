@@ -3,6 +3,8 @@
 //  - the camera at 4 yaws round a target, pitched down at it (camera_look_at, as orbit.c places it)
 //  - turned 1 degree at a time all the way round, at 5 pitches: its facing never jumps (a pitched euler flipped
 //    half round at some yaws, the walk shook and inverted)
+//  - the look (orbit_look_input): the mouse right turns it right, up lowers the camera; a stick (x left) left turns it
+//    left, up raises it; both were inverted (2026-11-27, play test)
 //  - W walked towards the camera before (2026-11-27, the play test): its yaw came from a pitched euler
 //  - run: bash bsh/tst.sh third_person_moves
 byte zox_tst_third_person_moves_ready(ecs* world) {
@@ -45,6 +47,13 @@ void zox_tst_third_person_moves_check(ecs* world) {
             last = facing;
         }
     }
+    // the look's signs: yaw + turns it left (round +y), pitch + raises it
+    const float2 mouse_right = orbit_look_input((float2) { 10, 0 }, float2_zero, 0);
+    const float2 mouse_up = orbit_look_input((float2) { 0, 10 }, float2_zero, 0);
+    const float2 stick_left = orbit_look_input(float2_zero, (float2) { 1, 0 }, 0.1f);
+    const float2 stick_up = orbit_look_input(float2_zero, (float2) { 0, 1 }, 0.1f);
+    zox_tst_check(mouse_right.x < 0 && mouse_up.y < 0, "the mouse turns [%.3f] right, pitches [%.3f] up", mouse_right.x, mouse_up.y);
+    zox_tst_check(stick_left.x > 0 && stick_up.y > 0, "a stick turns [%.3f] left, pitches [%.3f] up", stick_left.x, stick_up.y);
     zox_tst_check(worst > 0.99f, "turning the camera a degree turned the character [%.1f] degrees", acosf(fmaxf(-1, worst)) * 180 / M_PI);
 }
 

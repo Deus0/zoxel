@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-27
+-x Third person looks were inverted: the mouse's up/down, and a stick's (gamepad, touch) both ways; the signs in one
+  place, orbit_look_input (tst third_person_moves checks them)
 -x Game windows no longer dock: docking by the header (DockDragLink) is opt in, window_dockable, the editor's windows
   and its profiler call it (tst window_docks checks a game window has no link)
 -x Window titles fit their headers: a header's text is TextFit, its width kept by the window's layout beside its

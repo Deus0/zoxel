@@ -1,5 +1,5 @@
 // The orbit camera (third person): not a child of its target (CameraTarget), it orbits it
-//  - the mouse (locked) or the right stick turns it round (Euler: pitch x, yaw y, in radians), the wheel zooms
+//  - the mouse (locked) or the right stick (a gamepad's, touch's) turns it round (orbit_look_input) (Euler: pitch x, yaw y, in radians), the wheel zooms
 //  - it looks at the target's head height from its OrbitDistance away (orbit_distance to start), eased there (orbit_follow a second)
 //  - on a poly terrain (its target's TerrainLink) it stays over the ground
 //  - the character walks along its facing (movement.c), not turned by the mouse (rotation.c)
@@ -12,6 +12,16 @@ float orbit_follow = 12;            // how fast it eases to where it should be (
 float orbit_mouse = 0.004f;
 float orbit_stick = 2.5f;           // radians a second at full stick
 float orbit_wheel = 0.8f;           // metres a wheel step
+
+// a look's turn of the orbit camera: x yaw, y pitch (up raises it over its target), from a mouse's delta (y up) or
+//  a stick's push (gamepad and touch: x is left, y up) this frame (play tests 2026-11-27: both were inverted)
+//  - mouse: right turns it right, up lowers it (it looks up, as first person)
+//  - stick: left turns it left, up raises it (a touch joystick drags the camera round its target)
+static inline float2 orbit_look_input(float2 mouse_delta, float2 stick, float dt) {
+    return (float2) {
+        -mouse_delta.x * orbit_mouse + stick.x * orbit_stick * dt,
+        -mouse_delta.y * orbit_mouse + stick.y * orbit_stick * dt };
+}
 
 // the device inputs that turn and zoom it: mouse delta (when locked), right stick, the wheel
 static inline float3 orbit_read_input(ecs* world, entity player) {
@@ -30,17 +40,17 @@ static inline float3 orbit_read_input(ecs* world, entity player) {
                 continue;
             }
             if (zox_has(e3, ZevicePointerDelta) && zox_has(e3, MousePointer)) {
-                const float2 delta = int2_to_float2(zox_getv(e3, ZevicePointerDelta));
-                input.x -= delta.x * orbit_mouse;
-                input.y += delta.y * orbit_mouse;
+                const float2 look = orbit_look_input(int2_to_float2(zox_getv(e3, ZevicePointerDelta)), float2_zero, 0);
+                input.x += look.x;
+                input.y += look.y;
             }
             if (zox_has(e3, ZeviceWheel)) {
                 input.z -= zox_getv(e3, ZeviceWheel).y * orbit_wheel;
             }
             if (zox_has(e3, ZeviceStick) && zox_getv(e3, DeviceButtonType) == zox_device_stick_right) {
-                const float2 stick = zox_getv(e3, ZeviceStick);
-                input.x -= stick.x * orbit_stick * zox_delta_time;
-                input.y -= stick.y * orbit_stick * zox_delta_time;
+                const float2 look = orbit_look_input(float2_zero, zox_getv(e3, ZeviceStick), (float) zox_delta_time);
+                input.x += look.x;
+                input.y += look.y;
             }
         }
     }
