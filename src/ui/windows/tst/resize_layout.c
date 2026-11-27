@@ -6,6 +6,8 @@
 //  - after each: nothing drawn outside its window (but its resize handles), the header across its top, the body under
 //      it to the footer or bottom, the scroll view on the body, the header's buttons in it, the 8 handles just outside
 //      its edges, the window on its canvas
+//  - the edges away from the dragged handle stay where they were (but past the canvas): growing to fit its rows spread
+//      round its centre, both sides moved
 //  - the tests before only checked a window's own size: a grid's body never resized (window_grid_resize)
 //  - antitests, what it found: the handles a few pixels out from the edge (offset by their whole thickness, an anchor
 //      centres them on it), an empty list's scrollbar handle left at its old height (scrollbar_handle_event skipped
@@ -166,7 +168,24 @@ static entity zox_tst_rl_spawn(ecs* world, entity canvas, int which) {
         float2_half, 12, byte2_single(4), (void*) button_event_close_window, 24, &footer).x;
 }
 
+// a window's edges: left, right, bottom, top
+static int4 zox_tst_rl_edges(ecs* world, entity window) {
+    const int2 p = zox_getv(window, LayoutPosition), s = zox_getv(window, LayoutSize);
+    return (int4) { p.x - s.x / 2, p.x + s.x / 2, p.y - s.y / 2, p.y + s.y / 2 };
+}
+
+// the edges the drag's handle isn't on stayed (a side handle keeps 3 of them, a corner 2)
+static void zox_tst_rl_kept(ecs* world, entity window, int4 before, float2 anchor, const char* kind, int drag) {
+    const int4 after = zox_tst_rl_edges(world, window);
+    const byte left = anchor.x != 0, right = anchor.x != 1, bottom = anchor.y != 0, top = anchor.y != 1;
+    const byte kept = (!left || abs(after.x - before.x) <= 1) && (!right || abs(after.y - before.y) <= 1) &&
+        (!bottom || abs(after.z - before.z) <= 1) && (!top || abs(after.w - before.w) <= 1);
+    zox_tst_check(kept, "[%s] drag [%i]: edges [%i %i %i %i] became [%i %i %i %i], the far side moved", kind, drag,
+        before.x, before.y, before.z, before.w, after.x, after.y, after.z, after.w);
+}
+
 static byte zox_tst_window_resize_layout_ready(ecs* world) {
+    static int4 edges;
     static int step, frames, drag, which;
     static entity canvas, window, handle;
     static const char* const kinds[] = { "menu list", "editor list", "footer" };
@@ -196,6 +215,7 @@ static byte zox_tst_window_resize_layout_ready(ecs* world) {
             if (!handle) {
                 return 1;
             }
+            edges = zox_tst_rl_edges(world, window);
             zox_setv(handle, DraggingDelta, zox_tst_rl_drags[drag].delta);
             zox_setv(handle, DraggableState, 1);
             break;
@@ -209,6 +229,9 @@ static byte zox_tst_window_resize_layout_ready(ecs* world) {
                 return 0;
             }
             zox_tst_rl_check(world, canvas, window, kinds[which], drag);
+            if (drag != drags - 1) {    // the last drags past the canvas, it keeps the window on it
+                zox_tst_rl_kept(world, window, edges, zox_tst_rl_drags[drag].anchor, kinds[which], drag);
+            }
             frames = 0;
             if (++drag < drags) {
                 step = 2;

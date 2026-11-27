@@ -96,6 +96,38 @@ static void window_header_fit(ecs* world, entity header, int width) {
     }
 }
 
+// the side a window is being resized from (its dragged resize handle's anchor), its centre if none is dragged
+static float2 window_resizing_side(ecs* world, entity window) {
+    iter it = zox_children(world, window);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            const entity handle = it.entities[i];
+            if (zox_has(handle, WindowResizeHandle) && zox_has(handle, DraggableState) && zox_getv(handle, DraggableState)) {
+                zox_children_end(it);
+                return zox_getv(handle, Anchor);
+            }
+        }
+    }
+    return float2_half;
+}
+
+// a window grown past the size it was given (to fit its rows or grid) grows on the side it's resized from, the far
+//  side stays (round its centre both sides moved)
+static void window_grown_keeps_side(ecs* world, entity window, int2 asked, int2 size) {
+    if (int2_equals(asked, size)) {
+        return;
+    }
+    const float2 side = window_resizing_side(world, window);
+    const int2 sign = { side.x == 0 ? -1 : side.x == 1 ? 1 : 0, side.y == 0 ? -1 : side.y == 1 ? 1 : 0 };
+    if (!sign.x && !sign.y) {
+        return;
+    }
+    // in place: window_canvas_fit reads it next (a deferred set was undone by its)
+    zox_muter(window, LayoutPosition, position);
+    position->value.x += sign.x * (size.x - asked.x) / 2;
+    position->value.y += sign.y * (size.y - asked.y) / 2;
+}
+
 // a floating window stays on its canvas: no larger than it, its edges on it
 static void window_canvas_fit(ecs* world, entity window, int2* size) {
     const entity canvas = zox_get_parent_by_id(world, window, zox_id(Canvas));
@@ -134,8 +166,10 @@ static void window_layout(ecs* world, entity window, int2 size) {
     const int footer_height = footer ? zox_getv(footer, LayoutSize).y : 0;
     const entity search = window_search_bar_shown(world, window);
     const int search_height = search ? zox_getv(search, LayoutSize).y : 0;
+    const int2 asked = size;
     window_grid_fit(world, window, body, &size, header_height + footer_height + search_height);
     window_rows_fit(world, window, scrollview, &size);
+    window_grown_keeps_side(world, window, asked, size);
     window_canvas_fit(world, window, &size);     // after: a grid's rows can grow it
     window_resize_handles_fit(world, window, size);
     const int2 header_size = { size.x, header_height };

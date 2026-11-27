@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-27
+-x Resizing a window moved both its sides: the layout grew it back to fit its rows round its centre. It grows on the
+  side being dragged now, the far side stays (window_grown_keeps_side), its position written in place (a deferred set
+  was undone by window_canvas_fit) (tst window_resize_layout checks the far edges every drag)
 -x Third person looks were inverted: the mouse's up/down, and a stick's (gamepad, touch) both ways; the signs in one
   place, orbit_look_input (tst third_person_moves checks them)
 -x Game windows no longer dock: docking by the header (DockDragLink) is opt in, window_dockable, the editor's windows
