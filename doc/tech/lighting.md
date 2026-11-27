@@ -35,8 +35,10 @@ edge (`fetch_neighbor_actives`).
 
 - **Sunbeams** (sys/sunlight.c, sys/lightbeam.c): a beam goes down from the top of the world at `sunlight` and
   lights each voxel to the first solid. It is dimmed in each liquid (`light_dim`), queues a flood from each voxel it
-  lights, and carries on into the chunk below. There's no marker: a beam is known by its light (`light_beam_above`
-  walks up a column while each voxel's light is what a beam would give it).
+  lights, and carries on into the chunk below. Its floods spread from each voxel's light when they run, not the
+  beam's: walled in before they ran, the stale 255 relit the sealed room (tst sealed_dark). There's no marker: a
+  beam is known by its light (`light_beam_above` walks up a column while each voxel's light is what a beam would give
+  it).
 - **Flood** (sys/flood.c): a breadth first fill from a `LightQueue`. Each step goes to the 6 sides, minus
   `light_flood_decay` (air, plus water in a liquid). It stops at a voxel that `light_stops`, and only writes where it
   makes a voxel brighter. A side past the chunk edge is queued on the neighbour chunk's queue.
@@ -48,7 +50,8 @@ edge (`fetch_neighbor_actives`).
   beam down (`zox_light_type_beam_start`), and water placed in one dims it (`zox_light_type_dim_start`, `_dim` into
   the chunk below). An emitter the dark meets lights again.
 - **Edits** (sys/editing.c, `voxel_light_system`): from a chunk's `VoxelNodeQueue`. A block removed floods its sides
-  in (and the beam over it down). A block placed sends dark from it (and down its beam). An emitter placed or removed
+  in (and the beam over it down). A block placed sends dark from it (and down its beam: one found over it, or its own
+  light at full sunlight, the top of the world having no chunk over it to look in). An emitter placed or removed
   lights or darkens round it.
 - **Openings** (fun/openings.c): a voxel that starts or stops passing light while its voxel stays the same, because
   its block data changed (a door opened or shut, `door_toggle`). Opened, its sides flood into it and on through it.
@@ -97,4 +100,5 @@ its chunk's or a neighbour's lights change (`block_vox_lights_system`):
 | `smooth_lights` | the corner leak; a wall's face into a shut door takes the room's light, not the outside's |
 | `gpu_mesh_lights` | the gpu's corner lights against the cpu's |
 | `block_vox_light_sampling`, `block_vox_lights` | block vox brightness from its sides; brightness matches the lights round it |
+| `sealed_dark`, `sealed_dark_top` | a room walled in in sunlit air, at once, goes dark (its roof the top chunk's top row too) |
 | `glow_relight`, `glow_light`, `dig_light`, `water_light` | emitters relit after darkness, glow removal darkens a tunnel, digging and water dimming beams |

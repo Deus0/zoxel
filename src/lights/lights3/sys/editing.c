@@ -178,6 +178,10 @@ void voxel_light_system(iter* it) {
                 // Dark Flood
                 const LightOctree* removed_lnode = get_LightOctree(root_lnode, depth->value, update.position);
                 byte removed_light = removed_lnode ? removed_lnode->value : 0;
+                // in full sunlight it was in a beam (floods and emitters are dimmer) though none was found over it: the
+                //  top of the world, no chunk over it to walk up (a roof on its top row stayed sunlit under, tst
+                //  sealed_dark_top)
+                const byte placed_beam = beam ? beam : (removed_light >= sunlight ? removed_light : 0);
                 if (removed_light > darklight) {
                     if (dbg_log) {
                         zox_log("[%s] Placed Block: + Dark Flood at [%ix%ix%i] removed light [%i]",
@@ -197,7 +201,7 @@ void voxel_light_system(iter* it) {
                         });
                 }
                 // NOTE: DarkBeam needs to Process first (so we add last), otherwise its stomped by nearby sun? idk but it works!
-                if (beam) {
+                if (placed_beam) {
                     // if y, we do y + 1
                     if (dbg_log) {
                         zox_log("[%s] Placed Block: + Darkbeam [%ix%ix%i] l[%i]",
@@ -214,7 +218,7 @@ void voxel_light_system(iter* it) {
                             .type = zox_light_type_beam_start,
                             .pos = update.position,
                             .depth = depth->value,
-                            .light = was_liquid ? light_dim(beam, darklight) : beam
+                            .light = was_liquid ? light_dim(placed_beam, darklight) : placed_beam
                         });
                 }
                 // set dark light, as it was filled up

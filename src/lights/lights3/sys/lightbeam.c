@@ -39,7 +39,8 @@ byte sunbeam(
         zox_logv("+ SunLight [%i] Set at [%ix%ix%i]", light, pos.x, pos.y, pos.z);
         if (locks_enabled) spin_lock(&floodlight_queue->lock);
         a_LightQueue(floodlight_queue, (LightUpdate) {
-            .light = light,
+            .light = min_light,     // floods from its own light then: walled in before the flood ran, its stale
+                                    //  sunlight relit the room (tst sealed_dark)
             .pos = pos,
             .depth = depth,
             .distance = light_propogation_distance

@@ -85,8 +85,8 @@ bash bsh/tools/view_glow.sh          # a glow stone in a closed brick room (tst 
 bash bsh/tools/view_glow.sh --lamp   # a street lamp in a rough stone cave (tst lamp_views), tst/glow/lamp_views/
 ```
 
-`--vulkan` for the vulkan backend (gpu meshed terrain and models), `--nobuild` to rerun. Neither is dark yet: a room
-walled in in the air chunk keeps its sunlight (255 inside, todo.md door_glow).
+`--vulkan` for the vulkan backend (gpu meshed terrain and models), `--nobuild` to rerun. Both are sealed from the
+sky, lit by their glow alone.
 
 ## Still in bsh, to move here
 

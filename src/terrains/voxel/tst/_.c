@@ -8,6 +8,7 @@
 #include "dig_light.c"
 #include "glow_relight.c"
 #include "glow_views.c"
+#include "sealed_dark.c"
 #include "block_frames.c"
 
 #include "streamers.c"
@@ -43,6 +44,10 @@ void zox_tsts_terrain(ecs* world) {
     zox_tst_set_setup("glow_views", NULL, 1);
     zox_tst_add("lamp_views", zox_tst_lamp_views_ready, zox_tst_lamp_views_check, 60);
     zox_tst_set_setup("lamp_views", NULL, 1);
+    zox_tst_add("sealed_dark", zox_tst_sealed_dark_ready, zox_tst_sealed_dark_check, 60);
+    zox_tst_set_setup("sealed_dark", NULL, 1);
+    zox_tst_add("sealed_dark_top", zox_tst_sealed_dark_top_ready, zox_tst_sealed_dark_check, 60);
+    zox_tst_set_setup("sealed_dark_top", NULL, 1);
     zox_tst_add("block_frames", zox_tst_block_frames_ready, zox_tst_block_frames_check, 90);
     zox_tst_set_setup("block_frames", NULL, 1);
     zox_tst_add("water_tile", zox_tst_water_tile_ready, zox_tst_water_tile_check, 60);
