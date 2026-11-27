@@ -61,6 +61,20 @@ flecs.c is patched by bsh/flecs_fix.sh after downloading, each patch has a ZOXEL
 - Repro: bash bsh/tst.sh instance_id_reuse (plain flecs: new an entity at instance + offset, delete it, add (IsA, prefab) to the instance, the deleted handle is alive)
 - Upstream: not reported yet
 
+### A deferred name revived its deleted entity
+
+- Marker: ZOXEL PATCH dead path
+- Problem: a deferred name (ecs_set_name in a system: EcsCmdPath) is exempt from the flush's "entity dead, discard"
+  rule and calls ecs_make_alive, so an entity deleted earlier in the same flush came back with only its name. A
+  stream system spawned named chunks and tunks into a terrain the same frame the game's end deleted its realm: the
+  cascade deleted them, their names revived them, orphans leaked every game ended (tst end_game_cleanup, once the
+  stream's game state check that hid it was removed).
+- Fix: an id in the entity index past its alive count (deleted) keeps its name command discarded; an id never alive
+  (not in the index) is still made alive by it.
+- Repro: bash bsh/tst.sh nf_dying_grandparent (realm -> terrain, named prefab instances parented to the terrain in
+  the batch the realm's delete is queued first in; the unnamed ones died, the named survived with only a Name)
+- Upstream: not reported yet
+
 ## Bugs worked round, not patched
 
 ### Removing (R, *) from a prefab's instance asserts

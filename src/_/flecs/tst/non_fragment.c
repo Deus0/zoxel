@@ -303,3 +303,50 @@ void zox_tst_nf_dying_parent_stage_check(ecs* world) {
         }
     }
 }
+
+// tst: nf_dying_grandparent, as terrain streaming spawns: a realm -> terrain (ChildOf), chunks named prefab instances,
+//  non fragmenting children of the terrain, tunks ChildOf it, spawned in the deferred batch the realm is deleted in
+//  - each order: the realm's delete queued before the spawns and after
+void zox_tst_nf_dying_grandparent_check(ecs* world) {
+    const entity prefab = zox_new();
+    zox_make_prefab(prefab);
+    zox_set_name(prefab, "tst_chunk_prefab");
+    for (byte named = 0; named <= 1; named++)
+    for (byte delete_first = 0; delete_first <= 1; delete_first++) {
+        const entity realm = zox_new();
+        const entity terrain = zox_new();
+        zox_set_parent(world, terrain, realm);
+        zox_defer_begin();
+        if (delete_first) {
+            zox_delete(realm);
+        }
+        const entity chunk = zox_ins(world, prefab);
+        if (named) {
+            zox_set_unique_name(chunk, "tst_chunk_0x0x0");
+        }
+        zox_set_parent_non_fragment(world, chunk, terrain);
+        const entity tunk = zox_ins(world, prefab);
+        if (named) {
+            zox_set_unique_name(tunk, "tst_tunk_0x0");
+        }
+        zox_set_parent(world, tunk, terrain);
+        if (!delete_first) {
+            zox_delete(realm);
+        }
+        zox_defer_end();
+        zox_tst_check(!zox_alive(terrain), "the terrain is alive");
+        zox_tst_check(!zox_alive(chunk), "[delete %s, %s] the chunk (non fragmenting) outlived its terrain",
+            delete_first ? "first" : "last", named ? "named" : "unnamed");
+        zox_tst_check(!zox_alive(tunk), "[delete %s, %s] the tunk (ChildOf) outlived its terrain",
+            delete_first ? "first" : "last", named ? "named" : "unnamed");
+        if (zox_alive(chunk)) {
+            zox_log("[tst] orphan chunk: %s", ecs_type_str(world, ecs_get_type(world, chunk)));
+            zox_delete(chunk);
+        }
+        if (zox_alive(tunk)) {
+            zox_log("[tst] orphan tunk: %s", ecs_type_str(world, ecs_get_type(world, tunk)));
+            zox_delete(tunk);
+        }
+    }
+    zox_delete(prefab);
+}

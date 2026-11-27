@@ -67,4 +67,5 @@ void zox_systems_towns(ecs* world) {
         [in] transforms3.Position3D,
         [none] players.PlayerCharacter
     );
+    zox_on_add(town_left_event, [none] towns.TownLeft);
 }

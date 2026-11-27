@@ -16,6 +16,7 @@ zoxc_byte(HomeFacing);  // its door faces: 0 +z, 1 +x, 2 -z, 3 -x (fun/build.c),
 zoxc_arrayd(RoadSegments, int3);  // a town's roads as segments, two points each (x, its ground or -1, z), fun/paths.c
 zoxc_arrayd(StreetLamps, int2);   // a town's street lamps' columns (fun/town.c)
 zox_tag(InTown);        // a player's character inside a town's walls (in_town_system)
+zox_tag(TownLeft);      // event: a character walked out of its town (in_town_system), removed at the merge
 // the town a character is in (with InTown)
 zox_tag(TownLink);
 #include "types.c"
@@ -39,5 +40,6 @@ void zox_components_towns(ecs* world) {
     zoxd_arrayd(RoadSegments);
     zoxd_arrayd(StreetLamps);
     zoxd_tag(InTown);
+    zoxd_nf_tag(TownLeft);
     zoxd_nf_link(TownLink);
 }

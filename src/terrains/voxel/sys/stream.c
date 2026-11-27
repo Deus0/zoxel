@@ -262,11 +262,6 @@ void terrain_stream_queue_system(iter* it) {
             );
         }
         entity realm = zox_get_parent(world, e);
-        // the game ending: its realm goes this frame, tunks spawned now were left without it (end_game_cleanup)
-        if (game_ending(world, zox_get_link(world, realm, GameLink))) {
-            clear_TerrainSpawnQueue(queue);
-            continue;
-        }
         entity tilemap = zox_get_link(world, e, Tilemap);
         uint processed = 0;
         byte chunk_length = octree_size(depth->value);

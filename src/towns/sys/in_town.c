@@ -1,5 +1,6 @@
-// a player's character inside a town's walls gets InTown and TownLink (its town), both removed when it leaves:
-//  observers greet it (a toast) and play the town's music (huds, gam/zoxel)
+// a player's character inside a town's walls gets InTown and TownLink (its town), both removed when it walks out,
+//  with the TownLeft event: observers greet it (a toast) and play the town's music (huds, gam/zoxel); deleted, it
+//  didn't leave, no TownLeft
 //  - later every character, i.e. town buffs
 void in_town_system(iter* it) {
     zox_sys_on_begin();
@@ -24,6 +25,7 @@ void in_town_system(iter* it) {
             } else {
                 zox_unlink(world, e, TownLink, old);
                 zox_remove(e, InTown);
+                zox_add(e, TownLeft);
             }
         } else if (town && !zox_has(e, InTown)) {
             zox_add(e, InTown);
@@ -31,3 +33,11 @@ void in_town_system(iter* it) {
     }
     zox_sys_on_end();
 } zoxd_system(in_town_system);
+
+// TownLeft lasts until the merge its observers run at
+void town_left_event(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        zox_remove(it->entities[i], TownLeft);
+    }
+}

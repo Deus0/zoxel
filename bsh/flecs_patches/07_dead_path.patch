@@ -1,0 +1,21 @@
+--- a/inc/flecs/flecs.c
++++ b/inc/flecs/flecs.c
+@@ -7145,6 +7145,18 @@
+             world->info.cmd.other_count ++;
+             goto next;
+         case EcsCmdPath: {
++            /* ZOXEL PATCH dead path: an entity deleted before its name merged
++             * (a cascade earlier in this flush: its parent's parent deleted)
++             * stays deleted, make_alive brought it back with only its name. Its
++             * id is in the index past the alive count; a never alive id isn't */
++            if (!flecs_entities_is_alive(world, e) &&
++                flecs_entities_exists(world, e))
++            {
++                ecs_os_free(cmd->is._1.value);
++                cmd->is._1.value = NULL;
++                world->info.cmd.discard_count ++;
++                break;
++            }
+             bool keep_alive = true;
+             ecs_make_alive(world, e);
+             if (cmd->id) {

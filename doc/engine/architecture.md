@@ -156,6 +156,9 @@ An add event (`zox_on_add`) only fires when the tag **wasn't already there**.
   on real entities (1.5 to 2.7 times under a system).
 - **A normal tag moves the entity** to another table when added and again when removed, copying every component:
   on an entity with 20 components an event costs twice as much, and a system handling 10000 a frame 3.4us each.
+- **Events come from where they happen, top down.** The module that does a thing emits its event (`TownLeft` from
+  `in_town_system`); others observe it. Not an `OnRemove` that deleting the entity fires too, filtered after by
+  reading another module's state (the game ending, Dead): that couples modules, and was a bandaid each time.
 - **A system for the work, not the event.** Systems run on worker threads and spread heavy work (meshing, lighting,
   generation); an observer runs on the main thread at the merge. When the reaction is heavy, the event marks what
   to work on and a system does it.

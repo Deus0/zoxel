@@ -32,6 +32,7 @@ void zox_tsts_flecs(ecs* world) {
     zox_tst_add("nf_realm_full", zox_tst_nf_ready, zox_tst_nf_realm_full_check, 30);
     zox_tst_add("nf_dying_parent", zox_tst_nf_ready, zox_tst_nf_dying_parent_check, 30);
     zox_tst_add("nf_dying_parent_stage", zox_tst_nf_ready, zox_tst_nf_dying_parent_stage_check, 30);
+    zox_tst_add("nf_dying_grandparent", zox_tst_nf_ready, zox_tst_nf_dying_grandparent_check, 30);
     zox_tst_add("mass_spawn", zox_tst_mass_spawn_ready, zox_tst_mass_spawn_check, 60);
     zox_tst_set_setup("mass_spawn", NULL, 1);
     zox_tst_add("mass_delete", zox_tst_mass_delete_ready, zox_tst_mass_delete_check, 60);

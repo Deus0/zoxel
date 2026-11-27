@@ -62,6 +62,12 @@ set -euo pipefail
 #     links read alive, chunk_sides_system segfaulted)
 #   - Fix: the offset id only when it was never used, else a recycled one (a newer generation)
 #     - repro: bash bsh/tst.sh instance_id_reuse
+#
+#   A deferred name revived its deleted entity (ZOXEL PATCH dead path)
+#   - a name's command (EcsCmdPath) made its entity alive even when deleted earlier in the flush (a cascade):
+#     chunks streamed into a terrain the game's end deleted came back with only their names
+#   - Fix: an id deleted (in the index, past the alive count) keeps its name dropped, bsh/flecs_patches/07_dead_path.patch
+#     - repro: bash bsh/tst.sh nf_dying_grandparent
 
 file=inc/flecs/flecs.c
 if [[ ! -f "${file}" ]]; then
