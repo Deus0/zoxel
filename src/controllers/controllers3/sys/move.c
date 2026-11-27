@@ -10,14 +10,20 @@
 //  - kept as it was, for the same feel (tst move_feel): running scales only the side push (movement.x and .y):
 //    forward runs on its top speed alone
 
-// turns it to face a direction by a torque on its spin (a spring to it, damped by its spin), never its rotation
+// turns it to face a direction by a torque on its spin, never its rotation: the spin that closes the gap at
+//  player_turn_rate (never more than all of it in a frame), the torque that lands its spin there this frame with its
+//  spin's drag (spin3_damped_system, physics/fun: w' = w keep + a g); steady at any frame rate (a spring, 400 and 30
+//  damping, spun up past 0.07s frames: tst physics_turn spun at 25 radians a second)
 static inline void character3_turn(float4 rotation, Alpha3D* alpha, float omega_y, float3 face) {
+    const float dt = (float) zox_delta_time;
     const float wanted = is_camera_positive_z ? atan2f(face.x, face.z) : atan2f(-face.x, -face.z);
     const float error = remainderf(wanted - quaternion_to_euler_y2(rotation), 2 * M_PI);
-    if (fabsf(error) < 0.001f && fabsf(omega_y) < 0.01f) {
+    if (!(dt > 0) || (fabsf(error) < 0.001f && fabsf(omega_y) < 0.01f)) {
         return;
     }
-    const float torque = player_turn_strength * error - player_turn_damping * omega_y;
+    const physics_step step = physics_step_new(omega_dissipation3, dt);
+    const float spin = error * float_min(player_turn_rate, 1 / dt);
+    const float torque = (spin - omega_y * step.keep) / step.g;
     alpha->value.y += clampf(torque, -player_turn_max, player_turn_max);
 }
 

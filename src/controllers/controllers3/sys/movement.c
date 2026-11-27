@@ -142,8 +142,8 @@ void player3d_move_system(iter* it) {
         // the frame the stick moves in: its camera's (and it turns to face that way), else its own facing
         const byte camera_facing = zox_valid(camera) && (camera_mode == zox_camera_state_topdown ||
             camera_mode == zox_camera_state_ortho || camera_mode == zox_camera_state_third_person);
-        if (!camera_facing) {
-            zox_setv(character, FaceDirection, float3_zero);
+        if (!camera_facing && (!player_physics_turn || zox_xr_active)) {
+            zox_setv(character, FaceDirection, float3_zero);   // the mouse turns it at once (rotation.c)
         }
         if (left_stick.x == 0 && left_stick.y == 0) {
             continue;

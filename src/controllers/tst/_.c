@@ -10,6 +10,7 @@ extern char zox_screenshot_request[256];
 #include "crouch.c"
 #include "walk_bob.c"
 #include "auto_jump.c"
+#include "physics_turn.c"
 // tst: player_spawn, a new realm spawns the player's character standing in the terrain
 //  - waits for the player's character, then lets it settle for a few seconds
 //  - the character's block is air (not stuck in the ground) and it hasn't fallen out of the world
@@ -305,6 +306,7 @@ void zox_tsts_controllers(ecs* world) {
     zox_tsts_crouch(world);
     zox_tsts_walk_bob(world);
     zox_tsts_auto_jump(world);
+    zox_tsts_physics_turn(world);
     zox_tst_add("player_spawn", zox_tst_player_spawn_ready, zox_tst_player_spawn_check, 60);
     zox_tst_add("underwater", zox_tst_underwater_ready, zox_tst_underwater_check, 90);
     zox_tst_add("continue_game", zox_tst_continue_game_ready, zox_tst_player_spawn_check, 90);

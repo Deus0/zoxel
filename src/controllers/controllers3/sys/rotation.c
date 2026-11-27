@@ -103,7 +103,16 @@ void player3_rotate_system(iter* it) {
         if (!euler.x && !euler.y) {
             continue;
         }
-        // todo: effect only rotation of axis for this
+        if (player_physics_turn && !zox_xr_active && euler.y) {
+            // the way it wants to face turned, from its facing if it wants none; the move turns it after (move.c)
+            float3 face = zox_getv(character, FaceDirection);
+            if (!face.x && !face.z) {
+                face = float4_rotate_float3(zox_getv(character, Rotation3D), (float3) { 0, 0, 1 });
+            }
+            face = float4_rotate_float3(quaternion_from_axis_angle(float3_up, euler.y), face);
+            zox_setv(character, FaceDirection, face);
+            euler.y = 0;
+        }
         // effect characters euler
         zox_muter(character, Euler, character_euler);
         zox_muter(character, Rotation3D, character_rotation);

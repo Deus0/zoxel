@@ -43,9 +43,12 @@ Who writes it, nothing else:
 2. [x] **Players.** The input (`player3d_move_system`, controllers3/sys/movement.c) writes `MoveDirection`,
    `FaceDirection` (camera facing modes; zero in first person, the mouse turns it) and `Running`, zero when it skips;
    `character3_move_system` (move.c) turns and pushes every `PlayerCharacter` (npcs in step 3). With it:
-   - **turning by physics, the default** (a torque on its spin, a damped spring to `FaceDirection`, as npcs turn):
-     `player_turn_strength` 400, `_damping` 30, `_max` 800; a 90 degree turn of the orbit camera faced in ~0.3s,
-     most of it the camera easing round (tst `move_feel_turn`). `player_turn_instant` the old turn, the fallback
+   - **turning by physics** (a torque on its spin to `FaceDirection`, as npcs turn): the torque that lands its spin on
+     the gap times `player_turn_rate` (15, at most the whole gap a frame), its spin drag counted, `_max` 800: steady at
+     any frame rate (the spring before, 400 and 30 damping, spun up past 0.07s frames, tst physics_turn); a 90 degree
+     turn of the orbit camera faced in ~0.3s, most of it the camera easing round (by hand; tst physics_turn tests the turn)
+   - **first person's mouse by physics, an option** (setting "Physics Turn", `player_physics_turn`, off: the old
+     turn at once the fallback): the mouse turns `FaceDirection`, the move turns the body after (tst physics_turn)
    - **speed from the speed stat**: curved, each point gains less (`speed_stat_curve`: 1 + max * over / (over + half),
      over = stat - 1; up to 2x, stat 2 is 1.5x, under 1 slows as is), on its top speed and push
    - **exact at any frame rate**: each axis's push trimmed to land on its top speed, its drag counted (physics/fun's

@@ -314,7 +314,10 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
     now read `Rotation3D`). Writers: player3_rotate_system (mouse), xr_body_turn_by, dialogue (gone); readers turn
     a quaternion about the body's up instead (`quaternion_from_axis_angle`, as rotation.c already does)
   - XR's body following the head (`xr_body_turn_by`) by a torque, keeping the view still (`xr_body_room_turn`)
-  - mouse look by torque or not: a feel decision, discuss first
+  - mouse look by torque: the option is in (setting "Physics Turn", tst physics_turn), the user to play test it
+- Third person camera orbits more naturally (the user, 2026-11-28), as Mario Odyssey's: it swings round behind the
+  character as it runs (lazily, not snapped), the stick or mouse takes over at once and keeps the view where it was
+  left, it leans ahead of a turn and pulls in out of walls; now it orbits only by the mouse (controllers3/sys/orbit.c)
 - Movement inputs apart from the move system: players' devices and npc ai write one move input on a character, one
   system moves them all by the same rules; tests read no real devices and set that input. Discuss first
   (doc/plans/poly_terrains.md, Later)

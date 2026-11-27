@@ -6,10 +6,9 @@ double run_accceleration = 2.2;
 float backwards_multiplier = 0.8f;
 float2 player_movement_power = { 17, 19 };
 float2 max_velocity3D = { 0.99f, 1.43f };    // top speeds, side and forward: the old move's at 60fps (tst move_feel)
-// turning to face its move (controllers3/sys/move.c): by physics, a torque on its spin as npcs turn (a spring to the
-//  way it wants, damped), or at once (the old turn, the fallback if play tests don't like the new one)
-float player_turn_strength = 400;   // the spring: angular acceleration a radian off
-float player_turn_damping = 30;     // against its spin (critically damped near 2 * sqrt(strength))
+// turning to face its move (controllers3/sys/move.c character3_turn): by physics, a torque on its spin as npcs turn,
+//  to the spin that closes the gap at its rate
+float player_turn_rate = 15;        // radians a second of spin for each radian off (the gap ~1/15s to close by e)
 float player_turn_max = 800;        // the most angular acceleration, radians a second squared
 // a headset's stick (doc/tech/vr.md): its view moves at the stick's speed at once, steady, stopped at once (a view
 //  speeding up or sliding sickens); the body walks after it by the move like any character (xr/fun/body.c)
@@ -28,9 +27,12 @@ const float max_mouse_delta3 = 60.0f;
 const float max_mouse_delta4 = 120.0f;
 const float max_mouse_delta2 = 200.0f;
 const double max_rotate_speed = 0.2; //  0.23;
-#define disable_player_rotate_alpha_force
 // Flymode
 double fly_run_speed = 4.2;
 double fly_run_acc_y = 5.2;
 double fly_run_acc_xz = 15.2;
+// first person, the mouse's (and right stick's) turn: at once (0, the old turn, the fallback) or by physics (1, setting
+//  "Physics Turn"): it turns the way it wants to face (FaceDirection), the move turns it after by a torque
+//  (character3_turn); never in a headset (a turn easing sickens)
+byte player_physics_turn = 0;
 byte auto_jump = 0;             // jumps up a block walked into (setting "Auto Jump"), on by default with a touchscreen
