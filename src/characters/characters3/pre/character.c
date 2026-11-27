@@ -42,6 +42,8 @@ entity spawn_prefab_character3(ecs *world) {
     zox_setv(e, Acceleration3D, float3_zero);
     zox_setv(e, Omega3D, float3_zero);
     zox_setv(e, Alpha3D, float3_zero);
+    zox_setv(e, MoveDirection, float3_zero);
+    zox_setv(e, FaceDirection, float3_zero);
     zox_setv(e, Gravity3D, zox_default_gravity);
     // Bounds
     zox_setv(e, Bounds3D, float3_single(0.5f));

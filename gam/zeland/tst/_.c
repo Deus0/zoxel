@@ -131,12 +131,12 @@ void zox_tst_zeland_walk_check(ecs* world) {
 }
 
 #include "views.c"
-#include "move_feel.c"
+#include "move_feel_turn.c"
 
 void zox_tsts_zeland(ecs* world) {
     (void) world;
     zox_tst_add("zeland_boot", zox_tst_zeland_boot_ready, zox_tst_zeland_boot_check, 60);
     zox_tst_add("zeland_walk", zox_tst_zeland_walk_ready, zox_tst_zeland_walk_check, 60);
-    zox_tsts_move_feel(world);
+    zox_tsts_move_feel_turn(world);
     zox_tst_add("zeland_player_views", zox_tst_zeland_player_views_ready, zox_tst_zeland_player_views_check, 60);
 }

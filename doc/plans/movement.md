@@ -33,18 +33,27 @@ Who writes it, nothing else:
 
 ## Steps
 
-1. [x] **Record the feel first.** tst `move_feel` (gam/zeland/tst): a player's top speed, time to 90% of it and slide
+1. [x] **Record the feel first.** tst `move_feel` (src/controllers/tst, the test level: flat land, a player alone; first
+   measured on zeland's start): a player's top speed, time to 90% of it and slide
    when let go, forward, back, strafing each way and running, from standing, today's numbers its checks. Zeland's
    start (the same flat ground every run; zoxel's test level spawned elsewhere each run, its strafes into walls),
    seed 666 (tst.sh `seeded_tests`), every frame 1/60s (`zox_delta_time_override`): steady to ~1%. Crouching stays
    zoxel's tst crouch (a skeleton bends). Found: at ~0.07s frames (software rendering) strafing came in pulses, a
    frame's push near its top speed held back till friction stopped it: the old move depends on frame rate.
-2. **Players.** `player3_move_input_system` writes `MoveDirection` and `Running`; `character3_move_system` moves.
-   `move_feel` passes unchanged with instant turning. Zeland and zoxel both. With it:
-   - **turning by physics, the default** (a torque to face the move, as npcs turn); the old instant turn a setting,
-     the fallback if play tests don't like it. `move_feel` measures both
-   - **speed from the speed stat** (1 a player's start: today's speeds), scaled by a setting so agility raises it gently
-   - the push capped so it never overshoots its top speed: the same at any frame rate (a `move_feel_10fps`)
+2. [x] **Players.** The input (`player3d_move_system`, controllers3/sys/movement.c) writes `MoveDirection`,
+   `FaceDirection` (camera facing modes; zero in first person, the mouse turns it) and `Running`, zero when it skips;
+   `character3_move_system` (move.c) turns and pushes every `PlayerCharacter` (npcs in step 3). With it:
+   - **turning by physics, the default** (a torque on its spin, a damped spring to `FaceDirection`, as npcs turn):
+     `player_turn_strength` 400, `_damping` 30, `_max` 800; a 90 degree turn of the orbit camera faced in ~0.3s,
+     most of it the camera easing round (tst `move_feel_turn`). `player_turn_instant` the old turn, the fallback
+   - **speed from the speed stat**: 1 + (stat - 1) * `player_speed_stat_scale` (0.5), on its top speed and push
+   - **exact at any frame rate**: each axis's push trimmed to land on its top speed, its drag counted (physics/fun's
+     v' = v keep + a g), not dropped whole. The settings are now the top speeds reached, set to the old move's at
+     60fps: `max_velocity3D` 0.99 side, 1.43 forward, `run_speed` 1.67; zoxel's 1.08, 1.28 (the old ones, 1.24 and
+     1.4, zoxel's 1.3, were never reached sideways and passed forwards: the old cap counted no forward push)
+   - tests: `move_feel` (the test level, zoxel's speeds, the old numbers), `move_feel_10fps` (the same numbers at 0.1s
+     frames: top speeds within 5%, times two frames later), `move_feel_turn` (zeland, third person), and zoxel's
+     movement tests (crouch, walk_bob, auto_jump, step_gap, footsteps, gravity_flip, underwater, xr_body)
 3. **Npcs.** The ai writes `MoveDirection`; `move_forward_system`'s push and `rotate_towards_system`'s torque go.
    Npcs then turn and accelerate like players; tune with step 1's npc numbers and play tests (it changes how they
    feel: decide together).

@@ -1,5 +1,6 @@
 // controller
 #include "movement.c"
+#include "move.c"
 #include "rotation.c"
 #include "orbit.c"
 #include "jump.c"
@@ -24,6 +25,19 @@ void zox_systems_controllers3(ecs *world) {
         zoxp_update,
         [in] players.PlayerState,
         [none] players.Player
+    );
+    // after the input: every player character walks and turns by what it wants (later npcs too, doc/plans/movement.md)
+    zox_system(
+        character3_move_system,
+        zoxp_update,
+        [in] characters3.MoveDirection,
+        [in] characters3.FaceDirection,
+        [in] physics3.Velocity3D,
+        [in] physics3.Omega3D,
+        [out] transforms3.Rotation3D,
+        [out] physics3.Acceleration3D,
+        [out] physics3.Alpha3D,
+        [none] players.PlayerCharacter
     );
     zox_system(
         player_fly_system,

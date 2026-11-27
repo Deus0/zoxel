@@ -1,7 +1,7 @@
-// a player's stick (or WASD) as a move in its character's own frame: x right, z forward, scaled by its power;
+// a player's stick (or WASD) as a move in its character's own frame, each axis -1 to 1: x its side, z forward;
 //  characters face +z (is_camera_positive_z), so forward is +z then
 static inline float3 player3_move_local(float2 stick) {
-    float3 movement = { stick.x * player_movement_power.x, 0, -stick.y * player_movement_power.y };
+    float3 movement = { stick.x, 0, -stick.y };
     if (is_camera_positive_z) {
         movement.x *= -1;
         movement.z *= -1;

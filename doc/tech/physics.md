@@ -76,6 +76,9 @@ Everything is in `zoxp_physics`, in this order:
 - **Push** (walk, swim, wind): add to `Acceleration3D` each frame you want it pushed. It's cleared every frame.
   Add, don't set, if more than one system pushes the same body.
 - **Kick** (jump, knockback, an explosion): change `Velocity3D` once.
+- **Characters walking**: don't push them yourself, say where they want to go: `MoveDirection` (and `FaceDirection`,
+  `Running`), the move (`character3_move_system`, controllers3/sys/move.c) pushes each axis to land on its top speed
+  with its drag counted, the same at any frame rate, and turns it by a torque (doc/plans/movement.md).
 - **Gravity**: give it a `Gravity3D` (`zox_default_gravity`), any direction. The `DisableGravity` tag turns it off
   (its direction still says which way is up, for rolling and the ground).
 - **Friction**: the `Frictioned` tag plus a `Grounded` component. Drag is `ground_friction3` when
@@ -149,7 +152,7 @@ A terrain chunk has a `GravityOctree` beside its voxels, as its `LightOctree`: w
   arc at 9 radians a second (a flip in a third of a second), right over it rolls about its forward so it faces the
   way it did; not while `DisableMovement` (laid on a bed). The first person camera rides its head, so it turns too.
 - **Moving on it**: the player turns about its own up (`player3_rotate_system`, its `Euler` kept for saves), walks
-  flat against its up (`physics3_flatten`, player3d_move_system), auto jumps over blocks along its up
+  flat against its up (`physics3_flatten`, character3_move_system), auto jumps over blocks along its up
   (`physics3_up_block`), swims up its up, and its lower body (`InsideBlock`, water) is down its up.
 - **Debug**: the gizmos' Gravity button draws every node that doesn't pull down, coloured by direction, in the
   camera's chunk and a chunk round it (as the lights' button, which reaches as far now).

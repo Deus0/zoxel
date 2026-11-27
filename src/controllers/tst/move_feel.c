@@ -1,32 +1,32 @@
-// tst: move_feel, how a player's walking feels in numbers, to keep it the same through the movement refactor
-//  (doc/plans/movement.md): zeland's start (the same flat ground every run; zoxel's test level spawned in a different
-//  place each run, its strafes into walls), third person, the fake keyboard (tests read no real keys). Both games
-//  walk by the same code, zoxel with its own speeds (gam/zoxel/set)
+// tst: move_feel, how a player's walking feels in numbers, kept through the movement refactor (doc/plans/movement.md)
+//  - the test level: flat land, one chunk, no towns, npcs, plants or mountains, a player character alone; first
+//    person, zoxel's speeds (gam/zoxel/set); the fake keyboard (tests read no real keys)
 //  - each move from standing, held [zox_tst_mf_hold] seconds then let go: forward (W), back (S), right (D), left (A),
-//    running (W and shift); crouching is zoxel's (a skeleton bends), tst crouch
+//    running (W and shift); crouching is tst crouch
 //  - each: its top speed (the flat speed averaged over its last second), how long it took to reach 90% of it, and how
 //    far it slid once let go
-//  - every frame 1/60s (zox_delta_time_override), time counted in those: the same numbers every run, any machine.
-//    At software rendering's ~0.07s frames the strafe came in pulses (a frame's push near its top speed, held back
-//    till friction stopped it), the old move depending on frame rate
-//  - checks: each near today's (zox_tst_mf_feel, recorded 2026-11-27 before the refactor): top speed 5%, time to it
-//    0.15s and slide 0.1m (frames are ~0.07s in software rendering, the steps they measure in)
+//  - every frame 1/60s (zox_delta_time_override), time counted in those, seed 666 (tst.sh seeded_tests): the same
+//    numbers every run, any machine. At software rendering's ~0.07s frames the old move strafed in pulses (a frame's
+//    push near its top speed, held back till friction stopped it)
+//  - checks: each near the old move's (zox_tst_mf_feel, 2026-11-27, before the refactor): top speed 5%, time to it
+//    0.15s and slide 0.1m, each two frames more (the keys reach the move a frame or two late, longer at 10fps)
+//  - move_feel_10fps: the same at 0.1s frames, the same numbers (the move is exact at any frame rate)
 //  - run: bash bsh/tst.sh move_feel
 #define zox_tst_mf_hold 2.5
 #define zox_tst_mf_moves 5
 const char* zox_tst_mf_names[zox_tst_mf_moves] = { "forward", "back", "right", "left", "run" };
-// today's feel: top speed m/s, seconds to 90% of it, metres slid stopping (0: not checked)
+// the old move's feel with zoxel's speeds: top speed m/s, seconds to 90% of it, metres slid stopping
 const float3 zox_tst_mf_feel[zox_tst_mf_moves] = {
-    { 1.430f, 0.133f, 0.233f },     // forward
-    { 1.425f, 0.117f, 0.224f },     // back
-    { 0.990f, 0.100f, 0.167f },     // right
-    { 0.990f, 0.083f, 0.163f },     // left
-    { 2.398f, 0.217f, 0.370f },     // run
+    { 1.281f, 0.150f, 0.198f },     // forward
+    { 1.283f, 0.167f, 0.227f },     // back
+    { 1.066f, 0.117f, 0.173f },     // right
+    { 1.102f, 0.117f, 0.204f },     // left
+    { 2.134f, 0.333f, 0.306f },     // run
 };
 int zox_tst_mf_move = 0;
 byte zox_tst_mf_stage = 0;      // 0 settling, 1 holding, 2 stopping
 double zox_tst_mf_time = 0;       // simulated seconds into this stage
-#define zox_tst_mf_dt (1.0 / 60.0)
+double zox_tst_mf_dt = 1.0 / 60.0;    // a frame (move_feel_10fps: 0.1)
 float3 zox_tst_mf_let_go;
 float zox_tst_mf_sum[zox_tst_mf_moves], zox_tst_mf_t90[zox_tst_mf_moves], zox_tst_mf_slide[zox_tst_mf_moves];
 int zox_tst_mf_samples[zox_tst_mf_moves];
@@ -59,10 +59,10 @@ static inline float zox_tst_mf_flat_speed(ecs* world, entity character) {
 }
 
 byte zox_tst_move_feel_ready(ecs* world) {
-    if (!zox_tst_zeland_boot_ready(world)) {
+    if (!zox_tst_player_spawn_ready(world)) {
         return 0;
     }
-    const entity character = zox_get_link(world, zox_players[0], CharacterLink);
+    const entity character = zox_tst_player_character(world);
     if (!zox_valid(character) || !zox_getv(character, Grounded)) {
         zox_tst_waiting = "the player on the ground";
         return 0;
@@ -127,6 +127,13 @@ byte zox_tst_move_feel_ready(ecs* world) {
     return 0;
 }
 
+// move_feel at 10 frames a second: the same numbers as at 60 (the move is exact at any frame rate; the old one
+//  strafed in pulses at slow frames)
+byte zox_tst_move_feel_10fps_ready(ecs* world) {
+    zox_tst_mf_dt = 0.1;
+    return zox_tst_move_feel_ready(world);
+}
+
 void zox_tst_move_feel_check(ecs* world) {
     (void) world;
     for (int m = 0; m < zox_tst_mf_moves; m++) {
@@ -138,9 +145,11 @@ void zox_tst_move_feel_check(ecs* world) {
             continue;
         }
         zox_tst_check(fabsf(top - feel.x) <= feel.x * 0.05f, "[%s] top speed [%.3f], was [%.3f]", zox_tst_mf_names[m], top, feel.x);
-        zox_tst_check(fabsf(zox_tst_mf_t90[m] - feel.y) <= 0.15f, "[%s] reached 90%% in [%.3f]s, was [%.3f]s",
+        // the keys reach the move a frame or two after they're set: two frames more at slow frames
+        const float frames = 2 * (float) zox_tst_mf_dt;
+        zox_tst_check(fabsf(zox_tst_mf_t90[m] - feel.y) <= 0.15f + frames, "[%s] reached 90%% in [%.3f]s, was [%.3f]s",
             zox_tst_mf_names[m], zox_tst_mf_t90[m], feel.y);
-        zox_tst_check(fabsf(zox_tst_mf_slide[m] - feel.z) <= 0.1f, "[%s] slid [%.3f]m stopping, was [%.3f]m",
+        zox_tst_check(fabsf(zox_tst_mf_slide[m] - feel.z) <= 0.1f + frames * top, "[%s] slid [%.3f]m stopping, was [%.3f]m",
             zox_tst_mf_names[m], zox_tst_mf_slide[m], feel.z);
     }
 }
@@ -148,4 +157,7 @@ void zox_tst_move_feel_check(ecs* world) {
 void zox_tsts_move_feel(ecs* world) {
     (void) world;
     zox_tst_add("move_feel", zox_tst_move_feel_ready, zox_tst_move_feel_check, 120);
+    zox_tst_set_setup("move_feel", zox_tst_level_setup, 0);
+    zox_tst_add("move_feel_10fps", zox_tst_move_feel_10fps_ready, zox_tst_move_feel_check, 120);
+    zox_tst_set_setup("move_feel_10fps", zox_tst_level_setup, 0);
 }

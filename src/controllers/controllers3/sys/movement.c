@@ -1,29 +1,9 @@
-/*
- * ==========================================
- *          PLAYER MOVEMENT SYSTEM
- * ==========================================
- *
- * This is the magic behind the player's smooth and responsive movement!
- * Ever wondered how your character darts and dashes through the game world with such finesse?
- * Look no further! This system ensures your player obeys the laws of physics while still
- * feeling like a nimble acrobat.
- *
- * Features:
- * - Supports walking, running, and everything in between!
- * - Ensures speed limits are respected (no speedsters allowed beyond the max speed!).
- * - Seamlessly integrates with your game world's orientation, so movement always feels natural.
- *
- * Enjoy the thrill of movement, and remember: with great speed comes great responsibility!
- *
- * ==========================================
- * Code responsibly, have fun, and may your bugs be few and far between!
- * ==========================================
- */
-
-#ifdef zox_debug_player_movement_direction
-float debug_thickness = 2.0f;
-extern entity spawn_line3(ecs*, float3, float3, float, double);
-#endif
+// A player's input to its character's move (doc/plans/movement.md): its devices (WASD, a stick, run, crouch) as the
+//  way it wants to go (MoveDirection) and face (FaceDirection), and Running; the move (move.c) walks it by those
+//  - the stick through its camera: first person along the character's facing (the mouse turns it, rotation.c), third
+//    person along the orbit camera's (fun/third_person.c), topdown and ortho along their camera's
+//  - not playing, its movement off, a free camera: it wants nothing (it would walk on, on the last input)
+//  - crouching it sets itself (the skeleton's CrouchState); a headset walks without inertia, on its own (below)
 
 // a character's up, against its gravity (any direction: a gravity cube's flip), +y without one
 static inline float3 character_up(ecs* world, entity character) {
@@ -62,14 +42,14 @@ void player3d_move_system(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_i(PlayerState, state);
-        if (state->value != zox_player_state_playing) {
-            continue;
-        }
         entity character = zox_get_link(world, e, CharacterLink);
-        if (!zox_valid(character) || !zox_has(character, Character3)) {
+        if (!zox_valid(character) || !zox_has(character, Character3) || !zox_has(character, MoveDirection)) {
             continue;
         }
-        if (zox_has(character, DisableMovement)) {
+        // written in place, once a frame: two deferred sets in one pass lost the stick's (tst walk_bob stood still)
+        MoveDirection* move = zox_getm(character, MoveDirection);
+        move->value = float3_zero;      // wants nothing unless its input says (below)
+        if (state->value != zox_player_state_playing || zox_has(character, DisableMovement)) {
             continue;
         }
         entity camera = zox_get_link(world, character, CameraLink);
@@ -164,96 +144,34 @@ void player3d_move_system(iter* it) {
             player3d_move_direct(world, character, left_stick, is_running);
             continue;
         }
+        if (is_running && !zox_has(character, Running)) {
+            zox_add(character, Running);
+        } else if (!is_running && zox_has(character, Running)) {
+            zox_remove(character, Running);
+        }
+        // the frame the stick moves in: its camera's (and it turns to face that way), else its own facing
+        const byte camera_facing = zox_valid(camera) && (camera_mode == zox_camera_state_topdown ||
+            camera_mode == zox_camera_state_ortho || camera_mode == zox_camera_state_third_person);
+        if (!camera_facing) {
+            zox_setv(character, FaceDirection, float3_zero);
+        }
         if (left_stick.x == 0 && left_stick.y == 0) {
             continue;
         }
-        // NOTE: Z axis is negative forward
-        float3 movement = player3_move_local(left_stick);
-        if (is_running) {
-            if (!zox_getv(character, FlyMode)) {
-                movement.x *= run_accceleration;
-                movement.y *= run_accceleration;
+        float4 frame = zox_getv(character, Rotation3D);
+        if (camera_facing) {
+            const float4 camera_rotation = zox_getv(camera, Rotation3D);
+            if (camera_mode == zox_camera_state_third_person) {
+                frame = third_person_move_rotation(camera_rotation);   // fun/third_person.c
             } else {
-                movement.x *= fly_run_acc_xz;
-                movement.y *= fly_run_acc_xz;
+                float3 camera_euler = quaternion_to_euler(camera_rotation);
+                camera_euler.x = 0;
+                camera_euler.z = 0;
+                frame = euler_to_quaternion(camera_euler);
             }
+            zox_setv(character, FaceDirection, float4_rotate_float3(frame, (float3) { 0, 0, is_camera_positive_z ? 1 : -1 }));
         }
-        float4 movement_rotation = float4_identity;
-        float4 character_rotation = zox_getv(character, Rotation3D);
-        const Velocity3D* velocity3D = zox_get(character, Velocity3D);
-        zox_muter(character, Acceleration3D, acceleration);
-        // moves along the camera's facing, the character turned to it (the orbit camera is third person's)
-        if (camera_mode == zox_camera_state_topdown ||
-            camera_mode == zox_camera_state_ortho ||
-            camera_mode == zox_camera_state_third_person)
-        {
-            if (zox_valid(camera)) {
-                float4 camera_rotation = zox_getv(camera, Rotation3D);
-                if (camera_mode == zox_camera_state_third_person) {
-                    movement_rotation = third_person_move_rotation(camera_rotation);   // fun/third_person.c
-                } else {
-                    float3 camera_euler = quaternion_to_euler(camera_rotation);
-                    camera_euler.x = 0;
-                    camera_euler.z = 0;
-                    movement_rotation = euler_to_quaternion(camera_euler);
-                }
-                // Align Character to new move rotation!
-                zox_muter(character, Rotation3D, character_rotation_mut);
-                character_rotation_mut->value = movement_rotation;
-#ifdef zox_debug_player_movement_direction
-                const Position3D *position3D = zox_get(character, Position3D)
-                spawn_line3(world, position3D->value, float3_add(position3D->value, movement), debug_thickness, 34.0);
-                float3 movement2 = float4_rotate_float3(face_direction, (float3) { 0, 0, -1 });
-                spawn_line3(world, position3D->value, float3_add(position3D->value, movement2), debug_thickness, 34.0);
-                zox_log(" > face_direction %fx%fx%fx%f\n", face_direction.x, face_direction.y, face_direction.z, face_direction.w);
-#endif
-            }
-        } else {
-            movement_rotation = character_rotation;
-        }
-        // here we use two vectors for movement directions so we can limit them
-        // we also use a potential velocity based on a calculated new velocity
-        // (although we dont know delta_time next frame)
-        float2 max_speed = max_velocity3D;
-        if (crouching) {
-            max_speed = float2_multiply1(max_speed, crouch_speed);
-            movement.x *= crouch_speed;
-            movement.z *= crouch_speed;
-        }
-        if (is_running) {
-            if (!zox_getv(character, FlyMode)) {
-                max_speed.x *= run_speed;
-                max_speed.y *= run_speed;
-            } else {
-                max_speed.x *= fly_run_speed;
-                max_speed.y *= fly_run_speed;
-            }
-        }
-        if (zox_has(character, InWater)) {
-            max_speed = float2_multiply1(max_speed, swim_speed);
-        }
-        // along the ground: flat against its up (its gravity's, any way)
-        const float3 up = character_up(world, character);
-        float3 movement_real_z = physics3_flatten(float4_rotate_float3(movement_rotation, (float3) { 0, 0, movement.z }), up);
-        float3 movement_real_x = physics3_flatten(float4_rotate_float3(movement_rotation, (float3) { movement.x, 0, 0 }), up);
-        // NOTE: We use inverse to get the XZ velocity, local movement velocity aligned to character
-        float4 inverse_rotation = float4_inverse(character_rotation);
-        float3 velocity_local = float4_rotate_float3(inverse_rotation, velocity3D->value);
-        float3 acceleration_local = float4_rotate_float3(inverse_rotation, acceleration->value);
-        float3 potential_velocity_forward = { 0, 0, velocity_local.z + (acceleration_local.z + movement.y) * delta_time };
-        float3 potential_velocity_left = { velocity_local.x + (acceleration_local.x + movement.x) * delta_time, 0, 0 };
-        if (float_abs(potential_velocity_forward.z) < max_speed.y) {
-            acceleration->value = float3_add(acceleration->value, movement_real_z);
-        }
-        if (float_abs(potential_velocity_left.x) < max_speed.x) {
-            acceleration->value = float3_add(acceleration->value, movement_real_x);
-        }
-#ifdef zox_debug_player_speed_limits
-        if (float_abs(potential_velocity_left.x) < max_speed.x) zox_log(" > under maximum velocity x: %f\n", potential_velocity_left.x)
-        else zox_log(" > past maximum velocity x: %f\n", potential_velocity_left.x)
-        if (float_abs(potential_velocity_forward.z) < max_speed.y) zox_log(" > under maximum velocity z: %f\n", potential_velocity_forward.z)
-        else zox_log(" > past maximum velocity z: %f\n", potential_velocity_forward.z)
-#endif
+        move->value = float4_rotate_float3(frame, player3_move_local(left_stick));
     }
     zox_sys_on_end();
 } zoxd_system(player3d_move_system);

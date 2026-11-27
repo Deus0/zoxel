@@ -68,7 +68,7 @@ Code: [src/bones](../../src/bones) (the skeleton, its animation state and system
 ## Crouching
 
 - `CrouchState` on the skeleton (bit 1 held, bit 2 toggled), eased into `CrouchBlend`. The player: left control held,
-  a gamepad's L3 toggles; 0.45 of the walk's speed, no running, shorter strides (`player3d_move_system`).
+  a gamepad's L3 toggles; 0.45 of the walk's speed, no running, shorter strides (`character3_move_system`).
 - Thighs 55 degrees ahead, knees twice it, the feet turned back level: the feet stay under the hips, the bob's height
   maths lowers the body by what the legs lost (17cm), the head camera with it. The step's knee lift is 0.4 of a
   standing one (bent already, a full lift folded the leg to 168 degrees).

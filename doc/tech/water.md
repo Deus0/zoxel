@@ -101,7 +101,7 @@ How water works now: the block, how it's drawn, the sea and lakes, swimming, the
   (`jump_state_swim`, 12m/s/s, about 3.5m a second at most), held it swims up to the surface and bobs there.
 - `jump_system`: in water it can always "jump" (swim); grounded on the bottom it jumps as on land; at the surface
   with a solid block beside the air over it (`swim_at_shore`) it jumps out, onto the shore.
-- Walking in water is half speed (`swim_speed`, player3d_move_system and the XR direct move).
+- Walking in water is half speed (`swim_speed`, character3_move_system and the XR direct move).
 
 ## Under water
 

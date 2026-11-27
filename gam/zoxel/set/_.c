@@ -95,7 +95,7 @@ void initialize_zoxel_settings(ecs* world) {
         run_accceleration = 2.2;
         backwards_multiplier = 0.7f;
         player_movement_power = (float2) { 14, 14 };
-        max_velocity3D = (float2) { 1.3f, 1.3f };
+        max_velocity3D = (float2) { 1.08f, 1.28f };     // the old move reached these at 60fps (tst move_feel_zoxel)
     }
     zoxel_settings_uis();
     add_hook_key_down(toggle_fps_viewer);
