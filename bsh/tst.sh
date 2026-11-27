@@ -457,8 +457,9 @@ if [[ "${name}" != "all" ]]; then
     fi
     tsts=("${name}")
 else
-    # README captures are run on demand through bsh/tools/view_town.sh and view_particles.sh.
-    tsts=("${lints[@]}" $(list_tsts | grep -vxF -e aesthetic_town -e aesthetic_particles))
+    # README captures are run on demand through bsh/tools/view_town.sh and view_particles.sh; home_door_glow is a
+    #   tool, a whole game to check by hand (tst dark_last_step is its minimal case)
+    tsts=("${lints[@]}" $(list_tsts | grep -vxF -e aesthetic_town -e aesthetic_particles -e home_door_glow))
 fi
 if [[ ${#tsts[@]} == 0 ]]; then
     echo "!! no tests found, see [tst/list.log]"

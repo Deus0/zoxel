@@ -2,6 +2,7 @@
 #include "door_sky.c"
 #include "door_save.c"
 #include "door_glow.c"
+#include "home_door.c"
 // tst: doors, a door opens and closes (vodes/doors), in a game near its player (block voxes spawn only while it plays)
 //  - placed (turned a quarter) with ground under it, its block vox spawns closed: its parts solid to collisions
 //  - toggled through its top (a filler): both parts' block data open, collisions pass through both
@@ -184,5 +185,6 @@ void zox_tsts_doors(ecs* world) {
     zox_tst_set_setup("door_save", NULL, 1);
     zox_tst_add("door_glow", zox_tst_door_glow_ready, zox_tst_door_glow_check, 120);
     zox_tst_set_setup("door_glow", NULL, 1);
+    zox_tst_add("home_door_glow", zox_tst_home_door_glow_ready, zox_tst_home_door_glow_check, 150);
     zox_tst_add("door_sky", zox_tst_door_sky_ready, zox_tst_door_sky_check, 120);
 }

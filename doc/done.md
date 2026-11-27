@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-27
+-x A home stayed dark once its door shut, its glow stone unlit: a dark reaching a voxel on its last step (distance 0,
+  often crossing a chunk's edge) darkened it and returned without looking round it, so the stone beside it never
+  relit; it looks round it now, darkening no further (lights3/sys/dark.c). tst dark_last_step, pure, checks that
+  step (a frame); home_door_glow, a tool left out of tst.sh all, opens and shuts every home's door in the game
 -x The inventory scrolls: a grid body is its own scroll area (a Scrollview without a list scrolls itself, a Mask clips
   its rows, ListStart its first shown row), its window no longer grows taller to fit its rows (it moved about as they
   reflowed), as small as a row; the wheel scrolls it (tst window_grid_resize, with the fake mouse's wheel)

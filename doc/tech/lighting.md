@@ -46,8 +46,11 @@ edge (`fetch_neighbor_actives`).
   air on its sides a step down. They light up when placed, when their chunk is generated or loaded
   (`GenerateEmitterLight`), and again when the dark passes them.
 - **Dark** (sys/dark.c): taking light away. A dark flood clears every voxel lit dimmer than the one before it (light
-  that came from there), then queues the light round its edge to flood back in. A block placed in a beam sends a dark
-  beam down (`zox_light_type_beam_start`), and water placed in one dims it (`zox_light_type_dim_start`, `_dim` into
+  that came from there), then queues the light round its edge to flood back in.
+  A voxel it reaches on its last step (its distance spent, as a dark crossing into the next chunk often arrives) still
+  looks round it: an emitter beside it relights it, lit sides flood back (it stopped dark there, a home's glow stone
+  in its roof never relit, tst dark_last_step). A block placed in a beam sends a dark beam down
+  (`zox_light_type_beam_start`), and water placed in one dims it (`zox_light_type_dim_start`, `_dim` into
   the chunk below). An emitter the dark meets lights again.
 - **Edits** (sys/editing.c, `voxel_light_system`): from a chunk's `VoxelNodeQueue`. A block removed floods its sides
   in (and the beam over it down). A block placed sends dark from it (and down its beam: one found over it, or its own

@@ -37,7 +37,11 @@ static inline byte dark_flood_light(
     const byte* glows)
 {
     byte dirty = 0;
-    if (!root_vnode || !root_lnode || distance == 0 || old_light <= min_light) {
+    // a voxel at the end of its distance still looks round it (an emitter beside it relights it, lit sides flood back
+    //  into it), it only darkens no further: it returned at once, dark, so a room whose glow stone had one side in it
+    //  stayed dark once a long dark (a door shut) reached that side on its last step (tst dark_last_step; in the game
+    //  the tool home_door_glow)
+    if (!root_vnode || !root_lnode || old_light <= min_light) {
         return dirty;
     }
     const byte SIZE = (byte)((1u << depth) - 1u);
@@ -74,7 +78,7 @@ static inline byte dark_flood_light(
             }
             // wait we never set light for dark flood on neighbors
             // enqueue only
-            byte is_darkness = (ncurrent_light < old_light);
+            byte is_darkness = ncurrent_light < old_light && distance;
             // zox_log("dark flood at border [%ix%ix%i] dist [%i] d?[%i]", pos.x, pos.y, pos.z, distance, is_darkness);
             if (is_darkness) {
                 DarkQueue* nqueue = n_dark_queues[dir];
@@ -114,7 +118,7 @@ static inline byte dark_flood_light(
         if (current_light <= min_light) {
             continue;   // omg this wasn't here
         }
-        if (current_light < old_light) {
+        if (current_light < old_light && distance) {
             zox_logv("     - Light Banished at [%ix%ix%i] l[%i] dist[%i]",
                 pos.x,
                 pos.y,

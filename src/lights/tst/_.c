@@ -5,6 +5,7 @@
 #include "glow.c"
 #include "gpu.c"
 #include "gpu_neighbours.c"
+#include "dark_last_step.c"
 // tst: smooth_lights, a face's vertices are lit by the air around them (lights3/sys/build_smooth.c)
 //  - a vertex is the face's light, its two edges' and its corner's averaged (smooth_vertex_light)
 //  - a corner behind two solid edges doesn't leak its light round them, it counts as darklight
@@ -245,6 +246,7 @@ void zox_tst_lod_lights_check(ecs* world) {
 }
 
 void zox_tsts_lights() {
+    zox_tst_add("dark_last_step", zox_tst_dark_last_step_ready, zox_tst_dark_last_step_check, 10);
     zox_tst_add("water_light", zox_tst_water_light_ready, zox_tst_water_light_check, 60);
     zox_tst_set_setup("water_light", NULL, 1);
     zox_tst_add("chunk_uvs", zox_tst_chunk_uvs_ready, zox_tst_chunk_uvs_check, 60);
