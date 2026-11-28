@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-28
+-x Inspector rows' type colours were high contrast: a hint of each hue (30%) over the theme's outline now, tags teal
+  (they shared green with uints); the name, parent and children rows are plain. Rows already had tooltips (name, type)
 -x The docked inspector's rows covered its header, and header buttons overlapped again after the mask change: an
   editor window's first layouts ran before its body and scroll view arrived (its spawn frame), and only the masks'
   stray Dirty laid it out again. spawn_editor_window adds its list's Dirty last, so a docked window fits its parts

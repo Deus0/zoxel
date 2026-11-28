@@ -16,25 +16,30 @@ static inline color blend_color(color a, color b, float m) {
         (byte) (a.a * m + (1.0f - m) * b.a) };
 }
 
-// row outlines are colour coded by type
+// a hint of hue on the theme's outline, low contrast
+static inline color inspector_row_tint(color hue) {
+    return blend_color(hue, editor_button_outline, 0.3f);
+}
+
+// row outlines are colour coded by type, subtly (the row's tooltip names its type)
 color get_inspector_row_outline(byte type) {
     switch (type) {
         case zox_type_name:
         case zox_type_parent:
-            return blend_color(button_outline, color_black, 0.5f);
+            return editor_button_outline;
         case zox_type_tag:
-            return blend_color(button_outline, color_green, 0.8f);
+            return inspector_row_tint(color_teal);
         case zox_type_byte:
         case zox_type_byte2:
         case zox_type_byte3:
-            return blend_color(button_outline, color_red, 0.5f);
+            return inspector_row_tint(color_red);
         case zox_type_int:
         case zox_type_int2:
         case zox_type_int3:
-            return blend_color(button_outline, color_blue, 0.5f);
+            return inspector_row_tint(color_blue);
         case zox_type_uint:
         case zox_type_uint2:
-            return blend_color(button_outline, color_green, 0.5f);
+            return inspector_row_tint(color_green);
         case zox_type_float:
         case zox_type_float2:
         case zox_type_float3:
@@ -43,13 +48,13 @@ color get_inspector_row_outline(byte type) {
         case zox_type_double2:
         case zox_type_double3:
         case zox_type_lint:
-            return blend_color(button_outline, color_white, 0.5f);
+            return inspector_row_tint(color_white);
         case zox_type_color:
         case zox_type_color_rgb:
-            return blend_color(button_outline, color_yellow, 0.5f);
+            return inspector_row_tint(color_yellow);
         case zox_type_entity:
         case zox_type_entities:
-            return blend_color(button_outline, color_purple, 0.5f);
+            return inspector_row_tint(color_purple);
         default:
             return editor_button_outline;
     }
