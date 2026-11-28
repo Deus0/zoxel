@@ -42,5 +42,6 @@ entity4 spawn_editor_window(
     zox_setv(list, ListPadding, ((byte2) { 0, 1 * ui_scale }));
     spawn_window_search_button(world, e4.x, e4.y);
     zox_add(e4.x, EditorThemeDirty);
+    zox_add(list, Dirty);   // last: a docked window fits its insides once its parts are there (window_list_layout_event)
     return e4;
 }

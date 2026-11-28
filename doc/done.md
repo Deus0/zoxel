@@ -1,6 +1,10 @@
 # Done
 
 ## 2026-11-28
+-x The docked inspector's rows covered its header, and header buttons overlapped again after the mask change: an
+  editor window's first layouts ran before its body and scroll view arrived (its spawn frame), and only the masks'
+  stray Dirty laid it out again. spawn_editor_window adds its list's Dirty last, so a docked window fits its parts
+  once they're there; the header's buttons fit before the layout's early return. tst inspector_shrink checks both
 -x Moving the files window flickered its rows: a mask moved (its Position2 set) added the core Dirty to its list, and
   the files list rebuilt all its rows on Dirty, every frame of the move. Masks update their clips directly now
   (mask_layout_changed). Two things leaned on that stray rebuild: a window's resize handles fit its dock as they're

@@ -168,6 +168,7 @@ static void window_header_fit(ecs* world, entity header, int width) {
         const int x = i == 0 ? -edge : -(edge + w / 2);
         if (zox_getv(button, LayoutPosition).x != x) {
             zox_setv(button, LayoutPosition, ((int2) { x, 0 }));
+            zox_add(button, LayoutSizeDirty);   // placed there
         }
         edge += w + gap;
     }
@@ -263,6 +264,7 @@ static void window_layout(ecs* world, entity window, int2 size) {
     window_canvas_fit(world, window, &size);     // after: a grid's rows can grow it
     window_resize_handles_fit(world, window, size);
     const int2 header_size = { size.x, header_height };
+    window_header_fit(world, header, header_size.x);    // its buttons can spawn after its first layout
     const int2 body_size = { size.x, int_max(1, size.y - header_size.y - footer_height - search_height) };
     if (int2_equals(zox_getv(body, LayoutSize), body_size) &&
         (!zox_valid(scrollview) || !zox_has(scrollview, LayoutSize) ||
@@ -270,7 +272,6 @@ static void window_layout(ecs* world, entity window, int2 size) {
         return;     // already fits, its scroll view too
     }
     zox_setv(header, LayoutSize, header_size);
-    window_header_fit(world, header, header_size.x);
     if (search) {
         zox_setv(search, LayoutSize, ((int2) { size.x, search_height }));
         zox_setv(search, LayoutPosition, ((int2) { 0, -header_size.y - search_height / 2 }));
