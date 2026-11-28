@@ -214,14 +214,24 @@ static byte hierarchy_shows_children(ecs* world, entity list, entity parent) {
     return hierarchy_root_entity(world, list, parent) || zox_is_linked(world, list, Unfolded, parent);
 }
 
-// A child added to or removed from a shown row (unfolded, or a root's fold arrow) refreshes the tree.
+// A child added to or removed from a shown row (unfolded, or a root's fold arrow), or a shown row moved, refreshes the
+//  tree. A new root with no children yet shows at the next refresh
 static void hierarchy_child_event(iter* it) {
     zox_sys_world();
     const entity list = hierarchy_list_open;
     if (!list || !zox_valid(list) || zox_has(list, Dirty)) {
         return;
     }
+    entity slots[UINT8_MAX + 1];
+    const int count = get_list_children_ordered(world, list, slots, UINT8_MAX + 1);
     for (int i = 0; i < it->count; i++) {
+        // a shown row moved (a root given a parent)
+        for (int j = 0; j < count; j++) {
+            if (zox_get_link(world, slots[j], RowTargetLink) == it->entities[i]) {
+                zox_add(list, Dirty);
+                return;
+            }
+        }
         const entity parent = zox_get_parent(world, it->entities[i]);
         if (!zox_valid(parent) || !hierarchy_row_entity(world, list, it->entities[i])) {
             continue;

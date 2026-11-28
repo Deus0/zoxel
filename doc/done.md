@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-28
+-x Hierarchy rows went stale when a shown row's entity got a parent (a root moved under another): its observer only
+  looked at the new parent. A shown row's own entity changing parent refreshes it too (tst hierarchy_roots)
 -x Inspector row tooltips never showed: its rows weren't Tooltippers, and its tooltip callback set the text without
   linking the tooltip to the row, so the tooltip cleared itself the next frame (set_tooltip_text links it). tst
   inspector_tooltip
