@@ -42,7 +42,7 @@ byte inspector_label_tooltip(
     const byte ctype = zox_getv(label, ComponentType);
     if (ctype >= zox_type_end) {
         const TooltipText* text = zox_get(label, TooltipText);
-        set_entity_text(world, tooltip, text->value);
+        set_tooltip_text(world, label, tooltip, text->value);
         return 1;
     }
     const entity e = zox_getv(label, Target);
@@ -70,6 +70,6 @@ byte inspector_label_tooltip(
     } else if (ctype == zox_type_unknown) {
         snprintf(text + index, size - index, " ?");
     }
-    set_entity_text(world, tooltip, text);
+    set_tooltip_text(world, label, tooltip, text);    // linked to its row: unlinked, the tooltip clears itself
     return 1;
 }

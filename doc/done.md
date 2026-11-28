@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-28
+-x Inspector row tooltips never showed: its rows weren't Tooltippers, and its tooltip callback set the text without
+  linking the tooltip to the row, so the tooltip cleared itself the next frame (set_tooltip_text links it). tst
+  inspector_tooltip
 -x Hierarchy prefab filter: a p toggle in its header shows prefabs too (roots and children, a realm's), hidden by
   default (HierarchyPrefabs on its list). Windows pack any HeaderButton after their search button. tst
   hierarchy_prefabs

@@ -173,6 +173,7 @@ void inspector_spawn_event(iter* it) {
                 font_size->value,
                 get_inspector_row_outline(row.type),
                 shown++, 0);
+            zox_add(button, Tooltipper);    // the tooltip system only shows a Tooltipper's
             set_TooltipText(world, button, row.text);
             zox_setv(button, TooltipEvent, &inspector_label_tooltip);
             zox_add(button, InspectorLabel);
