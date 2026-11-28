@@ -35,6 +35,7 @@ static inline GpuMesher chunk_gpu_mesher(guint program, guint2 grid, guint2 mesh
     mesher.indices = mesh.x;
     mesher.vertices = mesh.y;
     mesher.vertex_lights = lights;
+    mesher.light_stride = 2;    // the sky's corners then blocks' (the draw's face_lights, face_blocks)
     mesher.vertex_uvs = uvs;
     mesher.command = command.x;
     mesher.count = command.y;
@@ -155,6 +156,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
         const LightOctree* block_lights[27];
         fetch_nearby_block_lights(world, nearby_chunks, block_lights);
         grid.block_lights = block_lights;
+        grid.block_apart = 1;   // blocks' light after the sky's in its GridLights (gpu_mesh_grid's blocks)
         smooth_grid_drawn_depths(world, &grid, nearby_chunks);
         if (smooth_grid_fill(&grid, nearby_lights, lights_locks, nearby_voxels, voxels_locks, depth->value)) {
             const entity manager = zox_get_link(world, chunk, BlockManagerLink);
@@ -174,10 +176,13 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
             smooth_grid_keep_border(&grid, border_samples, lights_present->value);
             const int cells = gpu_mesh_grid_bytes(depth->value);
             resize_GridVoxels(voxels, cells);
-            resize_GridLights(lights, cells);
+            resize_GridLights(lights, grid.block ? cells * 2 : cells);
             if (voxels->value && lights->value) {
                 memcpy(voxels->value, grid.voxels, cells);
                 memcpy(lights->value, grid.lights, cells);
+                if (grid.block) {
+                    memcpy(lights->value + cells, grid.block, cells);
+                }
             }
             present->value = lights_present->value = 0;
             for (byte j = 0; j < 27; j++) {
@@ -191,6 +196,7 @@ static inline void chunk_gpu_grid_fill(iter* it, entity tag) {
             zox_add(e, MeshDirty);
         }
         free(grid.lights);
+        free(grid.block);
         zox_sys_budget_end(chunk_gpu_grid);
     }
 }
@@ -319,6 +325,7 @@ void chunk_gpu_mesh_system(iter* it) {
         }
         const GpuMeshLighting lighting = gpu_mesh_lighting(solidity);
         const byte lit = !zox_no_lights && grid_lights->value;
+        mesher.blocks = grid_lights->length >= 2 * (int) gpu_mesh_grid_bytes(depth->value);
         gpu_mesh_grid(&mesher, grid_voxels->value, lit ? grid_lights->value : NULL, depth->value, present->value,
             lights_present->value, lit ? &lighting : NULL);
         fence->value = mesher.fence;
@@ -377,7 +384,7 @@ void chunk_gpu_mesh_count_system(iter* it) {
         }
         count->value = faces * 6;
         if (!vao->value) {
-            vao->value = zox_gpu_storage_mesh_vao(mesh->value.y, mesh->value.x, 0, lights->value, 1, uvs->value, 2);
+            vao->value = zox_gpu_storage_mesh_vao(mesh->value.y, mesh->value.x, 0, lights->value, 1, uvs->value, 2, 3);
         }
         // built and lit: its lights are written with its faces
         if (!zox_has(e, MeshBuilt)) {

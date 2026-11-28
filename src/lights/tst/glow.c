@@ -12,6 +12,7 @@ int zox_tst_gview_frames = 0;
 
 byte zox_tst_gview_block = 0;        // blocks' light over the glow stone
 byte zox_tst_gview_mesh_block = 0;   // the most blocks' light in its chunk's mesh colours
+byte zox_tst_gview_gpu = 0;          // gpu meshed: no cpu mesh colours to read
 
 byte zox_tst_glow_view_ready(ecs* world) {
     if (!zox_tst_chunk3_parent_ready(world)) {
@@ -54,6 +55,26 @@ byte zox_tst_glow_view_ready(ecs* world) {
         entity meshes[zox_chunk_meshes_max];
         const uint count = get_chunk_meshes(world, chunk, meshes);
         for (uint i = 0; i < count; i++) {
+            if (zox_has(meshes[i], GpuMesh)) {
+                // its lights in its gpu buffer (ColorsGPULink): each vertex the sky's corners, then blocks' (a byte each)
+                zox_tst_gview_gpu = 1;
+                const uint vertices = zox_has(meshes[i], MeshRenderCount) ? zox_getv(meshes[i], MeshRenderCount) / 6 * 4 : 0;
+                const guint buffer = zox_has(meshes[i], ColorsGPULink) ? zox_getv(meshes[i], ColorsGPULink) : 0;
+                uint* lights = vertices && buffer ? malloc(vertices * 2 * sizeof(uint)) : NULL;
+                if (lights) {
+                    zox_gpu_storage_read(buffer, 0, vertices * 2 * sizeof(uint), lights);
+                    for (uint v = 0; v < vertices; v++) {
+                        for (byte k = 0; k < 4; k++) {
+                            const byte b = (lights[v * 2 + 1] >> (k * 8)) & 255;
+                            if (b > zox_tst_gview_mesh_block) {
+                                zox_tst_gview_mesh_block = b;
+                            }
+                        }
+                    }
+                    free(lights);
+                }
+                continue;
+            }
             const MeshColors* colors = zox_has(meshes[i], MeshColors) ? zox_get(meshes[i], MeshColors) : NULL;
             for (int c = 0; colors && c < colors->length; c++) {
                 if (colors->value[c].g > zox_tst_gview_mesh_block) {
@@ -92,7 +113,8 @@ void zox_tst_glow_view_check(ecs* world) {
     zox_log("[tst] glow_view: the glow stone's middle [%i %i %i], blocks' light over it [%i], in its mesh colours [%i]", r, g, b,
         zox_tst_gview_block, zox_tst_gview_mesh_block);
     zox_tst_check(zox_tst_gview_block > darklight, "blocks' light over the glow stone is [%i]: not in its own tree", zox_tst_gview_block);
-    zox_tst_check(zox_tst_gview_mesh_block > darklight, "its chunk's mesh colours carry no blocks' light (g) [%i]", zox_tst_gview_mesh_block);
+    zox_tst_check(zox_tst_gview_mesh_block > darklight, "its chunk's mesh (colours' g, or gpu vertex lights) carry no blocks' light [%i] gpu [%i]",
+        zox_tst_gview_mesh_block, zox_tst_gview_gpu);
     zox_tst_check(r > 200 && g > 180, "the glow stone isn't in view, or dark [%i %i %i]", r, g, b);
     zox_tst_check(b > 180, "the glow stone's blue [%i]: not past white (its texture's is ~142 unglowing)", b);
 }

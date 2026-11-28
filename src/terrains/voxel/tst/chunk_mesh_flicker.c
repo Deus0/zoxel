@@ -150,16 +150,21 @@ static inline void zox_tst_cmf_mesh_light(ecs* world, entity mesh, entity chunk,
     }
     zox_tst_cmf_mesh_reads++;
     if (zox_has(mesh, GpuMesh)) {
-        // a uint a vertex: its face's 4 corner lights; a vec4 a vertex, w its direction (bits 8 to 10)
+        // two uints a vertex: its face's 4 corner lights, the sky's then blocks' (a terrain mesh's light_stride); a
+        //  vec4 a vertex, w its direction (bits 8 to 10)
         const uint vertices = faces * 4;
-        uint* lights = malloc(vertices * sizeof(uint));
+        uint* lights = malloc(vertices * 2 * sizeof(uint));
         float4* positions = malloc(vertices * sizeof(float4));
-        if (lights && positions && zox_gpu_storage_read(zox_getv(mesh, ColorsGPULink), 0, vertices * sizeof(uint), lights) &&
+        if (lights && positions && zox_gpu_storage_read(zox_getv(mesh, ColorsGPULink), 0, vertices * 2 * sizeof(uint), lights) &&
             zox_gpu_storage_read(zox_getv(mesh, MeshGPULink).y, 0, vertices * sizeof(float4), positions))
         {
             for (uint i = 0; i < vertices; i += 4) {
-                const uint l = lights[i];
-                const uint face = (l & 255) + ((l >> 8) & 255) + ((l >> 16) & 255) + (l >> 24);
+                // each corner the brighter of the sky's and blocks' (as the cpu's colours, chunk_mesh_light)
+                uint face = 0;
+                for (byte k = 0; k < 4; k++) {
+                    const uint sky = (lights[i * 2] >> (k * 8)) & 255, block = (lights[i * 2 + 1] >> (k * 8)) & 255;
+                    face += sky > block ? sky : block;
+                }
                 *sum += face;
                 *count += 4;
                 const byte direction = (((int) (positions[i].w + 0.5f)) >> 8) & 7;

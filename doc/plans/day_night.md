@@ -117,8 +117,10 @@ So: split. Light flooding grows a few percent; mesh light colours only where the
   and characters; set per channel (`get_block_vox_light`'s channel, `chunk_light_at`'s). colored3D and bone take
   `brightness` and `block_brightness` in their vertex stage, vox instances the matrix's [0][3] and [1][3]; all
   `zox_lit(sky, block, glow)` (view.glsl). A lamp's light on a character or a minivox stays at night too.
-- Next: gpu meshes (a second corner light uint a vertex, blocks' grid uploaded): vulkan's terrain still takes the
-  brighter of the two, torch light there dims at night.
+- Gpu meshes (2026-11-28, vulkan's terrain): GridLights holds blocks' light after the sky's, the compute shader
+  writes two uints a vertex (`light_stride` 2: the sky's corners then blocks'), the vertex array's second uint is
+  location 3 (`zox_gpu_storage_mesh_vao`'s extra2_location), the draw takes `zox_light`. A lod swap's kept border
+  (smooth_grid_keep_border) keeps blocks' light too. tst glow_view reads the gpu buffer back.
 
 ## Steps
 

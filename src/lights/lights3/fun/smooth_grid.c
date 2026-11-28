@@ -98,11 +98,12 @@ static inline void smooth_grid_keep_border(smooth_grid* grid, GridBorderSamples*
     const int n = grid->length;
     const int size = n - 2;
     const int samples = n * n * n - size * size * size;
-    if (cache->length != samples) {
-        resize_GridBorderSamples(cache, samples);
+    // each slot its light and voxel, then (its second half) its blocks' light: a lamp's light at a chunk's edge kept too
+    if (cache->length != samples * 2) {
+        resize_GridBorderSamples(cache, samples * 2);
         previous = 0;
     }
-    if (!cache->value || cache->length != samples) {
+    if (!cache->value || cache->length != samples * 2) {
         return;
     }
     int slot = 0;
@@ -120,9 +121,17 @@ static inline void smooth_grid_keep_border(smooth_grid* grid, GridBorderSamples*
             if (!grid->present[j] && (previous & (1u << j))) {
                 grid->lights[i] = (byte) cache->value[slot];
                 grid->voxels[i] = cache->value[slot] >> 8;
+                const byte block = (byte) cache->value[samples + slot];
+                if (block && grid->block_apart && !grid->block) {
+                    grid->block = calloc(((size_t) n * n * n + 3) & ~(size_t) 3, 1);
+                }
+                if (grid->block) {
+                    grid->block[i] = block;
+                }
                 restored |= 1u << j;
             } else {
                 cache->value[slot] = grid->lights[i] | ((ushort) grid->voxels[i] << 8);
+                cache->value[samples + slot] = grid->block ? grid->block[i] : 0;
             }
             slot++;
         }

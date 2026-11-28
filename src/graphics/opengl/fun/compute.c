@@ -328,7 +328,10 @@ guint zox_gpu_draw_program(const char* vertex_source, const char* fragment_sourc
 // a vertex array drawing vec4 vertices (location) with uint indices, all storage buffers
 //  - extra: a uint a vertex at extra_location (an integer attribute), 0 for none
 //  - uvs: a vec2 a vertex at uvs_location, 0 for none
-guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, guint extra, guint extra_location, guint uvs, guint uvs_location) {
+//  - extra2_location: a second uint a vertex in extra after the first (terrain's blocks' light), 0 none
+guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, guint extra, guint extra_location, guint uvs, guint uvs_location,
+    guint extra2_location)
+{
 #ifndef zox_disable_compute
     guint vao = 0;
     glGenVertexArrays(1, &vao);
@@ -339,7 +342,12 @@ guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, gu
     if (extra) {
         glBindBuffer(GL_ARRAY_BUFFER, extra);
         glEnableVertexAttribArray(extra_location);
-        glVertexAttribIPointer(extra_location, 1, GL_UNSIGNED_INT, 0, 0);
+        const gsizei stride = extra2_location ? 2 * sizeof(uint) : 0;
+        glVertexAttribIPointer(extra_location, 1, GL_UNSIGNED_INT, stride, 0);
+        if (extra2_location) {
+            glEnableVertexAttribArray(extra2_location);
+            glVertexAttribIPointer(extra2_location, 1, GL_UNSIGNED_INT, stride, (const void*) sizeof(uint));
+        }
     }
     if (uvs) {
         glBindBuffer(GL_ARRAY_BUFFER, uvs);
@@ -353,6 +361,7 @@ guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, gu
     return vao;
 #else
     (void) vertices; (void) indices; (void) location; (void) extra; (void) extra_location; (void) uvs; (void) uvs_location;
+    (void) extra2_location;
     return 0;
 #endif
 }

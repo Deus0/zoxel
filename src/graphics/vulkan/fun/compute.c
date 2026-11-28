@@ -14,6 +14,7 @@ typedef struct {
     uint uvs;
     uint uvs_location;
     byte live;
+    uint extra2_location;   // a second uint a vertex in extra after the first (terrain's blocks' light), 0 none
 } vk_vao;
 
 vk_table vk_vaos = { .size = sizeof(vk_vao) };
@@ -295,10 +296,12 @@ static inline void zox_gpu_compute_dispatch(uint groups_x, uint groups_y, uint g
 
 // Storage meshes: a draw program's inputs straight from compute's buffers
 
-guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, guint extra, guint extra_location, guint uvs, guint uvs_location) {
+guint zox_gpu_storage_mesh_vao(guint vertices, guint indices, guint location, guint extra, guint extra_location, guint uvs, guint uvs_location,
+    guint extra2_location)
+{
     const uint id = vk_table_add(&vk_vaos);
     vk_vao* vao = vk_table_get(&vk_vaos, id);
-    *vao = (vk_vao) { vertices, indices, location, extra, extra_location, uvs, uvs_location, 1 };
+    *vao = (vk_vao) { vertices, indices, location, extra, extra_location, uvs, uvs_location, 1, extra2_location };
     return id;
 }
 
@@ -316,14 +319,20 @@ static inline void zox_gpu_draw_indirect(guint vao_id, guint command_id) {
     vk_buffer* command = vk_buffer_of(command_id);
     vk_buffer* indices = vao && vao->live ? vk_buffer_of(vao->indices) : NULL;
     if (!indices || !indices->buffer || !command || !command->buffer
-        || vao->location >= vk_slots_max || vao->extra_location >= vk_slots_max || vao->uvs_location >= vk_slots_max)
+        || vao->location >= vk_slots_max || vao->extra_location >= vk_slots_max || vao->uvs_location >= vk_slots_max
+        || vao->extra2_location >= vk_slots_max)
     {
         return;
     }
     vk_attribute* attributes = vk_ctx->attributes;
-    const vk_attribute before[3] = { attributes[vao->location], attributes[vao->extra_location], attributes[vao->uvs_location] };
+    const vk_attribute before[4] = { attributes[vao->location], attributes[vao->extra_location], attributes[vao->uvs_location],
+        attributes[vao->extra2_location] };
+    const uint extra_stride = vao->extra2_location ? 8 : 4;
     attributes[vao->location] = (vk_attribute) { 1, vao->vertices, NULL, VK_FORMAT_R32G32B32A32_SFLOAT, 16, 0 };
-    attributes[vao->extra_location] = (vk_attribute) { 1, vao->extra, NULL, VK_FORMAT_R32_UINT, 4, 0 };
+    attributes[vao->extra_location] = (vk_attribute) { 1, vao->extra, NULL, VK_FORMAT_R32_UINT, extra_stride, 0 };
+    if (vao->extra2_location) {
+        attributes[vao->extra2_location] = (vk_attribute) { 1, vao->extra, (const byte*) (size_t) 4, VK_FORMAT_R32_UINT, extra_stride, 0 };
+    }
     if (vao->uvs) {
         attributes[vao->uvs_location] = (vk_attribute) { 1, vao->uvs, NULL, VK_FORMAT_R32G32_SFLOAT, 8, 0 };
     }
@@ -342,6 +351,9 @@ static inline void zox_gpu_draw_indirect(guint vao_id, guint command_id) {
     attributes[vao->extra_location] = before[1];
     if (vao->uvs) {
         attributes[vao->uvs_location] = before[2];
+    }
+    if (vao->extra2_location) {
+        attributes[vao->extra2_location] = before[3];
     }
     vk_ctx->element_bound = element_before;
 }

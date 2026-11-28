@@ -36,7 +36,10 @@ typedef struct {
     uint vertices;      // 4 vec4 a face (binding 2)
     uint indices;       // 6 uints a face (binding 3)
     uint lights;        // the lights grid (binding 4)
-    uint vertex_lights; // a uint a vertex: its face's 4 corner lights (binding 5)
+    uint vertex_lights; // a uint a vertex: its face's 4 corner lights (binding 5); light_stride 2: two, the sky's then
+                        //  blocks' (terrain's)
+    byte light_stride;  // uints a vertex in vertex_lights, 0 or 1 one
+    byte blocks;        // the lights grid has blocks' light after the sky's (smooth_grid's block), its cells again
     uint uvs;           // the tilemap's uvs, 24 a block: its 6 directions' 4 corners as the cpu's (binding 6), not its own
     uint vertex_uvs;    // a vec2 a vertex, written when uvs are given (binding 7)
     uint vertex_colors; // a uint a vertex, rgb a byte each, written when colored (binding 9)
@@ -65,6 +68,11 @@ typedef struct {
     uint drawn[8];      // voxels it draws, bit v - 1 (a chunk material's blocks), all by default
     uint hides[8];      // voxels that hide its faces, bit v - 1 (block_material_hides), all by default
 } GpuMesher;
+
+// a vertex's uints in vertex_lights: two for terrain (the sky's and blocks' corners)
+static inline size_t gpu_mesher_light_stride(const GpuMesher* mesher) {
+    return mesher->light_stride > 1 ? mesher->light_stride : 1;
+}
 
 // lighting for gpu_mesh_grid, as smooth lighting has it (lights3)
 typedef struct {
@@ -111,6 +119,8 @@ static const char* zox_gpu_mesh_source =
 "uniform int edge_faces;\n"
 "uniform uint present;\n"
 "uniform uint lights_present;\n"
+"uniform uint light_stride;\n"     // uints a vertex in vertex_lights: 1, 2 for terrain (its sky's then blocks' corners)
+"uniform uint blocks_offset;\n"    // where blocks' light starts in lights (the grid's cells after the sky's), 0 none
 "uniform uint darklight;\n"
 "uniform uint sunlight;\n"
 "uniform uint solid[8];\n"
@@ -171,13 +181,18 @@ static const char* zox_gpu_mesh_source =
 "    return ((present >> chunk_of(p)) & 1u) == 0u;\n"
 "}\n"
 "\n"
-"// the light at p, past (sunlight above, darklight elsewhere) in a chunk without lights\n"
-"uint light_at(ivec3 p, uint past) {\n"
+"// the light at p in the lights from base (0 the sky's, blocks_offset blocks'), past in a chunk without lights\n"
+"uint light_in(ivec3 p, uint past, uint base) {\n"
 "    if (((lights_present >> chunk_of(p)) & 1u) == 0u) {\n"
 "        return past;\n"
 "    }\n"
-"    uint i = cell(p);\n"
+"    uint i = cell(p) + base;\n"
 "    return (lights[i >> 2] >> ((i & 3u) * 8u)) & 255u;\n"
+"}\n"
+"\n"
+"// the sky's light at p, past (sunlight above, darklight elsewhere) in a chunk without lights\n"
+"uint light_at(ivec3 p, uint past) {\n"
+"    return light_in(p, past, 0u);\n"
 "}\n"
 "\n"
 "// stops light: a voxel the realm calls solid (a missing chunk is air)\n"
@@ -218,13 +233,14 @@ static const char* zox_gpu_mesh_source =
 "    return ivec3(axis == 0 ? 1 : 0, axis == 1 ? 1 : 0, axis == 2 ? 1 : 0);\n"
 "}\n"
 "\n"
-"// a face's 4 corner lights, byte s the corner on side s (bit 0 its +a side, bit 1 its +b side)\n"
-"uint face_lights(ivec3 p, int d) {\n"
-"    uint past = d == 3 ? sunlight : darklight;\n"
+"// a face's 4 corner lights from base's lights (light_in), byte s the corner on side s (bit 0 its +a side, bit 1 its\n"
+"//  +b side); past_up, past_side past the world: the sky's sunlight above and darklight round, blocks' none\n"
+"uint face_lights_in(ivec3 p, int d, uint base, uint past_up, uint past_side) {\n"
+"    uint past = d == 3 ? past_up : past_side;\n"
 "    ivec3 f = p + directions[d];\n"
 "    ivec3 a = unit(axis_a[d]);\n"
 "    ivec3 b = unit(axis_b[d]);\n"
-"    uint face_light = light_at(f, past);\n"
+"    uint face_light = light_in(f, past, base);\n"
 "    // into a door's part: flat, the darkest open air across it (smooth_seal_light)\n"
 "    if (seal_at(f)) {\n"
 "        uint darkest = 256u;\n"
@@ -232,7 +248,7 @@ static const char* zox_gpu_mesh_source =
 "            for (int sb = -1; sb <= 1; sb++) {\n"
 "                ivec3 q = f + a * sa + b * sb;\n"
 "                if ((sa != 0 || sb != 0) && !solid_at(q) && !seal_at(q)) {\n"
-"                    darkest = min(darkest, light_at(q, past));\n"
+"                    darkest = min(darkest, light_in(q, past, base));\n"
 "                }\n"
 "            }\n"
 "        }\n"
@@ -244,11 +260,16 @@ static const char* zox_gpu_mesh_source =
 "        ivec3 edge_a = f + a * ((s & 1) != 0 ? 1 : -1);\n"
 "        ivec3 edge_b = f + b * ((s & 2) != 0 ? 1 : -1);\n"
 "        ivec3 corner = edge_a + edge_b - f;\n"
-"        uint corner_light = solid_at(edge_a) && solid_at(edge_b) ? darklight : light_at(corner, past);\n"
-"        uint light = (face_light + light_at(edge_a, past) + light_at(edge_b, past) + corner_light) / 4u;\n"
+"        uint corner_light = solid_at(edge_a) && solid_at(edge_b) ? darklight : light_in(corner, past, base);\n"
+"        uint light = (face_light + light_in(edge_a, past, base) + light_in(edge_b, past, base) + corner_light) / 4u;\n"
 "        corners_light |= light << (8 * s);\n"
 "    }\n"
 "    return corners_light;\n"
+"}\n"
+"\n"
+"// a face's 4 corner sky lights (face_lights_in)\n"
+"uint face_lights(ivec3 p, int d) {\n"
+"    return face_lights_in(p, d, 0u, sunlight, darklight);\n"
 "}\n"
 "\n"
 "// darkens a corner (ambient occlusion): a voxel that occludes, bit v - 1\n"
@@ -594,7 +615,9 @@ static const char* zox_gpu_mesh_source =
 "            continue;\n"
 "        }\n"
 "        atomicAdd(index_count, 6u);\n"
-"        uint face_light4 = lit != 0 ? face_lights(p, d) : 0xFFFFFFFFu;\n""        // its bone (bone_parts_face): its voxel's, or the one in front if its part's air, else the first\n"
+"        uint face_light4 = lit != 0 ? face_lights(p, d) : 0xFFFFFFFFu;\n"
+"        // blocks' light (glow stones, lamps), terrain's: none past the world\n"
+"        uint face_block4 = lit != 0 && blocks_offset != 0u ? face_lights_in(p, d, blocks_offset, 0u, 0u) : 0u;\n""        // its bone (bone_parts_face): its voxel's, or the one in front if its part's air, else the first\n"
 "        uint face_bone = 0u;\n"
 "        if (skinned != 0) {\n"
 "            face_bone = bone_at(p);\n"
@@ -629,7 +652,10 @@ static const char* zox_gpu_mesh_source =
 "                }\n"
 "            } else {\n"
 "                vertices[v + uint(c)] = vec4(vec3(p) + corner, w);\n"
-"                vertex_lights[v + uint(c)] = face_light4;\n"
+"                vertex_lights[(v + uint(c)) * light_stride] = face_light4;\n"
+"                if (light_stride == 2u) {\n"
+"                    vertex_lights[(v + uint(c)) * 2u + 1u] = face_block4;\n"
+"                }\n"
 "            }\n"
 "        }\n"
 "        uint i = face * 6u;\n"
@@ -692,12 +718,14 @@ static const char* zox_gpu_mesh_textured_vertex_source =
 "layout(location = 0) in vec4 vertex;\n"
 "layout(location = 1) in uint face_lights;\n"
 "layout(location = 2) in vec2 vertex_uv;\n"
+"layout(location = 3) in uint face_blocks;\n"     // its 4 corners' blocks' light (glow stones, lamps)
 "uniform mat4 mvp_matrix;\n"
 "uniform vec4 transform;\n"
 "uniform vec4 glows[64];\n"     // each voxel value's glow, 0 to 1 (BlockGlow), 4 a vec4
 "out vec2 uv;\n"
 "out vec2 side;\n"
 "flat out vec4 corner_lights;\n"
+"flat out vec4 corner_blocks;\n"
 "flat out float glow;\n"
 "void main() {\n"
 "    gl_Position = mvp_matrix * vec4(vertex.xyz * transform.w, 1.0);\n"
@@ -708,6 +736,8 @@ static const char* zox_gpu_mesh_textured_vertex_source =
 "    side = vec2(float(s & 1), float(s >> 1));\n"
 "    corner_lights = vec4(float(face_lights & 255u), float((face_lights >> 8) & 255u),\n"
 "        float((face_lights >> 16) & 255u), float(face_lights >> 24)) / 255.0;\n"
+"    corner_blocks = vec4(float(face_blocks & 255u), float((face_blocks >> 8) & 255u),\n"
+"        float((face_blocks >> 16) & 255u), float(face_blocks >> 24)) / 255.0;\n"
 "}\n";
 static const char* zox_gpu_mesh_textured_fragment_source =
 "uniform vec4 shading;\n"
@@ -715,6 +745,7 @@ static const char* zox_gpu_mesh_textured_fragment_source =
 "in vec2 uv;\n"
 "in vec2 side;\n"
 "flat in vec4 corner_lights;\n"
+"flat in vec4 corner_blocks;\n"
 "flat in float glow;\n"
 "out vec4 frag_color;\n"
 "const float GLOW = 3.0;\n"     // as textured3D's: a glowing face lit fully, up to this much past white
@@ -724,7 +755,8 @@ static const char* zox_gpu_mesh_textured_fragment_source =
 "        discard;\n"
 "    }\n"
 "    float light = mix(mix(corner_lights.x, corner_lights.y, side.x), mix(corner_lights.z, corner_lights.w, side.x), side.y);\n"
-"    vec3 color = texel.rgb * (glow > 0.0 ? vec3(1.0) : light * sky_tint.xyz) * (1.0 + glow * GLOW) * shading.x;\n"
+"    float block = mix(mix(corner_blocks.x, corner_blocks.y, side.x), mix(corner_blocks.z, corner_blocks.w, side.x), side.y);\n"
+"    vec3 color = texel.rgb * (glow > 0.0 ? vec3(1.0) : zox_light(light, block)) * (1.0 + glow * GLOW) * shading.x;\n"
 "    frag_color = vec4(zox_fog(color), texel.a);\n"
 "}\n";
 
@@ -916,7 +948,7 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     const byte lit = lights && lighting;
     if (lit || (mesher->sided && lights)) {
         // or a model's sides (sided), and its bones after them (skinned)
-        zox_gpu_storage_upload(mesher->lights, mesher->skinned ? cells * 2 : cells, lights);
+        zox_gpu_storage_upload(mesher->lights, mesher->skinned || (lit && mesher->blocks) ? cells * 2 : cells, lights);
     }
     zox_gpu_compute_use(mesher->program);
     zox_gpu_compute_uniform_int(mesher->program, "depth", depth);
@@ -925,6 +957,8 @@ void gpu_mesh_grid(GpuMesher* mesher, const byte* voxels, const byte* lights, by
     zox_gpu_compute_uniform_int(mesher->program, "edge_faces", mesher->edge_faces);
     zox_gpu_compute_uniform_uint(mesher->program, "present", present);
     zox_gpu_compute_uniform_uint(mesher->program, "lights_present", lights_present);
+    zox_gpu_compute_uniform_uint(mesher->program, "light_stride", (uint) gpu_mesher_light_stride(mesher));
+    zox_gpu_compute_uniform_uint(mesher->program, "blocks_offset", lit && mesher->blocks ? (uint) cells : 0);
     zox_gpu_compute_uniform_uint_array(mesher->program, "heights", mesher->heights, 32);
     zox_gpu_compute_uniform_uint_array(mesher->program, "drawn", mesher->drawn, 8);
     zox_gpu_compute_uniform_uint_array(mesher->program, "hides", mesher->hides, 8);
@@ -1022,7 +1056,7 @@ byte gpu_mesher_grow(GpuMesher* mesher, uint faces) {
     }
     mesher->max_faces = faces + faces / 4;
     zox_gpu_storage_upload(mesher->vertices, (size_t) mesher->max_faces * 4 * sizeof(float4), NULL);
-    zox_gpu_storage_upload(mesher->vertex_lights, (size_t) mesher->max_faces * 4 * sizeof(uint), NULL);
+    zox_gpu_storage_upload(mesher->vertex_lights, (size_t) mesher->max_faces * 4 * gpu_mesher_light_stride(mesher) * sizeof(uint), NULL);
     zox_gpu_storage_upload(mesher->indices, (size_t) mesher->max_faces * 6 * sizeof(uint), NULL);
     zox_gpu_storage_upload(mesher->vertex_uvs, (size_t) mesher->max_faces * 4 * sizeof(float2), NULL);
     if (mesher->vertex_colors) {
@@ -1056,7 +1090,7 @@ void gpu_mesher_draw(GpuMesher* mesher, uint program, float4x4 camera_matrix, fl
         return;
     }
     if (!mesher->vao) {
-        mesher->vao = zox_gpu_storage_mesh_vao(mesher->vertices, mesher->indices, 0, mesher->vertex_lights, 1, 0, 2);
+        mesher->vao = zox_gpu_storage_mesh_vao(mesher->vertices, mesher->indices, 0, mesher->vertex_lights, 1, 0, 2, 0);
     }
     float4 palette[zox_gpu_mesh_colors_max];
     for (int i = 0; i < zox_gpu_mesh_colors_max; i++) {
