@@ -1,5 +1,5 @@
 // NOTE: These 'distances' can be very random, since propogation happens in many ways... so theyre more like algorithm limiters... - can remove if the rules are good to not break
-byte zox_no_lights = 0;
+byte zox_lighting = 1;
 // #include "lights.c"
 byte sunlight = 255;        // full sunlight
 byte zox_debug_lights = 0;

@@ -2,7 +2,7 @@
 //  colours): its voxel's, under the chunk's light lock (flood passes write it on threads); under 0 if it has none
 //  there (no lights, the point outside it)
 static inline float chunk_light_at(ecs* world, entity chunk, float3 position, byte channel) {
-    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, LightOctree) || !zox_has(chunk, LightLock)) {
+    if (!zox_lighting || !zox_valid(chunk) || !zox_has(chunk, LightOctree) || !zox_has(chunk, LightLock)) {
         return -1;
     }
     const float scale = zox_getv(chunk, BlockScale);    // its voxels' size at its depth

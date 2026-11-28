@@ -30,7 +30,7 @@ static void capture_test_mesh_border(ecs* world, entity e, const VoxelNode* voxe
 #endif
 
 byte zox_disable_node_face_subdivision = 1;
-extern byte zox_no_lights;
+extern byte zox_lighting;
 // remember: vertex position is just node position / voxel position
 
 typedef struct {
@@ -282,7 +282,7 @@ void chunk_textured_build_system(iter* it) {
         // dirty
         zox_remove(e, BuildMesh);
         zox_add(e, MeshDirty);
-        if (!zox_no_lights) {
+        if (zox_lighting) {
             zox_add(e, BuildMeshColors);
         } /*else {
             zox_add(e, MeshDirty);

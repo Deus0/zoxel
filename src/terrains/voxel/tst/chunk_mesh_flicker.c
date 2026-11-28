@@ -483,7 +483,7 @@ static inline void zox_tst_cmf_frame(ecs* world, entity terrain) {
                     const byte changing = zox_has(mesh, BuildMesh) || zox_has(mesh, MeshDirty) || zox_has(mesh, BuildMeshColors) ||
                         zox_has(mesh, MeshColorsDirty) || (zox_has(mesh, GpuMesh) && zox_getv(mesh, MeshFence)) ||
                         zox_has(chunk, ChunkLodDirty);
-                    if (!zox_no_lights && zox_has(mesh, MeshColorsBuilt) && (changing || zox_tst_cmf_light_find(material)->mesh != mesh)) {
+                    if (zox_lighting && zox_has(mesh, MeshColorsBuilt) && (changing || zox_tst_cmf_light_find(material)->mesh != mesh)) {
                         zox_tst_cmf_mesh_light(world, mesh, chunk, mesh_faces, &light_sum, &light_count, &up_sum, &up_count);
                         light_read = 1;
                     }

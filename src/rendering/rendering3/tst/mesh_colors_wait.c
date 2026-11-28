@@ -47,7 +47,7 @@ byte zox_tst_mesh_colors_wait_ready(ecs* world) {
     if (zox_tst_mcw_stage == 0) {
         zox_tst_waiting = "the quad to upload";
         // the upload waits for lights only with smooth lighting on (textured_mesh_update_system)
-        zox_tst_mcw_lights = zox_smooth_lighting && !zox_no_lights;
+        zox_tst_mcw_lights = zox_smooth_lighting && zox_lighting;
         zox_tst_mcw_spawn(world);
         zox_tst_mcw_stage = 1;
         return 0;

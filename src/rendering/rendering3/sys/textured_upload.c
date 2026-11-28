@@ -1,4 +1,4 @@
-extern byte zox_no_lights;
+extern byte zox_lighting;
 extern byte zox_smooth_lighting;
 
 // NOTE: Uplaods Terrain Chunks
@@ -28,7 +28,7 @@ void textured_mesh_update_system(iter* it) {
         zox_sys_i(MeshColors, colors);
         zox_sys_o(MeshRenderCount, count);
         // lights still building colors, keep old mesh until ready
-        if (!zox_no_lights &&
+        if (zox_lighting &&
             zox_smooth_lighting &&
             zox_has(e, BuildMeshColors))
         {

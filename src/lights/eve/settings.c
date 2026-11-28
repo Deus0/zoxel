@@ -1,8 +1,8 @@
 void app_initialize_lights(ecs* world, entity app) {
-    setting_tags(world, spawn_setting_byte(world, app, "No AO", !zox_ambient_occlusion), zox_id(SettingTabVideo), zox_id(SettingNoAO));
+    setting_tags(world, spawn_setting_byte(world, app, "Ambient Occlusion", zox_ambient_occlusion), zox_id(SettingTabVideo), zox_id(SettingAO));
+    setting_tags(world, spawn_setting_byte(world, app, "Lighting", zox_lighting), zox_id(SettingTabVideo), zox_id(SettingLighting));
 #ifdef zox_debug_settings
-    setting_tags(world, spawn_setting_byte(world, app, "No Lights", zox_no_lights), zox_id(SettingTabDebug), zox_id(SettingNoLights));
-    setting_tags(world, spawn_setting_byte(world, app, "Smooth Lighting", zox_smooth_lighting), zox_id(SettingTabVideo), zox_id(SettingSmoothLighting));
+    setting_tags(world, spawn_setting_byte(world, app, "Smooth Lights", zox_smooth_lighting), zox_id(SettingTabVideo), zox_id(SettingSmoothLighting));
 #endif
 }
 
@@ -21,13 +21,13 @@ void lights_settings_observer_callback(iter* it) {
                     name->value,
                     value);
             }
-            if (zox_has(e, SettingNoLights)) {
-                zox_no_lights = value;
-                set_light_systems(world, !zox_no_lights);
+            if (zox_has(e, SettingLighting)) {
+                zox_lighting = value;
+                set_light_systems(world, zox_lighting);
             } else if (zox_has(e, SettingSmoothLighting)) {
                 zox_smooth_lighting = value;
-            } else if (zox_has(e, SettingNoAO)) {
-                zox_ambient_occlusion = !value;
+            } else if (zox_has(e, SettingAO)) {
+                zox_ambient_occlusion = value;
             }
         }
     }

@@ -35,7 +35,7 @@ void chunk_lod_system(iter* it) {
                 continue;
             }
             chunk_meshes_stop_building(world, e);
-            if (!zox_no_lights) {
+            if (zox_lighting) {
                 zox_muter(e, LightOctree, lights);
                 zox_muter(e, LightLock, lock);
                 spin_lock(&lock->value);

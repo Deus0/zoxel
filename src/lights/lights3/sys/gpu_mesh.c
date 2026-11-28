@@ -324,7 +324,7 @@ void chunk_gpu_mesh_system(iter* it) {
             room->value = mesher.max_faces;
         }
         const GpuMeshLighting lighting = gpu_mesh_lighting(solidity);
-        const byte lit = !zox_no_lights && grid_lights->value;
+        const byte lit = zox_lighting && grid_lights->value;
         mesher.blocks = grid_lights->length >= 2 * (int) gpu_mesh_grid_bytes(depth->value);
         gpu_mesh_grid(&mesher, grid_voxels->value, lit ? grid_lights->value : NULL, depth->value, present->value,
             lights_present->value, lit ? &lighting : NULL);

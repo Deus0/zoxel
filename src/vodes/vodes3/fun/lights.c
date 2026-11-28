@@ -19,7 +19,7 @@ typedef struct {
 } block_vox_lighting;
 
 static inline byte block_vox_lighting_begin(ecs* world, entity chunk, block_vox_lighting* l) {
-    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, LightOctree) || !zox_has(chunk, NodeDepth)) {
+    if (!zox_lighting || !zox_valid(chunk) || !zox_has(chunk, LightOctree) || !zox_has(chunk, NodeDepth)) {
         return 0;
     }
     memset(l, 0, sizeof(block_vox_lighting));

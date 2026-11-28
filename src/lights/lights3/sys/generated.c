@@ -8,7 +8,7 @@ void sunny_chunk_generated_system(iter* it) {
     for (int i = 0; i < it->count; i++) {
         zox_sys_e();
         zox_sys_o(GenerateChunk, generate);
-        if (zox_no_lights && generate->value == zox_generate_terrain_sunlight) {
+        if (!zox_lighting && generate->value == zox_generate_terrain_sunlight) {
             zox_remove(e, GenerateChunk);
             zox_add(e, VoxelNodeDirty);
         } else if (generate->value == zox_generate_terrain_sunlight) {
@@ -36,7 +36,7 @@ void chunk_generated_system(iter* it) {
         zox_sys_e();
         zox_sys_o(GenerateChunk, generate);
         if (generate->value == zox_generate_terrain_sunlight) {
-            if (!zox_no_lights) {
+            if (zox_lighting) {
                 zox_add(e, GenerateEmitterLight);
                 // its neighbours' light into it: a sunbeam from above, floods from the sides (lights3/fun/relight.c);
                 //  regenerated for a lod under an air chunk that wasn't, it stayed dark

@@ -23,7 +23,7 @@ static inline byte chunk_relight_border_light(const LightOctree* lights, byte th
 }
 
 void chunk_relight_from_neighbors(ecs* world, entity chunk) {
-    if (zox_no_lights || !zox_has(chunk, LightQueue) || !zox_has(chunk, ChunkNeighbors)) {
+    if (!zox_lighting || !zox_has(chunk, LightQueue) || !zox_has(chunk, ChunkNeighbors)) {
         return;
     }
     const byte depth = zox_getv(chunk, NodeDepth);

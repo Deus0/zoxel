@@ -11,7 +11,7 @@
 #include "sample.c"
 
 byte zox_chunk_mesh_lighting_busy(ecs* world, entity e) {
-    if (zox_no_lights) {
+    if (!zox_lighting) {
         return 0;
     }
     return zox_has(e, BuildMeshColors); // ||
@@ -19,7 +19,7 @@ byte zox_chunk_mesh_lighting_busy(ecs* world, entity e) {
 }
 
 byte zox_chunk_lighting_busy(ecs* world, entity e) {
-    if (zox_no_lights) {
+    if (!zox_lighting) {
         return 0;
     }
     return
@@ -33,7 +33,7 @@ byte zox_chunk_lighting_busy(ecs* world, entity e) {
 //  its meshes spawn: its lights cleared dark till it's lit again): a mesh already lit and relit now reads lights half
 //  made, darker for a few frames then back (dark flashes, tst chunk_mesh_flicker), it keeps its lights till they settle
 static inline byte chunk_grid_lights_settling(ecs* world, const entity* chunks) {
-    if (zox_no_lights) {
+    if (!zox_lighting) {
         return 0;
     }
     for (byte j = 0; j < 27; j++) {
@@ -51,7 +51,7 @@ static inline byte chunk_grid_lights_settling(ecs* world, const entity* chunks) 
 }
 
 byte zox_chunk_lights_settling(ecs* world, entity chunk) {
-    if (!zox_valid(chunk) || zox_no_lights) {
+    if (!zox_valid(chunk) || !zox_lighting) {
         return 0;
     }
     entity chunks[27];

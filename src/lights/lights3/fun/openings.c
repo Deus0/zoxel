@@ -4,7 +4,7 @@
 
 // opened: its sides' light floods into it, and on through it (a queued flood starts at a voxel's own light)
 void light_voxel_opened(ecs* world, entity chunk, byte3 position) {
-    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, LightQueue) || !zox_has(chunk, ChunkNeighbors)) {
+    if (!zox_lighting || !zox_valid(chunk) || !zox_has(chunk, LightQueue) || !zox_has(chunk, ChunkNeighbors)) {
         return;
     }
     const byte depth = zox_getv(chunk, NodeDepth);
@@ -23,7 +23,7 @@ void light_voxel_opened(ecs* world, entity chunk, byte3 position) {
 
 // shut: its light goes, and the light that came through it (dark floods out from it, what's lit another way refills)
 void light_voxel_shut(ecs* world, entity chunk, byte3 position) {
-    if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, DarkQueue) || !zox_has(chunk, LightOctree)) {
+    if (!zox_lighting || !zox_valid(chunk) || !zox_has(chunk, DarkQueue) || !zox_has(chunk, LightOctree)) {
         return;
     }
     const byte depth = zox_getv(chunk, NodeDepth);
