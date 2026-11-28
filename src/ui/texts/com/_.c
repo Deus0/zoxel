@@ -16,7 +16,8 @@ zox_tag(TextWrap);
 zox_tag(TextFit);
 zox_tag(TextFitParent);             // and its parent sized to it (an input field), not kept (a header)
 zoxc_int(TextFitFontSize);
-zoxc_int(TextFitWidth);            // lines wrap to its LayoutSize (text_wrap, text_columns), i.e. dialogue: a fixed box, not sized to its text
+zoxc_int(TextFitWidth);
+zoxc_int(TextFitMinSize);         // optional: below it, the text hides rather than shrink unreadable (a narrow window's title)            // lines wrap to its LayoutSize (text_wrap, text_columns), i.e. dialogue: a fixed box, not sized to its text
 zoxc_entity(GlyphPrefab);
 // Animated text: types TargetText out a character at a time (i.e. dialogue)
 zoxc_fixed_string(TargetText, 512);
@@ -40,6 +41,7 @@ void zox_components_texts(ecs *world) {
     zoxd_tag(TextFitParent);
     zoxd_int(TextFitFontSize);
     zoxd_int(TextFitWidth);
+    zoxd_int(TextFitMinSize);
     zoxd_int(TextFontSize);
     zoxd_double(AnimateText);
     zoxd_text(TextData);

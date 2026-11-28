@@ -37,6 +37,7 @@ void import_editor(ecs* world) {
     zox_components_editor(world);
     zox_systems_editor(world);
     add_hook_spawn_prefabs(spawn_prefabs_editor);
+    add_hook_spawn_prefabs(spawn_editor_icons);
     add_hook_spawn_prefabs(zox_events_editor);
 #ifdef zox_debug
     add_hook_key_down(toggle_fps_viewer);

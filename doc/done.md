@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-28
+-x Window titles: an icon left of the title (window_header_icon; the editor's hierarchy, inspector and files draw
+  theirs, fun/icons.c); a title shrinks to two thirds of its font, then hides (TextFitMinSize) and the icon stays; a
+  window is never narrower than its header's icon and buttons. tst title_icon
 -x Hierarchy rows went stale when a shown row's entity got a parent (a root moved under another): its observer only
   looked at the new parent. A shown row's own entity changing parent refreshes it too (tst hierarchy_roots)
 -x Inspector row tooltips never showed: its rows weren't Tooltippers, and its tooltip callback set the text without

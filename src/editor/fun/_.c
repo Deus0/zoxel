@@ -42,3 +42,4 @@ entity canvas_toggle_ui(
 #include "component.c"
 #include "inspector.c"
 #include "theme.c"
+#include "icons.c"

@@ -4,7 +4,7 @@ entity spawn_window_files(ecs* world, entity canvas, entity player, const char* 
     const int2 canvas_size = zox_getv(canvas, LayoutSize);
     const byte font_size = 12;
     const entity4 ui = spawn_editor_window(world, prefab_files, canvas, "Files", dock_bottom,
-        (int2) { canvas_size.x, canvas_size.y / 4 }, font_size);
+        (int2) { canvas_size.x, canvas_size.y / 4 }, font_size, editor_icon_files);
     zox_set_name_spawned(world, ui.x, "files");
     zox_add(ui.x, FileWindowUI);
     zox_setv(ui.x, ElementFontSize, font_size);

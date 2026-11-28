@@ -1,3 +1,6 @@
+#define window_header_icon_inset 6
+#define window_title_least 2 / 3     // a title hides below this share of its font size
+
 entity spawn_header(
     ecs *world,
     entity parent,
@@ -45,6 +48,7 @@ entity spawn_header(
             header_font_outline);
         zox_add(text_e, TextFit);
         zox_setv(text_e, TextFitFontSize, font_size);
+        zox_setv(text_e, TextFitMinSize, font_size * window_title_least);
         zox_setv(text_e, TextFitWidth, size.x);
     }
     if (is_close_button) {
@@ -120,4 +124,13 @@ entity spawn_header_old(
         zox_set_parent_non_fragment(world, close_button, e);
     }
     return e;
+}
+
+// an icon left of its title: the title sits after it, and hides when too narrow to read (TextFitMinSize), the icon
+//  stays. window_header_fit sizes it to its header (in a deferred spawn the header can't be read yet)
+entity window_header_icon(ecs* world, entity canvas, entity header, entity texture) {
+    const entity icon = spawn_image(world, prefab_element, header, canvas, int2_zero, int2_one, (float2) { 0, 0.5f },
+        0, 0, texture);
+    zox_add(icon, HeaderIcon);
+    return icon;
 }

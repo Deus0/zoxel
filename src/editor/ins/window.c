@@ -5,7 +5,8 @@ entity4 spawn_editor_window(
     const char* header_label,
     float2 anchor,
     int2 size,
-    int font_size)
+    int font_size,
+    byte icon)
 {
     ensure_editor_menubar(world, canvas);
     const int header_font_size = 18;
@@ -41,6 +42,7 @@ entity4 spawn_editor_window(
     zox_setv(list, ListMargins, ((byte2) { 4 * ui_scale, 2 * ui_scale }));
     zox_setv(list, ListPadding, ((byte2) { 0, 2 * ui_scale }));
     spawn_window_search_button(world, e4.x, e4.y);
+    window_header_icon(world, canvas, header, editor_icons[icon]);
     zox_add(e4.x, EditorThemeDirty);
     zox_add(list, Dirty);   // last: a docked window fits its insides once its parts are there (window_list_layout_event)
     return e4;

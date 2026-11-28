@@ -216,6 +216,7 @@ void zox_tst_editor_check(ecs* world) {
 #include "files_move.c"
 #include "hierarchy_prefabs.c"
 #include "inspector_tooltip.c"
+#include "title_icon.c"
 
 void zox_tsts_editor() {
     zox_tst_add("editor_menubar", zox_tst_editor_menubar_ready, zox_tst_ui_fixture_check, 20);
@@ -228,6 +229,7 @@ void zox_tsts_editor() {
     zox_tst_add("files_move", zox_tst_files_move_ready, zox_tst_hierarchy_search_check, 20);
     zox_tst_add("hierarchy_prefabs", zox_tst_hierarchy_prefabs_ready, zox_tst_hierarchy_search_check, 20);
     zox_tst_add("inspector_tooltip", zox_tst_inspector_tooltip_ready, zox_tst_ui_fixture_check, 15);
+    zox_tst_add("title_icon", zox_tst_title_icon_ready, zox_tst_hierarchy_search_check, 20);
     zox_tst_set_setup("hierarchy_big", NULL, 1);
     zox_tst_add("editor", zox_tst_editor_ready, zox_tst_editor_check, 60);
     zox_tst_set_setup("editor", NULL, 1);

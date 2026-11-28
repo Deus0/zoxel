@@ -1,6 +1,7 @@
 // fits a TextFit text in its TextFitWidth: the font is TextFitFontSize, smaller when the text would be wider
 //  - TextFitParent: its parent (an input field's button) is sized to it, as typing changes it
 //  - a text on its parent's side (anchored left or right, a window's title) keeps that edge as its font changes
+//  - TextFitMinSize: smaller than it, the text hides instead
 //  - a new font size respawns its glyphs (glyph_spawn_system), they're sized as they spawn
 void text_fit_system(iter* it) {
     zox_sys_on_begin();
@@ -28,6 +29,15 @@ void text_fit_system(iter* it) {
             if (fits < 4) {
                 fits = 4;
             }
+        }
+        // too small to read: hidden at its least size instead (its glyphs spawn hidden with it)
+        const int least = zox_has(e, TextFitMinSize) ? zox_getv(e, TextFitMinSize) : 0;
+        const byte hidden = fits < least;
+        if (least && zox_has(e, RenderDisabled) && zox_getv(e, RenderDisabled) != hidden) {
+            set_children_render_disabled(world, e, hidden);
+        }
+        if (hidden) {
+            fits = least;
         }
         if (fits != font_size->value) {
             const float anchor = zox_has(e, Anchor) ? zox_getv(e, Anchor).x : 0.5f;

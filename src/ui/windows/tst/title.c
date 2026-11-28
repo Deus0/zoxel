@@ -71,8 +71,10 @@ static byte zox_tst_window_title_fit_ready(ecs* world) {
             zox_tst_waiting = "the titles to shrink into their headers";
             for (int i = 0; i < 2; i++) {
                 zox_setv(zox_tst_window_resize_handle(world, windows[i], (float2) { 1, 0.5f }, &count), DraggableState, 0);
+                // too narrow to read at its least font, it hides instead (TextFitMinSize)
+                const byte hidden = zox_getv(texts[i], RenderDisabled);
                 if (zox_getv(texts[i], TextFontSize) >= zox_tst_title_font ||
-                    zox_tst_title_width(world, texts[i]) > zox_getv(texts[i], TextFitWidth) ||
+                    (!hidden && zox_tst_title_width(world, texts[i]) > zox_getv(texts[i], TextFitWidth)) ||
                     zox_getv(texts[i], TextFitWidth) > zox_getv(windows[i], LayoutSize).x) {
                     static char why[128];
                     snprintf(why, 128, "[%i] font [%i] width [%i] room [%i] window [%i] pad [%i]", i, zox_getv(texts[i], TextFontSize),
@@ -87,7 +89,8 @@ static byte zox_tst_window_title_fit_ready(ecs* world) {
                 const int width = zox_tst_title_width(world, texts[i]);
                 const int room = zox_getv(texts[i], TextFitWidth);
                 const int header = zox_getv(windows[i], LayoutSize).x;
-                zox_tst_check(width <= room && room <= header, "[%i] title [%i] wide, its room [%i], its header [%i]",
+                zox_tst_check((zox_getv(texts[i], RenderDisabled) || width <= room) && room <= header,
+                    "[%i] title [%i] wide, its room [%i], its header [%i]",
                     i, width, room, header);
             }
             // the close button's title keeps its left edge as its font shrinks

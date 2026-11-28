@@ -36,7 +36,7 @@ static byte zox_tst_inspector_shrink_ready(ecs* world) {
         zox_tst_check(undock_right <= close_left && search_right <= undock_left,
             "header buttons overlap: close from [%i], undock [%i to %i], search to [%i]", close_left, undock_left, undock_right, search_right);
         int2 size = zox_getv(inspector, LayoutSize);
-        width = size.x = 64;
+        width = size.x = 160;   // narrower than its rows, wider than its header needs
         zox_setv(inspector, LayoutSize, size);
         zox_add(inspector, Dirty);
     } else if (step < 50) {

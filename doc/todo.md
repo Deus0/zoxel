@@ -1428,9 +1428,6 @@ Code to restructure (refactors.md merged in here 2026-11-21). Done items go to [
 # Editor
 - Inspector groups: labelled sections (name, parent, children, components, tags, pairs), children foldable;
   later group components by their module
-- Docked windows undraggable: their header loses Dragable as they dock (docks_layout_event); playtest said they
-  still drag, find how (no test reproduces it yet)
-- Header titles in narrow docks shrink to unreadable (TextFit beside 3-4 buttons): cut them or hide buttons instead
 - tst.sh runs the zoxel binary even with zox_tst_game=zedit (bin= picks bin/zoxel_*), so zedit_boot can't run there
 - Virtual list scrollbar drag: one walk (it counts the rows in one pass, then walks to the page)
 - Virtual list: respawned slots (ListVisible changed, i.e. a dock resize) show empty for a frame before they are

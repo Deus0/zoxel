@@ -6,7 +6,8 @@ zox_tag(WindowBody);
 zox_tag(Header);
 zox_tag(WindowFooter);     // a strip under a window's body, its buttons on it (spawn_window_footer)
 zox_tag(CloseButton);
-zox_tag(HeaderButton);     // a window's own header button, packed left of its search button (window_header_fit)
+zox_tag(HeaderButton);
+zox_tag(HeaderIcon);       // an image left of a window's title, it stays when the title hides (window_header_icon)     // a window's own header button, packed left of its search button (window_header_fit)
 zox_tag(TabButton);        // a window's tab, its Target its tab's scrollview (ins/tabs.c)
 zox_tag(WindowRaycastTarget);
 zox_tag(WindowResizeHandle);
@@ -27,6 +28,7 @@ void zox_components_windows(ecs* world) {
     zoxd_tag(WindowFooter);
     zoxd_tag(CloseButton);
     zoxd_tag(HeaderButton);
+    zoxd_tag(HeaderIcon);
     zoxd_tag(TabButton);
     zoxd_tag(WindowRaycastTarget);
     zoxd_tag(WindowResizeHandle);

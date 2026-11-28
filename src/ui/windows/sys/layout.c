@@ -164,9 +164,9 @@ static int window_header_button_fit(ecs* world, entity button, byte close, int e
     return edge + w + gap;
 }
 
-// its buttons sit right to left from its edge (close, undock, search), a gap between, and its title fits beside them:
-//  a centred title keeps clear of them on both sides
-static void window_header_fit(ecs* world, entity header, int width) {
+// its buttons sit right to left from its edge (close, undock, search, its own), a gap between, its icon on the left, and
+//  its title fits between: returns the width they need (its least)
+static int window_header_fit(ecs* world, entity header, int width) {
     const int gap = 4;
     const entity buttons[] = {
         zox_get_child_by_id(world, header, zox_id(CloseButton)),
@@ -186,13 +186,41 @@ static void window_header_fit(ecs* world, entity header, int width) {
     }
     const entity text = zox_get_child_by_id(world, header, zox_id(TextFit));
     if (!text) {
-        return;
+        return edge;
     }
     const byte centred = zox_getv(text, Anchor).x == 0.5f;
-    const int fit = int_max(1, width - edge * (centred ? 2 : 1));
+    // an icon: the title starts after it, its left edge kept there as its font fits (text_fit_system)
+    const entity icon = zox_get_child_by_id(world, header, zox_id(HeaderIcon));
+    int left = 0;
+    if (icon) {
+        // a square of its header's height, inset
+        const int side = int_max(1, zox_getv(header, LayoutSize).y - 2 * window_header_icon_inset);
+        if (zox_getv(icon, LayoutSize).x != side) {
+            zox_setv(icon, LayoutSize, int2_single(side));
+            zox_setv(icon, LayoutPosition, ((int2) { side / 2 + window_header_icon_inset, 0 }));
+            zox_add(icon, LayoutSizeDirty);
+        }
+        left = side + window_header_icon_inset + gap;
+    }
+    // after the icon: a side title keeps its left edge there as its font fits (text_fit_system), a centred one centres
+    //  between the icon and the buttons
+    int x = 0;
+    if (centred) {
+        x = (left - edge) / 2;
+    } else if (icon) {
+        const TextData* data = zox_get(text, TextData);
+        x = left + calculate_zext_size(data->value, data->length, zox_getv(text, TextFontSize),
+            zox_getv(text, TextPadding), default_line_padding).x / 2;
+    }
+    if ((icon || centred) && zox_getv(text, LayoutPosition).x != x) {
+        zox_setv(text, LayoutPosition, ((int2) { x, 0 }));
+        zox_add(text, LayoutSizeDirty);
+    }
+    const int fit = int_max(1, width - left - edge);
     if (zox_getv(text, TextFitWidth) != fit) {
         zox_setv(text, TextFitWidth, fit);
     }
+    return left + edge;
 }
 
 // the side a window is being resized from (its dragged resize handle's anchor), its centre if none is dragged
@@ -274,9 +302,15 @@ static void window_layout(ecs* world, entity window, int2 size) {
     }
     window_grown_keeps_side(world, window, asked, size);
     window_canvas_fit(world, window, &size);     // after: a grid's rows can grow it
+    // its header's icon and buttons fit (they can spawn after its first layout): it's no narrower than them
+    const int least = window_header_fit(world, header, size.x);
+    if (size.x < least) {
+        size.x = least;
+        zox_setv(window, LayoutSize, size);
+        window_header_fit(world, header, size.x);
+    }
     window_resize_handles_fit(world, window, size);
     const int2 header_size = { size.x, header_height };
-    window_header_fit(world, header, header_size.x);    // its buttons can spawn after its first layout
     const int2 body_size = { size.x, int_max(1, size.y - header_size.y - footer_height - search_height) };
     if (int2_equals(zox_getv(body, LayoutSize), body_size) &&
         (!zox_valid(scrollview) || !zox_has(scrollview, LayoutSize) ||
