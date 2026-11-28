@@ -1,6 +1,9 @@
 # Done
 
 ## 2026-11-28
+-x Hierarchy prefab filter: a p toggle in its header shows prefabs too (roots and children, a realm's), hidden by
+  default (HierarchyPrefabs on its list). Windows pack any HeaderButton after their search button. tst
+  hierarchy_prefabs
 -x Editor list rows: a gap between rows, more padding inside them, smaller corners (editor_button_corner 3, a game
   button's 8)
 -x Inspector rows' type colours were high contrast: a hint of each hue (30%) over the theme's outline now, tags teal

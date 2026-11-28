@@ -149,6 +149,21 @@ static void window_rows_fit(ecs* world, entity window, entity scrollview, int2* 
     }
 }
 
+// places a shown header button left of edge, returns the new edge
+static int window_header_button_fit(ecs* world, entity button, byte close, int edge, int gap) {
+    if (!button || (zox_has(button, RenderDisabled) && zox_getv(button, RenderDisabled))) {
+        return edge;
+    }
+    const int w = zox_getv(button, LayoutSize).x;
+    // the close button aligns its right edge on its position, the others centre on it
+    const int x = close ? -edge : -(edge + w / 2);
+    if (zox_getv(button, LayoutPosition).x != x) {
+        zox_setv(button, LayoutPosition, ((int2) { x, 0 }));
+        zox_add(button, LayoutSizeDirty);   // placed there
+    }
+    return edge + w + gap;
+}
+
 // its buttons sit right to left from its edge (close, undock, search), a gap between, and its title fits beside them:
 //  a centred title keeps clear of them on both sides
 static void window_header_fit(ecs* world, entity header, int width) {
@@ -159,18 +174,15 @@ static void window_header_fit(ecs* world, entity header, int width) {
         zox_get_child_by_id(world, header, zox_id(WindowSearchButton)) };
     int edge = 0;   // the buttons' width from the right edge
     for (int i = 0; i < 3; i++) {
-        const entity button = buttons[i];
-        if (!button || (zox_has(button, RenderDisabled) && zox_getv(button, RenderDisabled))) {
-            continue;
+        edge = window_header_button_fit(world, buttons[i], i == 0, edge, gap);
+    }
+    iter it = zox_children(world, header);
+    while (zox_children_next(it)) {
+        for (int i = 0; i < it.count; i++) {
+            if (zox_has(it.entities[i], HeaderButton)) {
+                edge = window_header_button_fit(world, it.entities[i], 0, edge, gap);
+            }
         }
-        const int w = zox_getv(button, LayoutSize).x;
-        // the close button aligns its right edge on its position, the others centre on it
-        const int x = i == 0 ? -edge : -(edge + w / 2);
-        if (zox_getv(button, LayoutPosition).x != x) {
-            zox_setv(button, LayoutPosition, ((int2) { x, 0 }));
-            zox_add(button, LayoutSizeDirty);   // placed there
-        }
-        edge += w + gap;
     }
     const entity text = zox_get_child_by_id(world, header, zox_id(TextFit));
     if (!text) {

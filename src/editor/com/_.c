@@ -7,6 +7,7 @@ zox_tag(InspectorUI);
 zox_tag(InspectorLabel);
 zox_tag(InspectorDirty);
 zox_tag(HierarchyUI);
+zox_tag(HierarchyPrefabs);    // a hierarchy list showing prefabs too (its header's p toggle)
 zox_tag(FileWindowUI);
 zox_tag(MaxSystemTimeLabel);
 zox_tag(FPSDisplay);
@@ -24,6 +25,7 @@ void zox_components_editor(ecs* world) {
     zoxd_tag(InspectorLabel);
     zoxd_tag(InspectorUI);
     zoxd_tag(HierarchyUI);
+    zoxd_tag(HierarchyPrefabs);
     zoxd_tag(HierarchySlot);
     zoxd_tag(FileWindowUI);
     zoxd_nf_tag(InspectorDirty);

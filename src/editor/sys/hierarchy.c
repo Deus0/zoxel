@@ -13,8 +13,16 @@ typedef struct {
     VirtualListPage* page;
 } HierarchyWalk;
 
-static byte hierarchy_row_entity(ecs* world, entity e) {
-    return zox_valid(e) && !zox_has(e, Glyph) && !zox_has(e, EditorElement);
+// a row: not the editor's own ui, nor a glyph; a prefab only while the list shows them (its header's p toggle)
+static byte hierarchy_row_entity(ecs* world, entity list, entity e) {
+    return zox_valid(e) && !zox_has(e, Glyph) && !zox_has(e, EditorElement) &&
+        (!zox_is_prefab(e) || zox_has(list, HierarchyPrefabs));
+}
+
+// a root of the scene, or with prefabs shown, a prefab with no parent
+static byte hierarchy_root_entity(ecs* world, entity list, entity e) {
+    return zox_is_scene_root(world, e) ||
+        (zox_has(list, HierarchyPrefabs) && zox_is_prefab(e) && !zox_get_parent(world, e));
 }
 
 static byte hierarchy_search_match(ecs* world, entity e, const char* search, byte type) {
@@ -34,7 +42,7 @@ static byte hierarchy_search_match(ecs* world, entity e, const char* search, byt
 
 // The same depth-first order supplies the count and the page. Search descends through folds.
 static byte hierarchy_walk_tree(ecs* world, HierarchyWalk* walk, entity e, int depth) {
-    if (!hierarchy_row_entity(world, e)) {
+    if (!hierarchy_row_entity(world, walk->list, e)) {
         return 0;
     }
     const byte searching = walk->search[0] != 0;
@@ -83,7 +91,7 @@ static void hierarchy_walk(ecs* world, HierarchyWalk* walk) {
     while (zox_children_next(roots)) {
         for (int i = 0; i < roots.count; i++) {
             const entity root = roots.entities[i];
-            if (zox_is_scene_root(world, root) && hierarchy_walk_tree(world, walk, root, 0)) {
+            if (hierarchy_root_entity(world, walk->list, root) && hierarchy_walk_tree(world, walk, root, 0)) {
                 zox_children_end(roots);
                 return;
             }
@@ -169,7 +177,7 @@ static void hierarchy_slot_event(iter* it) {
         iter children = zox_children(world, target);
         while (zox_children_next(children)) {
             for (int j = 0; j < children.count && !has_children; j++) {
-                has_children = hierarchy_row_entity(world, children.entities[j]);
+                has_children = hierarchy_row_entity(world, list, children.entities[j]);
             }
             if (has_children) {
                 zox_children_end(children);
@@ -203,7 +211,7 @@ static void hierarchy_spawn_event(iter* it) {
 
 
 static byte hierarchy_shows_children(ecs* world, entity list, entity parent) {
-    return zox_is_scene_root(world, parent) || zox_is_linked(world, list, Unfolded, parent);
+    return hierarchy_root_entity(world, list, parent) || zox_is_linked(world, list, Unfolded, parent);
 }
 
 // A child added to or removed from a shown row (unfolded, or a root's fold arrow) refreshes the tree.
@@ -215,7 +223,7 @@ static void hierarchy_child_event(iter* it) {
     }
     for (int i = 0; i < it->count; i++) {
         const entity parent = zox_get_parent(world, it->entities[i]);
-        if (!zox_valid(parent) || !hierarchy_row_entity(world, it->entities[i])) {
+        if (!zox_valid(parent) || !hierarchy_row_entity(world, list, it->entities[i])) {
             continue;
         }
         const entity grand = zox_get_parent(world, parent);
@@ -225,3 +233,4 @@ static void hierarchy_child_event(iter* it) {
         }
     }
 }
+
