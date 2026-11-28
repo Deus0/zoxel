@@ -29,34 +29,3 @@ entity spawn_player_menu_crafting(ecs* world, entity player) {
     zox_add(e, MenuCrafting);
     return e;
  }
-
-
-/*entity spawn_player_menu_crafting(ecs* world, entity player) {
-    entity canvas = zox_get_link(world, player, CanvasLink);
-    entity character = zox_get_link(world, player, CharacterLink);
-    int2 canvas_size = zox_getv(canvas, LayoutSize);
-    if (!zox_has(character, CraftLinks)) {
-        return 0;
-    }
-    SpawnWindowUsers data = get_default_spawn_window_users_data(
-        world,
-        prefab_menu_crafting,
-        character,
-        canvas,
-        canvas_size
-    );
-    data.header_zext.text = "Craft";
-    data.element.prefab = prefab_menu_crafting;
-    data.window.user_links_id = zox_id(CraftLinks);
-    data.frame.texture.fill_color = default_fill_color_frame_crafting;
-
-    FrameTextureData texture = (FrameTextureData) {
-        .fill_color = window_fill,
-        .outline_color = window_outline
-    };
-
-    const CraftLinks* links = zox_get(character, CraftLinks);
-    entity3 spawns[links->length];
-    return 0;
-}
-*/
