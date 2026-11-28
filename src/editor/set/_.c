@@ -1,4 +1,5 @@
 byte editor_font_thickness = 4;
+byte editor_button_corner = 3;   // a row's corner cut, smaller than a game button's
 // GitHub's dark theme: canvas #0d1117, panels #161b22, borders #30363d, text #e6edf3, muted #7d8590, accent #1f6feb
 color editor_window_fill = (color) { 13, 17, 23, 245 };
 color editor_window_outline = (color) { 48, 54, 61, 255 };

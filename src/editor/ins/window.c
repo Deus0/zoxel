@@ -37,9 +37,9 @@ entity4 spawn_editor_window(
     window_dockable(world, e4.x, header);
     // tighter rows than a game menu's: more fit in the editor's windows
     const entity list = e4.w;
-    zox_setv(list, TextPadding, ((byte2) { 3 * ui_scale, 1 * ui_scale }));
+    zox_setv(list, TextPadding, ((byte2) { 4 * ui_scale, 2 * ui_scale }));
     zox_setv(list, ListMargins, ((byte2) { 4 * ui_scale, 2 * ui_scale }));
-    zox_setv(list, ListPadding, ((byte2) { 0, 1 * ui_scale }));
+    zox_setv(list, ListPadding, ((byte2) { 0, 2 * ui_scale }));
     spawn_window_search_button(world, e4.x, e4.y);
     zox_add(e4.x, EditorThemeDirty);
     zox_add(list, Dirty);   // last: a docked window fits its insides once its parts are there (window_list_layout_event)

@@ -1,6 +1,8 @@
 # Done
 
 ## 2026-11-28
+-x Editor list rows: a gap between rows, more padding inside them, smaller corners (editor_button_corner 3, a game
+  button's 8)
 -x Inspector rows' type colours were high contrast: a hint of each hue (30%) over the theme's outline now, tags teal
   (they shared green with uints); the name, parent and children rows are plain. Rows already had tooltips (name, type)
 -x The docked inspector's rows covered its header, and header buttons overlapped again after the mask change: an

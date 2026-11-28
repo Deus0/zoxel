@@ -68,6 +68,7 @@ entity spawn_editor_list_row(
         outline,
         editor_color_font,
         editor_color_fonto);
+    zox_setv(e2.x, FrameCorner, editor_button_corner);
     zox_setv(e2.x, Layer, layer);
     zox_setv(e2.x, ChildIndex, index);    // lists lay out by ChildIndex
     zox_setv(e2.y, Layer, layer + 1);
