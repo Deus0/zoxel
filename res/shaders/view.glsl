@@ -14,7 +14,8 @@ layout(std140) uniform RenderView {
 };
 
 const float FOG_BASE = 16.0;    // metres up: below it the fog is its thickest
-const float FOG_HEIGHT = 40.0;  // above that it halves each this much higher: hill tops and clouds fade less
+const float FOG_HEIGHT = 20.0;  // above that it halves each this much higher: hill tops and clouds fade less (clouds
+                                //  at 160m about 1/20th, as their own lighter fog was)
 const float FOG_HAZE = 0.1;     // a little even close by
 
 // the sky's light on a lit colour, glow its glow (0 to 1): a glowing colour keeps its own, at night too

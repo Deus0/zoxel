@@ -1,6 +1,6 @@
 // tst: sky_clouds, clouds over the realm (src/sky): its children, high above, drifting with the wind
 //  - the player lifted, its body hidden and looking up, a screenshot (tst/sky_clouds.ppm) to look at, it logs
-//    how much of a band above the middle is cloud (near white)
+//    how much of a band above the middle is cloud (clearly brighter than its sky)
 //  - run: bash bsh/tst.sh sky_clouds, add --1080p to see it at the game's size (no hud: tst.sh adds --nohud)
 extern char zox_screenshot_request[256];
 byte zox_tst_clouds_stage = 0;
@@ -71,7 +71,7 @@ byte zox_tst_sky_clouds_ready(ecs* world) {
     return !zox_screenshot_request[0];
 }
 
-// the share of grey (cloud) pixels in a band above the middle of the screenshot, -1 without one
+// the share of cloud pixels (brighter than its sky) in a band above the middle of the screenshot, -1 without one
 float zox_tst_clouds_share(const char* path) {
     FILE* file = fopen(path, "rb");
     if (!file) {
@@ -85,21 +85,29 @@ float zox_tst_clouds_share(const char* path) {
         return -1;
     }
     const int band_from = height * 15 / 100, band = height * 45 / 100;
-    int cloud = 0, total = 0;
+    const int pixels = (band - band_from) * width;
+    byte* bright = malloc(pixels > 0 ? pixels : 1);
+    int total = 0, cloud = 0;
+    int counts[256] = { 0 };
     byte rgb[3];
     fseek(file, (long) band_from * width * 3, SEEK_CUR);
-    for (int y = band_from; y < band; y++) {
-        for (int x = 0; x < width; x++) {
-            if (fread(rgb, 1, 3, file) != 3) {
-                break;
-            }
-            total++;
-            // grey: clouds fade into the fog, the sky is a colour (red, purple, green on alien realms)
-            const int high = rgb[0] > rgb[1] ? (rgb[0] > rgb[2] ? rgb[0] : rgb[2]) : (rgb[1] > rgb[2] ? rgb[1] : rgb[2]);
-            const int low = rgb[0] < rgb[1] ? (rgb[0] < rgb[2] ? rgb[0] : rgb[2]) : (rgb[1] < rgb[2] ? rgb[1] : rgb[2]);
-            cloud += high > 90 && (high - low) * 4 < high;
+    for (int i = 0; i < pixels; i++) {
+        if (fread(rgb, 1, 3, file) != 3) {
+            break;
         }
+        bright[total] = (rgb[0] + rgb[1] + rgb[2]) / 3;
+        counts[bright[total++]]++;
     }
+    // clouds: clearly brighter than the band's middle (its sky): they take the sky's light now (pink in a red
+    //  dawn), not grey
+    int median = 0;
+    for (int seen = 0; median < 255 && seen + counts[median] < total / 2; median++) {
+        seen += counts[median];
+    }
+    for (int i = 0; i < total; i++) {
+        cloud += bright[i] > median * 1.15f + 6;
+    }
+    free(bright);
     fclose(file);
     return total ? 100.0f * cloud / total : 0;
 }
