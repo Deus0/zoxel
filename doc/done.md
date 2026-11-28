@@ -1,6 +1,11 @@
 # Done
 
 ## 2026-11-28
+-x Moving the files window flickered its rows: a mask moved (its Position2 set) added the core Dirty to its list, and
+  the files list rebuilt all its rows on Dirty, every frame of the move. Masks update their clips directly now
+  (mask_layout_changed). Two things leaned on that stray rebuild: a window's resize handles fit its dock as they're
+  added (spawned after its first layout), and a respawned list slot is filled again when its fold arrow arrives
+  (fold_arrow_added_event). tst files_move
 -x Light character models from the environment, like minivoxes (2026-11-28): each character's Brightness is the light
   at its head in its chunk's light octree, eased; its skeleton drawn by it, the sky's light on top (tst character_light)
 -x Docked editor windows: the inspector couldn't shrink, window_rows_fit grew a docked window to its widest row

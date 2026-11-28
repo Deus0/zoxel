@@ -136,6 +136,9 @@ static void hierarchy_slot_event(iter* it) {
         const entity list = zox_get_parent(world, row);
         const entity label = zox_get_child_by_id(world, row, zox_id(TextData));
         const entity fold = zox_get_child_by_id(world, row, zox_id(FoldArrow));
+        if (!label || !fold) {
+            continue;   // still spawning: its arrow's arrival fills it (fold_arrow_added_event)
+        }
         zox_muter(label, TextData, data);
         if (!data->value) {
             // Reserve the label buffer when the slot is created, including initially empty slots.

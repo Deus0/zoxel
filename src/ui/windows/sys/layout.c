@@ -9,10 +9,22 @@ static byte window_resize_handle_docked(float2 handle, float2 dock) {
     return float2_equals(handle, ((float2) { 1 - dock.x, 0.5f }));
 }
 
+// a resize handle shows and drags unless its window is docked and it isn't on its inner edge
+static void window_resize_handle_state(ecs* world, entity window, entity handle) {
+    const byte shown = !zox_has(window, Docked) ||
+        window_resize_handle_docked(zox_getv(handle, Anchor), zox_getv(window, Anchor));
+    if (shown != zox_has(handle, Dragable)) {
+        zox_setv(handle, RenderDisabled, !shown);
+        if (shown) {
+            zox_add(handle, Dragable);
+        } else {
+            zox_remove(handle, Dragable);
+        }
+    }
+}
+
 // fits a window's 8 resize handles (ins/resize.c) to its size; docked, only its inner edge's shows and drags
 static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
-    const byte docked = zox_has(window, Docked);
-    const float2 dock = zox_getv(window, Anchor);
     iter it2 = zox_children(world, window);
     while (zox_children_next(it2)) {
         for (int j = 0; j < it2.count; j++) {
@@ -20,21 +32,23 @@ static void window_resize_handles_fit(ecs* world, entity window, int2 size) {
             if (!zox_has(handle, WindowResizeHandle)) {
                 continue;
             }
-            const float2 anchor = zox_getv(handle, Anchor);
-            const int2 handle_size = window_resize_handle_size(size, anchor);
+            const int2 handle_size = window_resize_handle_size(size, zox_getv(handle, Anchor));
             if (!int2_equals(zox_getv(handle, LayoutSize), handle_size)) {
                 zox_setv(handle, LayoutSize, handle_size);
             }
             zox_add(handle, LayoutSizeDirty);   // placed on the window's new edges
-            const byte shown = !docked || window_resize_handle_docked(anchor, dock);
-            if (shown != zox_has(handle, Dragable)) {
-                zox_setv(handle, RenderDisabled, !shown);
-                if (shown) {
-                    zox_add(handle, Dragable);
-                } else {
-                    zox_remove(handle, Dragable);
-                }
-            }
+            window_resize_handle_state(world, window, handle);
+        }
+    }
+}
+
+// a handle spawned after its window's layout (in its spawn frame, its children are deferred) fits its window's dock
+static void window_resize_handle_added(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        const entity window = zox_get_parent(world, it->entities[i]);
+        if (zox_valid(window) && zox_has(window, Anchor)) {
+            window_resize_handle_state(world, window, it->entities[i]);
         }
     }
 }

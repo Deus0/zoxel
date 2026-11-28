@@ -49,11 +49,25 @@ static void set_fold_arrow(ecs* world, entity arrow, entity target, byte open, b
         return;
     }
     const entity image = zox_get_child_by_id(world, arrow, zox_id(TextureData));
+    if (!image) {
+        return;     // still spawning, with the texture it was spawned with
+    }
     const TextureData* source = zox_get(fold_arrow_textures[!!open], TextureData);
     zox_muter(image, TextureData, texture);
     const size_t bytes = source->length * sizeof(color);
     if (memcmp(texture->value, source->value, bytes)) {
         memcpy(texture->value, source->value, bytes);
         zox_add(image, TextureDirty);
+    }
+}
+
+// an arrow spawned after its row was filled (a respawned slot's, deferred) has its row fill it again
+static void fold_arrow_added_event(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        const entity row = zox_get_parent(world, it->entities[i]);
+        if (zox_valid(row) && zox_has(row, ListSlot)) {
+            zox_add(row, Dirty);
+        }
     }
 }

@@ -1,12 +1,3 @@
-// Position2 is modified by the transform pass after layout. Size changes can also
-// affect a mask whose centre stays fixed.
-static void mask_layout_changed(iter* it) {
-    zox_sys_world();
-    for (int i = 0; i < it->count; i++) {
-        zox_add(it->entities[i], Dirty);
-    }
-}
-
 static void update_masks(ecs* world, entity e, byte apply_mask) {
     const entity canvas = zox_has(e, Canvas) ? e : zox_get_parent_by_id(world, e, zox_id(Canvas));
     const int2 canvas_size = canvas ? zox_getv(canvas, LayoutSize) : int2_zero;
@@ -49,6 +40,15 @@ static void mask_removed(iter* it) {
     zox_sys_world();
     for (int i = 0; i < it->count; i++) {
         update_masks(world, it->entities[i], 0);
+    }
+}
+
+// Position2 is modified by the transform pass after layout, a size change moves its edges too: its clips update
+//  here, not by the core Dirty (a list's Dirty rebuilds its rows: a moved files window respawned them every frame)
+static void mask_layout_changed(iter* it) {
+    zox_sys_world();
+    for (int i = 0; i < it->count; i++) {
+        update_masks(world, it->entities[i], 1);
     }
 }
 
