@@ -2,7 +2,7 @@
 //  - the player's game; a sealed tunnel two tall under the ground (terrain tst glow_relight's room), a glow stone at
 //    one end, a door across it (its base and filler), the far side past it
 //  - shut: the far side dark; opened (door_toggle): lit through it; shut again: dark again, the glow side still lit
-//  - the door's block vox brightness (get_block_vox_brightness): shut, its darker side's (the far one's), not the glow
+//  - the door's block vox brightness (get_block_vox_brightness, blocks' light: the glow stone's): shut, its darker side's (the far one's), not the glow
 //    side's (lit by its brightest side it glowed in a dark room); open, lit by the glow
 //  - run: bash bsh/tst.sh door_light
 #define zox_tst_door_light_x 3      // the door's x along the tunnel, the glow stone at 5, the far side at 1
@@ -18,8 +18,8 @@ static inline void zox_tst_door_light_read(ecs* world, byte stage) {
     const byte3 a = zox_tst_door_light_at;
     zox_tst_door_light_far[stage] = zox_tst_room_light(world, zox_tst_door_light_chunk, (byte3) { a.x + 1, a.y - 1, a.z });
     zox_tst_door_light_near[stage] = zox_tst_room_light(world, zox_tst_door_light_chunk, (byte3) { a.x + 4, a.y, a.z });
-    const float base = get_block_vox_brightness(world, zox_tst_door_light_chunk, (byte3) { a.x + zox_tst_door_light_x, a.y - 1, a.z });
-    const float top = get_block_vox_brightness(world, zox_tst_door_light_chunk, (byte3) { a.x + zox_tst_door_light_x, a.y, a.z });
+    const float base = get_block_vox_brightness(world, zox_tst_door_light_chunk, (byte3) { a.x + zox_tst_door_light_x, a.y - 1, a.z }, zox_light_block);
+    const float top = get_block_vox_brightness(world, zox_tst_door_light_chunk, (byte3) { a.x + zox_tst_door_light_x, a.y, a.z }, zox_light_block);
     zox_tst_door_light_vox[stage] = base > top ? base : top;
 }
 

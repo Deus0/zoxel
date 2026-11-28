@@ -18,6 +18,7 @@ void zox_systems_characters3(ecs *world) {
         zoxp_update,
         [in] transforms3.Position3D,
         [out] rendering.Brightness,
+        [out] rendering.BlockBrightness,
         [none] Character3
     );
     zox_system(

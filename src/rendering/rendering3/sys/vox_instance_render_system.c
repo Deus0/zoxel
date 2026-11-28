@@ -143,6 +143,7 @@ void vox_instance_render_system(iter* it) {
     zox_sys_in(TransformMatrix);
     zox_sys_in(RenderDisabled);
     zox_sys_in(Brightness);
+    zox_sys_in(BlockBrightness);
     camera_filtering_begin();
     guint material_link = zox_getv(material_vox_instance, MaterialGPULink);
     if (!material_link) {
@@ -166,6 +167,7 @@ void vox_instance_render_system(iter* it) {
         zox_sys_i(RenderDisabled, disabled);
         zox_sys_i(TransformMatrix, matrix);
         zox_sys_i(Brightness, brightness);
+        zox_sys_i(BlockBrightness, block_brightness);
         if (disabled->value) {
             continue;
         }
@@ -193,9 +195,10 @@ void vox_instance_render_system(iter* it) {
             }
         }
         // model matrices, the shaders apply the camera (sway moves verts in world space first)
-        //  - the unused bottom row x carries the brightness, i.e. the light at a minivox
+        //  - the unused bottom row carries its light: x the sky's (Brightness), y blocks' (BlockBrightness)
         float4x4 instance_matrix = matrix->value;
         instance_matrix.x.w = brightness->value;
+        instance_matrix.y.w = block_brightness->value;
         float4x4_array_d_add(zox_instance_commands[index].transforms, instance_matrix);
     }
     // Static vox instances

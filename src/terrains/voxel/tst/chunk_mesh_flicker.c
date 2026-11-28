@@ -177,7 +177,7 @@ static inline void zox_tst_cmf_mesh_light(ecs* world, entity mesh, entity chunk,
     const MeshColors* colors = zox_get(mesh, MeshColors);
     for (int i = 0; colors->value && i < colors->length; i++) {
         const color c = colors->value[i];
-        *sum += (c.r + c.g + c.b) / 3.0;
+        *sum += c.r > c.g ? c.r : c.g;     // its light: the brighter of the sky's (r) and blocks' (g)
         (*count)++;
     }
 }

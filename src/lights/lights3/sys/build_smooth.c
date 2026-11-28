@@ -123,13 +123,14 @@ void smooth_face_lights(
     }
 }
 
-static inline byte smooth_grid_light(const smooth_grid* grid, byte3 position, sbyte3 offset, byte oob) {
+// a light from values, the grid's sky's (lights) or blocks' (block)
+static inline byte smooth_grid_light(const smooth_grid* grid, const byte* values, byte3 position, sbyte3 offset, byte oob) {
     const int x = position.x + offset.x + 1, y = position.y + offset.y + 1, z = position.z + offset.z + 1;
     const int last = grid->length - 1;
     if (!grid->present[OCTREE_INDEX(!x ? -1 : x == last, !y ? -1 : y == last, !z ? -1 : z == last)]) {
         return oob;
     }
-    return grid->lights[(x * grid->length + y) * grid->length + z];
+    return values[(x * grid->length + y) * grid->length + z];
 }
 
 static inline byte smooth_grid_voxel(const smooth_grid* grid, byte3 position, sbyte3 offset) {
@@ -142,22 +143,24 @@ static inline byte smooth_grid_solid(const smooth_grid* grid, const byte* solidi
     return voxel && solidity[voxel - 1];
 }
 
-// smooth_face_lights from the grid, the same lights (tst smooth_lights compares them)
+// smooth_face_lights from the grid, the same lights (tst smooth_lights compares them); values the grid's sky's
+//  (lights, past the world the sky above, dark elsewhere) or blocks' (block, none past it)
 static inline void smooth_face_lights_grid(
     const smooth_grid* grid,
+    const byte* values,
     const byte* solidity,
     byte3 position,
     byte direction,
     byte* vertex_lights)
 {
-    const byte oob = direction == direction_up ? sunlight : darklight;
+    const byte oob = values != grid->lights ? 0 : direction == direction_up ? sunlight : darklight;
     const sbyte3 face = neighbor_offsets[direction];
     const sbyte3 a = smooth_face_axes[direction][0];
     const sbyte3 b = smooth_face_axes[direction][1];
     byte light[3][3], solid_a[2], solid_b[2];
     for (sbyte sa = -1; sa <= 1; sa++)
     for (sbyte sb = -1; sb <= 1; sb++) {
-        light[sa + 1][sb + 1] = smooth_grid_light(grid, position, smooth_offset(face, a, sa, b, sb), oob);
+        light[sa + 1][sb + 1] = smooth_grid_light(grid, values, position, smooth_offset(face, a, sa, b, sb), oob);
     }
     if (smooth_is_seal(solidity, smooth_grid_voxel(grid, position, face))) {
         byte open[3][3];
@@ -267,6 +270,7 @@ void build_smooth_lights_system(iter* it) {
         const LightOctree* block_lights[27];
         fetch_nearby_block_lights(world, nearby_chunks, block_lights);
         grid.block_lights = block_lights;
+        grid.block_apart = 1;   // its vertices keep both: r the sky's, g blocks' (textured3D.vert)
         const byte has_grid = smooth_grid_fill(&grid, lights, lights_locks, voxels, voxels_locks, depth->value);
         const entity manager = zox_get_link(world, chunk, BlockManagerLink);
         const byte block_material = zox_has(material, BlockMaterial) ? zox_getv(material, BlockMaterial) : zox_block_material_solid;
@@ -299,20 +303,27 @@ void build_smooth_lights_system(iter* it) {
                         }
                         const byte3 position = (byte3) { x, y, z };
                         byte vertex_lights[4];
+                        byte vertex_blocks[4] = { 0, 0, 0, 0 };
                         if (has_grid) {
-                            smooth_face_lights_grid(&grid, solidity, position, d, vertex_lights);
+                            smooth_face_lights_grid(&grid, grid.lights, solidity, position, d, vertex_lights);
+                            if (grid.block) {
+                                smooth_face_lights_grid(&grid, grid.block, solidity, position, d, vertex_blocks);
+                            }
                         } else {
                             smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, position, depth->value, d, vertex_lights);
                         }
                         const byte glow = block_glows[faces.voxels[c]];
+                        // r the sky's light, g blocks': the shader takes the brighter of the sky's (in its light) and
+                        //  blocks' (view.glsl zox_light)
                         for (byte v = 0; v < voxel_face_vertices_length; v++) {
-                            colors->value[ccount++] = (color) { vertex_lights[v], vertex_lights[v], vertex_lights[v], glow };
+                            colors->value[ccount++] = (color) { vertex_lights[v], vertex_blocks[v], vertex_blocks[v], glow };
                         }
                     }
                 }
             }
         }
         free(grid.lights);
+        free(grid.block);
         zox_remove(e, BuildMeshColors);
         if (ccount > colors->length) {
             // stale: rebuilt (it lights again after), the voxels changed since

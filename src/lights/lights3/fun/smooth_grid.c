@@ -10,8 +10,9 @@ typedef struct {
     byte voxels_present[27];    // which have voxels, a missing one is air (gpu meshing culls faces into it)
     byte use_neighbor_depths;
     byte voxel_depths[27];      // a neighbour can draw just its root (depth 0)
-    const LightOctree** block_lights;   // the 27's blocks' light (fetch_nearby_block_lights), NULL none: the
-                                        //  brighter of it and the sky's (under the same locks)
+    const LightOctree** block_lights;   // the 27's blocks' light (fetch_nearby_block_lights), NULL none
+    byte block_apart;   // blocks' light kept in its own grid (block), else the brighter of it and the sky's in lights
+    byte* block;        // blocks' light (block_apart), NULL while none of the 27 has any; 0 where none
 } smooth_grid;
 
 // a tree with light in it: not one closed node at darklight (blocks' light in a chunk without emitters)
@@ -54,19 +55,26 @@ static inline byte smooth_grid_fill(
             spin_lock(lights_locks[i]);
             octree_fill_grid(lights[i], sizeof(LightOctree), octree_type_offset_LightOctree, 0, depth, int3_zero, origin,
                 grid->lights, grid->length, 1);
-            // blocks' light: the brighter, its own grid then the max (only chunks with some)
+            // blocks' light (only chunks with some): its own grid, or the brighter of it and the sky's
             const LightOctree* glow = grid->block_lights ? grid->block_lights[i] : NULL;
             if (smooth_grid_lit(glow)) {
-                byte* block = calloc(padded, 1);
+                byte* block = grid->block_apart ? grid->block : NULL;
+                if (grid->block_apart && !block) {
+                    block = grid->block = calloc(padded, 1);
+                } else if (!grid->block_apart) {
+                    block = calloc(padded, 1);
+                }
                 if (block) {
                     octree_fill_grid(glow, sizeof(LightOctree), octree_type_offset_LightOctree, 0, depth, int3_zero, origin,
                         block, grid->length, 1);
-                    for (size_t c = 0; c < cells; c++) {
-                        if (block[c] > grid->lights[c]) {
-                            grid->lights[c] = block[c];
+                    if (!grid->block_apart) {
+                        for (size_t c = 0; c < cells; c++) {
+                            if (block[c] > grid->lights[c]) {
+                                grid->lights[c] = block[c];
+                            }
                         }
+                        free(block);
                     }
-                    free(block);
                 }
             }
             spin_unlock(lights_locks[i]);

@@ -69,6 +69,7 @@ void skeleton3_render_system(iter* it) {
         // its character's light (characters3/sys/light.c), 1 without one
         const entity owner = zox_get_parent(world, skeleton);
         zox_gpu_float(material_attributes->brightness, zox_valid(owner) && zox_has(owner, Brightness) ? zox_getv(owner, Brightness) : 1);
+        zox_gpu_float(material_attributes->block_brightness, zox_valid(owner) && zox_has(owner, BlockBrightness) ? zox_getv(owner, BlockBrightness) : 0);
         // get local bone matrix, local to transform
         // Cache bone data to send to GPU
         float4x4 inverse = float4x4_inverse(matrix->value);

@@ -103,7 +103,7 @@ static inline void vox_render_meshes(iter* it, byte see_through) {
             continue;
         }
         const MaterialColoredLit3D* lit = zox_has(materials[g], MaterialColoredLit3D) ? zox_get(materials[g], MaterialColoredLit3D) : NULL;
-        float last_brightness = -1;
+        float last_brightness = -1, last_block = -1;
         for (int i = 0; i < it->count; i++) {
             if (groups[i] != g) {
                 continue;
@@ -120,6 +120,11 @@ static inline void vox_render_meshes(iter* it, byte see_through) {
             if (brightness != last_brightness) {
                 last_brightness = brightness;
                 zox_gpu_float(attributes->brightness, brightness);
+            }
+            const float block = zox_has(e, BlockBrightness) ? zox_getv(e, BlockBrightness) : 0;    // blocks' light on it
+            if (block != last_block) {
+                last_block = block;
+                zox_gpu_float(attributes->block_brightness, block);
             }
             zox_gpu_float4x4(attributes->mvp_matrix, float4x4_multiply(matrix->value, render_camera_matrix));
             if (lit) {

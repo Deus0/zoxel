@@ -128,6 +128,7 @@ void zox_systems_basics3(ecs* world) {
         [in] transforms.TransformMatrix,
         [in] rendering.RenderDisabled,
         [in] rendering.Brightness,
+        [in] rendering.BlockBrightness,
         [none] rendering.RendererInstance
     );
 #endif

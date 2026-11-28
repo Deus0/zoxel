@@ -28,6 +28,7 @@ zox_tag(ActiveMesh);
 // Properties
 zoxc_int2(TextureSize);
 zoxc_float(Brightness);
+zoxc_float(BlockBrightness);    // blocks' light on it (glow stones, lamps), 0 to 1: Brightness is the sky's (doc/plans/day_night.md)
 zoxc_float(Alpha);
 zoxc_byte(RenderOrder);
 zoxc_byte(MeshAlignment);
@@ -129,6 +130,7 @@ void zox_components_rendering(ecs *world) {
     zoxd_byte(RenderDistance);
     zoxd_byte(RenderDisabled);
     zoxd_float(Brightness);
+    zoxd_float(BlockBrightness);
     zoxd_float(Alpha);
     // Links
     zoxd_byte(ShaderSourceIndex);

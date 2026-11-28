@@ -62,7 +62,7 @@ static inline void zox_build_voxel_face(
     mesh_add_face(mesh->indicies, mesh->vertices, face_indicies, face_verts, position, scale.x);
     for (byte i = 0; i < 4; i++) {
         float2_array_d_add(mesh->uvs, face_uvs[i]);
-        color_array_d_add(mesh->color_rgbs, color_glow(color_rgb_white, 0));
+        color_array_d_add(mesh->color_rgbs, (color) { 255, 0, 0, 0 });    // the sky's full light, no blocks', till lit
     }
 }
 

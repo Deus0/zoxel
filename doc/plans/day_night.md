@@ -107,6 +107,19 @@ So: split. Light flooding grows a few percent; mesh light colours only where the
 - Cost, perf_stream --release seed 1234, the same session: light systems 2.17ms to 2.42ms a frame (mesh light
   colours 1.41 to 1.61ms, the second grid; flooding 0.46 to 0.49ms, flood steps +3.2%). To optimise after.
 
+### Split, part B
+
+- CPU terrain (2026-11-28): the smooth grid keeps blocks' light apart (`block_apart`), a face's vertices both:
+  r the sky's, g blocks' (build_smooth.c). textured3D.vert takes view.glsl's `zox_light(sky, block)`: the
+  brighter of the sky's in its light and blocks'. Plain textured meshes are (255, 0, 0): the sky's full, no
+  blocks'. tst glow_view checks blocks' light is in its tree and in the mesh colours.
+- Vox models (2026-11-28): `BlockBrightness` beside `Brightness` (the sky's) on block voxes, minivox instances
+  and characters; set per channel (`get_block_vox_light`'s channel, `chunk_light_at`'s). colored3D and bone take
+  `brightness` and `block_brightness` in their vertex stage, vox instances the matrix's [0][3] and [1][3]; all
+  `zox_lit(sky, block, glow)` (view.glsl). A lamp's light on a character or a minivox stays at night too.
+- Next: gpu meshes (a second corner light uint a vertex, blocks' grid uploaded): vulkan's terrain still takes the
+  brighter of the two, torch light there dims at night.
+
 ## Steps
 
 1. Done: `Sun` and the time of day from the realm clock, the tint, the sky, the fog. tsts `day_night`, `sky_day`.

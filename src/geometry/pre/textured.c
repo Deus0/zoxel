@@ -20,7 +20,7 @@ entity spawn_prefab_cube_textured(
     prefab_set_mesh_colors_rgb(
         world,
         e,
-        (color_rgb) { 255, 255, 255 },
+        (color_rgb) { 255, 0, 0 },     // its light: the sky's full, no blocks' (textured3D.vert)
         cube2_vertices_length);
     // UVs
     zox_add(e, MeshUVs);

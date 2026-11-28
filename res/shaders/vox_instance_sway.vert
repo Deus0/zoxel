@@ -32,6 +32,8 @@ void main() {
     mat4 model_matrix = matrices[gl_InstanceID];
     float instance_brightness = model_matrix[0][3];
     model_matrix[0][3] = 0.0;
+    float instance_block = model_matrix[1][3];    // blocks' light on it (BlockBrightness)
+    model_matrix[1][3] = 0.0;
     vec4 world_position = model_matrix * vec4(vertex_position, 1.0);
     // 0 at mesh bottom, 1 at top - bottom verts stay planted
     float top = clamp((vertex_position.y - sway_data.z) / max(sway_data.w, 0.0001), 0.0, 1.0);
@@ -43,5 +45,5 @@ void main() {
         sway_noise(wind + vec2(17.3, 5.1))) * 2.0 - 1.0;
     world_position.xz += sway * sway_data.y * top;
     gl_Position = camera_matrix * world_position;
-    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW) * zox_sky_light(vertex_color.a);
+    vertex_color_frag = vertex_color.rgb * (1.0 + vertex_color.a * GLOW) * zox_lit(instance_brightness, instance_block, vertex_color.a);
 }

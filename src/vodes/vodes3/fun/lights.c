@@ -47,30 +47,28 @@ static inline byte block_vox_stops(const block_vox_lighting* l, const VoxelNode*
     return voxels && light_stops(l->solidity, actives, l->depth, getv_VoxelNode(voxels, l->depth, position), position);
 }
 
-// the brighter of a voxel's sky and blocks' light (blocks' tree NULL: none)
-static inline byte block_vox_light_at(const LightOctree* sky, const LightOctree* block, byte depth, byte3 position) {
-    const byte light = getv_LightOctree(sky, depth, position);
-    const byte glow = block ? getv_LightOctree(block, depth, position) : 0;
-    return glow > light ? glow : light;
+// a voxel's light in a tree, 0 without one (a chunk without blocks' light)
+static inline byte block_vox_light_at(const LightOctree* lights, byte depth, byte3 position) {
+    return lights ? getv_LightOctree(lights, depth, position) : 0;
 }
 
 // a block vox's light: the brightest of its own voxel and its 6 sides; one that stops light (a shut door, the filler
 //  over it) holds none of its own, so the darkest of its sides light passes through (a door between a sunlit outside
 //  and a dark room lit as the room: lit by the brightest it glowed inside); sides past the chunk edge from its neighbor
-static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 position) {
+static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 position, byte channel) {
+    const byte block = channel == zox_light_block;
+    const LightOctree* own = block ? l->block_lights : l->lights;
     const byte shut = block_vox_stops(l, l->voxels, l->actives, position);
-    byte light = shut ? 255 : block_vox_light_at(l->lights, l->block_lights, l->depth, position);
+    byte light = shut ? 255 : block_vox_light_at(own, l->depth, position);
     byte found = !shut;
     const short length = octree_size(l->depth);
     for (byte d = 0; d < 6; d++) {
         int3 p = move_position(byte3_to_int3(position), d);
-        const LightOctree* tree = l->lights;
-        const LightOctree* block_tree = l->block_lights;
+        const LightOctree* tree = own;
         const VoxelNode* voxels = l->voxels;
         const ActiveOctree* actives = l->actives;
         if (p.x < 0 || p.x >= length || p.y < 0 || p.y >= length || p.z < 0 || p.z >= length) {
-            tree = l->neighbor_lights[d];
-            block_tree = l->neighbor_block_lights[d];
+            tree = block ? l->neighbor_block_lights[d] : l->neighbor_lights[d];
             voxels = l->neighbor_voxels[d];
             actives = l->neighbor_actives[d];
             if (!tree) {
@@ -79,7 +77,7 @@ static inline byte get_block_vox_light(const block_vox_lighting* l, byte3 positi
             p = reverse_position(p, d, length);
         }
         const byte3 side = int3_to_byte3(p);
-        const byte side_light = block_vox_light_at(tree, block_tree, l->depth, side);
+        const byte side_light = block_vox_light_at(tree, l->depth, side);
         if (!shut) {
             if (side_light > light) {
                 light = side_light;
@@ -99,16 +97,26 @@ static inline float block_vox_light_to_brightness(byte light) {
     return light / 255.0f;
 }
 
-// brightness of a block vox at position in chunk, 1 if the chunk has no lights
-float get_block_vox_brightness(ecs* world, entity chunk, byte3 position) {
+// a block vox's brightness at position in chunk in a channel's light (zox_light_sky its Brightness, zox_light_block
+//  its BlockBrightness), the sky's full and no blocks' if the chunk has no lights
+float get_block_vox_brightness(ecs* world, entity chunk, byte3 position, byte channel) {
     block_vox_lighting l;
     if (!block_vox_lighting_begin(world, chunk, &l)) {
-        return 1;
+        return channel == zox_light_block ? 0 : 1;
     }
-    return block_vox_light_to_brightness(get_block_vox_light(&l, position));
+    return block_vox_light_to_brightness(get_block_vox_light(&l, position, channel));
 }
 
-// sets the Brightness of every block vox in chunk from its lights
+// a block vox at position in chunk lit: its Brightness (the sky's light) and BlockBrightness (blocks'), the sky's
+//  full and no blocks' if the chunk has no lights
+void set_block_vox_brightness(ecs* world, entity chunk, byte3 position, entity e) {
+    block_vox_lighting l;
+    const byte lit = block_vox_lighting_begin(world, chunk, &l);
+    zox_setv(e, Brightness, lit ? block_vox_light_to_brightness(get_block_vox_light(&l, position, zox_light_sky)) : 1);
+    zox_setv(e, BlockBrightness, lit ? block_vox_light_to_brightness(get_block_vox_light(&l, position, zox_light_block)) : 0);
+}
+
+// sets the Brightness and BlockBrightness of every block vox in chunk from its lights
 void relight_block_voxes(ecs* world, entity chunk) {
     block_vox_lighting l;
     const byte lit = block_vox_lighting_begin(world, chunk, &l);
@@ -122,9 +130,14 @@ void relight_block_voxes(ecs* world, entity chunk) {
             if (!zox_has(e2, VoxelLocalPosition) || !zox_has(e2, Brightness)) {
                 continue;
             }
-            const float brightness = lit ? block_vox_light_to_brightness(get_block_vox_light(&l, zox_getv(e2, VoxelLocalPosition))) : 1;
+            const byte3 at = zox_getv(e2, VoxelLocalPosition);
+            const float brightness = lit ? block_vox_light_to_brightness(get_block_vox_light(&l, at, zox_light_sky)) : 1;
             if (zox_getv(e2, Brightness) != brightness) {
                 zox_setv(e2, Brightness, brightness);
+            }
+            const float glow = lit ? block_vox_light_to_brightness(get_block_vox_light(&l, at, zox_light_block)) : 0;
+            if (zox_has(e2, BlockBrightness) && zox_getv(e2, BlockBrightness) != glow) {
+                zox_setv(e2, BlockBrightness, glow);
             }
         }
     }

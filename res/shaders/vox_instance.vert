@@ -1,6 +1,6 @@
 // Vox Instance - static vox meshes drawn many times (minivoxes, characters)
 // NOTE: matrices are model matrices, camera_matrix is applied here
-// NOTE: a model matrix's bottom row is unused (0 0 0 1), [0][3] carries the instance brightness
+// NOTE: a model matrix's bottom row is unused (0 0 0 1), [0][3] carries the instance brightness (the sky's light), [1][3] blocks'
 //  - set by vox_instance_render_system from the entity's Brightness (i.e. the light at a minivox)
 layout(location=0) in vec3 vertex_position;
 layout(location=1) in vec4 vertex_color;     // its colour, its alpha its glow
@@ -16,6 +16,8 @@ void main() {
     mat4 model_matrix = matrices[gl_InstanceID];
     float instance_brightness = model_matrix[0][3];
     model_matrix[0][3] = 0.0;
+    float instance_block = model_matrix[1][3];    // blocks' light on it (BlockBrightness)
+    model_matrix[1][3] = 0.0;
     gl_Position = camera_matrix * (model_matrix * vec4(vertex_position, 1.0));
-    vertex_color_frag = vertex_color.rgb * instance_brightness * (1.0 + vertex_color.a * GLOW) * zox_sky_light(vertex_color.a);
+    vertex_color_frag = vertex_color.rgb * (1.0 + vertex_color.a * GLOW) * zox_lit(instance_brightness, instance_block, vertex_color.a);
 }

@@ -65,7 +65,7 @@ void spawned_block_vox(
     // non fragmenting, like the chunk's meshes, ChildOf gave every chunk's block voxes their own tables
     zox_set_parent_non_fragment(world, e2, chunk);
     // lit like the terrain around it, block_vox_lights_system keeps it updated
-    zox_setv(e2, Brightness, get_block_vox_brightness(world, chunk, positionl));
+    set_block_vox_brightness(world, chunk, positionl, e2);
     // spawn_line3(world, spawn_data.positionf, float3_add(spawn_data.positionf, (float3) { 0, 2, 0 }), 2, 3);
 }
 

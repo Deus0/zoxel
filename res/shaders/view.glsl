@@ -18,9 +18,16 @@ const float FOG_HEIGHT = 20.0;  // above that it halves each this much higher: h
                                 //  at 160m about 1/20th, as their own lighter fog was)
 const float FOG_HAZE = 0.1;     // a little even close by
 
-// the sky's light on a lit colour, glow its glow (0 to 1): a glowing colour keeps its own, at night too
-vec3 zox_sky_light(float glow) {
-    return mix(sky_tint.xyz, vec3(1.0), clamp(glow, 0.0, 1.0));
+
+// a lit thing's light from its sky's and blocks' (0 to 1, src/lights: two trees): the brighter of the sky's, in its
+//  light now (dark at night), and blocks' (glow stones, lamps: as bright at night)
+vec3 zox_light(float sky, float block) {
+    return max(sky * sky_tint.xyz, vec3(block));
+}
+
+// a lit colour's light, glow its glow (0 to 1, its colour's alpha): a glowing colour keeps its own, at night too
+vec3 zox_lit(float sky, float block, float glow) {
+    return mix(zox_light(sky, block), vec3(1.0), clamp(glow, 0.0, 1.0));
 }
 
 // a thick fog (under water, the view fading to dark): it covers the sky, no sun glows through it

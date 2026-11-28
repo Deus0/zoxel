@@ -97,7 +97,7 @@ static inline void zox_tst_bvl_scan(ecs* world, entity* best_chunk) {
                     if (!zox_tst_bvl_is_block_vox(world, e)) {
                         continue;
                     }
-                    const float expected = get_block_vox_brightness(world, chunk, zox_getv(e, VoxelLocalPosition));
+                    const float expected = get_block_vox_brightness(world, chunk, zox_getv(e, VoxelLocalPosition), zox_light_sky);
                     const float brightness = zox_getv(e, Brightness);
                     zox_tst_bvl_voxes++;
                     zox_tst_bvl_stale += fabsf(brightness - expected) > 0.001f;
@@ -129,7 +129,7 @@ static inline void zox_tst_bvl_count_relit(ecs* world, entity chunk) {
                 continue;
             }
             const byte3 p = zox_getv(e, VoxelLocalPosition);
-            const float expected = get_block_vox_brightness(world, chunk, p);
+            const float expected = get_block_vox_brightness(world, chunk, p, zox_light_sky);
             zox_tst_bvl_relit_stale += fabsf(zox_getv(e, Brightness) - expected) > 0.001f;
             if (p.x == 0 || p.y == 0 || p.z == 0 || p.x == length - 1 || p.y == length - 1 || p.z == length - 1) {
                 continue;
@@ -229,7 +229,7 @@ static inline byte zox_tst_bvl_light(const LightOctree* lights, const LightOctre
     for (byte d = 0; d < 6; d++) {
         l.neighbor_lights[d] = neighbor_lights[d];
     }
-    return get_block_vox_light(&l, position);
+    return get_block_vox_light(&l, position, zox_light_sky);
 }
 
 void zox_tst_bvl_sampling_check(ecs* world) {

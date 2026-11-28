@@ -27,7 +27,7 @@ static int zox_tst_smooth_grid_mismatches(const LightOctree** lights, spinlock**
     for (byte direction = 0; direction < 6; direction++) {
         byte from_trees[4], from_grid[4];
         smooth_face_lights(lights, lights_locks, voxels, voxels_locks, solidity, (byte3) { x, y, z }, depth, direction, from_trees);
-        smooth_face_lights_grid(&grid, solidity, (byte3) { x, y, z }, direction, from_grid);
+        smooth_face_lights_grid(&grid, grid.lights, solidity, (byte3) { x, y, z }, direction, from_grid);
         mismatches += memcmp(from_trees, from_grid, 4) != 0;
     }
     free(grid.lights);

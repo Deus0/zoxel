@@ -7,10 +7,9 @@ uniform float outline;
 out vec4 frag_color;
 #endif
 in vec3 vertex_color_frag;
-uniform float brightness;
 
 void main() {
-    frag_color = vec4(zox_fog(vertex_color_frag * brightness), 1.0);
+    frag_color = vec4(zox_fog(vertex_color_frag), 1.0);
 #ifdef zox_outlines
     // its depth exactly as the depth buffer has it: the pass drops it where something nearer hides it
     frag_mask = uvec2(uint(outline * 255.0 + 0.5), floatBitsToUint(gl_FragCoord.z));

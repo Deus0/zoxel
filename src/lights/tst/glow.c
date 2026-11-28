@@ -1,5 +1,6 @@
 // tst: glow_view, a glowing block (BlockGlow: glow stones) draws brighter than white (doc/plans/hdr.md): its faces'
 //  colour alpha on the cpu (lights3 build_smooth), the draw's glows by voxel on the gpu (lights3 gpu_mesh)
+//  - and its light is blocks' (its own tree, not the sky's), in its chunk's mesh colours' g (the sky's r)
 //  - a chunk3 parent's top middle chunk (chunk3_parent.c): a glow stone alone in the sky's air
 //  - a camera of its own straight to the screen, a voxel and a half in front of it, the game's view hidden
 //  - its warm colour (255 226 150): unlit by glow its blue is at most its texture's (~142); glowing (BlockGlow 85,
@@ -8,6 +9,9 @@
 extern char zox_screenshot_request[256];
 byte zox_tst_gview_stage = 0;
 int zox_tst_gview_frames = 0;
+
+byte zox_tst_gview_block = 0;        // blocks' light over the glow stone
+byte zox_tst_gview_mesh_block = 0;   // the most blocks' light in its chunk's mesh colours
 
 byte zox_tst_glow_view_ready(ecs* world) {
     if (!zox_tst_chunk3_parent_ready(world)) {
@@ -43,6 +47,20 @@ byte zox_tst_glow_view_ready(ecs* world) {
         if (++zox_tst_gview_frames < 10) {
             return 0;
         }
+        // its light in blocks' tree (not the sky's), and in its chunk's mesh colours' g (lights3/sys/build_smooth.c)
+        const entity chunk = zox_tst_chunk_at(world, (int3) { 0, 1, 0 });
+        const LightOctree* block = chunk_lights(world, chunk, zox_light_block);
+        zox_tst_gview_block = block ? getv_LightOctree(block, zox_getv(chunk, NodeDepth), (byte3) { local.x, local.y + 1, local.z }) : 0;
+        entity meshes[zox_chunk_meshes_max];
+        const uint count = get_chunk_meshes(world, chunk, meshes);
+        for (uint i = 0; i < count; i++) {
+            const MeshColors* colors = zox_has(meshes[i], MeshColors) ? zox_get(meshes[i], MeshColors) : NULL;
+            for (int c = 0; colors && c < colors->length; c++) {
+                if (colors->value[c].g > zox_tst_gview_mesh_block) {
+                    zox_tst_gview_mesh_block = colors->value[c].g;
+                }
+            }
+        }
         snprintf(zox_screenshot_request, sizeof(zox_screenshot_request), "%s", zox_tst_path("glow_view.ppm"));
         zox_tst_gview_stage = 3;
         return 0;
@@ -71,7 +89,10 @@ void zox_tst_glow_view_check(ecs* world) {
     r /= count;
     g /= count;
     b /= count;
-    zox_log("[tst] glow_view: the glow stone's middle [%i %i %i]", r, g, b);
+    zox_log("[tst] glow_view: the glow stone's middle [%i %i %i], blocks' light over it [%i], in its mesh colours [%i]", r, g, b,
+        zox_tst_gview_block, zox_tst_gview_mesh_block);
+    zox_tst_check(zox_tst_gview_block > darklight, "blocks' light over the glow stone is [%i]: not in its own tree", zox_tst_gview_block);
+    zox_tst_check(zox_tst_gview_mesh_block > darklight, "its chunk's mesh colours carry no blocks' light (g) [%i]", zox_tst_gview_mesh_block);
     zox_tst_check(r > 200 && g > 180, "the glow stone isn't in view, or dark [%i %i %i]", r, g, b);
     zox_tst_check(b > 180, "the glow stone's blue [%i]: not past white (its texture's is ~142 unglowing)", b);
 }

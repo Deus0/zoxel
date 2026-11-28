@@ -6,6 +6,8 @@ layout(location=2) in vec4 bone_index;    // two bones, the second's weight (bon
 uniform mat4 mvp_matrix;
 uniform mat4 bone_matrix[32];
 uniform vec3 bone_positions[32];
+uniform float brightness;          // the sky's light on its character (Brightness)
+uniform float block_brightness;    // blocks' light on it (BlockBrightness)
 uniform float paint_weights;  // 1: coloured by bone, mixed at joints by weight (the Paint Weights setting)
 out vec3 vertex_color_frag;
 
@@ -23,5 +25,5 @@ void main() {
     vec4 position_b = bone_matrix[b] * vec4(vertex_position - bone_positions[b], 1);
     vec4 final_position = mix(position_a, position_b, bone_index.z);
     gl_Position = mvp_matrix * final_position;
-    vertex_color_frag = paint_weights > 0.5 ? mix(bone_paint(a), bone_paint(b), bone_index.z) : vertex_color.rgb * (1.0 + vertex_color.a * GLOW) * zox_sky_light(vertex_color.a);
+    vertex_color_frag = paint_weights > 0.5 ? mix(bone_paint(a), bone_paint(b), bone_index.z) : vertex_color.rgb * (1.0 + vertex_color.a * GLOW) * zox_lit(brightness, block_brightness, vertex_color.a);
 }

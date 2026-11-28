@@ -84,7 +84,7 @@ static inline int zox_tst_dig_measure(ecs* world, entity chunk, byte3 at, float*
                 around_faces++;
                 for (int k = 0; k < 4; k++) {
                     const color col = colors->value[i + k];
-                    around_sum += (col.r + col.g + col.b) / 3.0;
+                    around_sum += col.r > col.g ? col.r : col.g;     // the brighter of the sky's (r) and blocks' (g)
                 }
             }
             if (middle.x < low.x - e || middle.y < low.y - e || middle.z < low.z - e ||
@@ -95,7 +95,7 @@ static inline int zox_tst_dig_measure(ecs* world, entity chunk, byte3 at, float*
             faces++;
             for (int k = 0; k < 4; k++) {
                 const color col = colors->value[i + k];
-                sum += (col.r + col.g + col.b) / 3.0;
+                sum += col.r > col.g ? col.r : col.g;
             }
         }
     }

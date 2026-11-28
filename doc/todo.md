@@ -87,6 +87,9 @@ Failing tests from full runs, worked through slowly; making tests smaller and fa
 section 7, doc/engine/tests.md). Each: what fails, solo or only under load, what's known.
 - 2026-11-24 full runs: 391 of 395 pass (the rest pass alone, flaky under load: stream_seams, tables_stream,
   punch_wind_up, map_pixel, door_save, town_furniture)
+- block_vox_lights --vulkan (2026-11-28, solo): stalls waiting on settled minivoxes, before the light split too
+- lamp_light (2026-11-28, solo, now and then): "over the lamp's head is [16]"; seed 3177501528 failed before the
+  light split too, passed again on the same seed: timing, its lamp lit late
 - town_view (2026-11-28, solo, some seeds, i.e. 619665966 and 723353684): "no town in the player's region"; HEAD
   before the day and night work fails seed 619665966 too, its towns' generation, not rendering
 - water_flow (2026-11-27, solo, every run, before the day's glow work too: 37e8e5106^): "the water's mesh draws levels

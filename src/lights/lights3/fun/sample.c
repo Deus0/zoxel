@@ -1,6 +1,7 @@
-// the light at a point in a chunk (the brighter of the sky's and blocks'), 0 to 1 (light / 255, as terrain vertex colours): its voxel's, under the chunk's
-//  light lock (flood passes write it on threads); under 0 if it has none there (no lights, the point outside it)
-static inline float chunk_light_at(ecs* world, entity chunk, float3 position) {
+// a channel's light at a point in a chunk (zox_light_sky, zox_light_block), 0 to 1 (light / 255, as terrain vertex
+//  colours): its voxel's, under the chunk's light lock (flood passes write it on threads); under 0 if it has none
+//  there (no lights, the point outside it)
+static inline float chunk_light_at(ecs* world, entity chunk, float3 position, byte channel) {
     if (zox_no_lights || !zox_valid(chunk) || !zox_has(chunk, LightOctree) || !zox_has(chunk, LightLock)) {
         return -1;
     }
@@ -18,12 +19,10 @@ static inline float chunk_light_at(ecs* world, entity chunk, float3 position) {
     }
     LightLock* lock = zox_mut(chunk, LightLock);
     spin_lock(&lock->value);
-    const byte3 at = { local.x, local.y, local.z };
-    const byte light = getv_LightOctree(zox_get(chunk, LightOctree), depth, at);
-    const LightOctree* block = chunk_lights(world, chunk, zox_light_block);
-    const byte glow = block ? getv_LightOctree(block, depth, at) : 0;     // blocks' light: the brighter
+    const LightOctree* lights = chunk_lights(world, chunk, channel);
+    const byte light = lights ? getv_LightOctree(lights, depth, (byte3) { local.x, local.y, local.z }) : 0;
     spin_unlock(&lock->value);
-    return (glow > light ? glow : light) / 255.0f;
+    return light / 255.0f;
 }
 
 // the brighter of a chunk's sky and blocks' light at a voxel, at its depth (no lock: the main thread, tests); 0
