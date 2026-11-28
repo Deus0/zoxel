@@ -45,6 +45,7 @@ static inline byte smooth_grid_fill(
     grid->voxels = grid->lights + padded;
     // missing chunks are air
     memset(grid->voxels, 0, cells);
+    byte* block_temp = NULL;
     for (sbyte z = -1; z <= 1; z++)
     for (sbyte y = -1; y <= 1; y++)
     for (sbyte x = -1; x <= 1; x++) {
@@ -58,22 +59,28 @@ static inline byte smooth_grid_fill(
             // blocks' light (only chunks with some): its own grid, or the brighter of it and the sky's
             const LightOctree* glow = grid->block_lights ? grid->block_lights[i] : NULL;
             if (smooth_grid_lit(glow)) {
-                byte* block = grid->block_apart ? grid->block : NULL;
-                if (grid->block_apart && !block) {
-                    block = grid->block = calloc(padded, 1);
-                } else if (!grid->block_apart) {
-                    block = calloc(padded, 1);
+                byte** block_grid = grid->block_apart ? &grid->block : &block_temp;
+                if (!*block_grid) {
+                    *block_grid = calloc(padded, 1);
                 }
+                byte* block = *block_grid;
                 if (block) {
                     octree_fill_grid(glow, sizeof(LightOctree), octree_type_offset_LightOctree, 0, depth, int3_zero, origin,
                         block, grid->length, 1);
                     if (!grid->block_apart) {
-                        for (size_t c = 0; c < cells; c++) {
+                        // the fill overwrites the chunk's clipped region, including its border cells
+                        const int n = grid->length;
+                        const int x0 = x < 0 ? 0 : origin.x, x1 = x > 0 ? n : origin.x + size;
+                        const int y0 = y < 0 ? 0 : origin.y, y1 = y > 0 ? n : origin.y + size;
+                        const int z0 = z < 0 ? 0 : origin.z, z1 = z > 0 ? n : origin.z + size;
+                        for (int gx = x0; gx < x1; gx++)
+                        for (int gy = y0; gy < y1; gy++)
+                        for (int gz = z0; gz < z1; gz++) {
+                            const int c = (gx * n + gy) * n + gz;
                             if (block[c] > grid->lights[c]) {
                                 grid->lights[c] = block[c];
                             }
                         }
-                        free(block);
                     }
                 }
             }
@@ -89,6 +96,7 @@ static inline byte smooth_grid_fill(
             spin_unlock(voxels_locks[i]);
         }
     }
+    free(block_temp);
     return 1;
 }
 
